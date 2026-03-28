@@ -80,6 +80,12 @@ export default function Footer() {
       </div>
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-5 text-[13px] text-[#6C6988] gap-4">
         <span>&copy; 2026 Chinmayi Gallery. All rights reserved.</span>
+        <span className="text-[12px]">
+          Designed &amp; Developed by{" "}
+          <a href="https://totalcloudai.com" target="_blank" rel="noopener noreferrer" className="text-[#D4A843] hover:underline transition-colors">
+            TotalCloudAI Ltd
+          </a>
+        </span>
         <div className="flex gap-3">
           {["Instagram", "Pinterest", "Facebook"].map((s) => (
             <a
