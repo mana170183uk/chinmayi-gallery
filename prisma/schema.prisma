@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Artwork {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  category      String
+  medium        String
+  dimensions    String
+  year          Int
+  price         Int
+  originalPrice Int?
+  description   String
+  gradient      String
+  imageUrl      String?
+  aspectRatio   String   @default("3/4")
+  badge         String?
+  collection    String?
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orderItems OrderItem[]
+  @@index([category])
+  @@index([collection])
+  @@index([slug])
+}
+
+model Collection {
+  id          String @id @default(cuid())
+  slug        String @unique
+  title       String
+  description String
+  gradient    String
+  sortOrder   Int    @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  customerName  String
+  customerEmail String
+  total       Int
+  status      String      @default("pending")
+  shippingAddress String?
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  artworkId String
+  price     Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  artwork   Artwork @relation(fields: [artworkId], references: [id])
+
+  @@index([orderId])
+  @@index([artworkId])
+}
+
+model Testimonial {
+  id             String @id @default(cuid())
+  name           String
+  role           String
+  text           String
+  avatar         String
+  avatarGradient String
+  sortOrder      Int    @default(0)
+  createdAt      DateTime @default(now())
+}
+
+model SiteSettings {
+  id    String @id @default("main")
+  heroTitle     String @default("Where Art Meets Soul")
+  heroSubtitle  String @default("Discover breathtaking original paintings and limited-edition prints.")
+  artistName    String @default("Chinmayi")
+  artistBio     String @default("")
+  contactEmail  String @default("hello@chinmayigallery.com")
+  instagramUrl  String @default("")
+  pinterestUrl  String @default("")
+  facebookUrl   String @default("")
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
