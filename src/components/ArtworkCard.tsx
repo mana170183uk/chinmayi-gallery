@@ -111,7 +111,9 @@ export default function ArtworkCard({ artwork, index }: Props) {
               <span className="font-semibold text-[15px]" style={{ color: "var(--gold)" }}>
                 {artwork.badge === "sold"
                   ? "Sold"
-                  : `£${artwork.price.toLocaleString()}`}
+                  : artwork.price
+                    ? `£${artwork.price.toLocaleString()}`
+                    : ""}
               </span>
             </div>
           </div>
