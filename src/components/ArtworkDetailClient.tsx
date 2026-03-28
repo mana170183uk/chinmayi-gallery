@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart, toggleWishlist } from "@/lib/store";
 import ArtworkCard from "@/components/ArtworkCard";
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export default function ArtworkDetailClient({ artwork, related }: Props) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
   return (
     <section className="min-h-screen pt-24 pb-24 relative z-[1]">
       {/* Breadcrumb */}
@@ -19,7 +22,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
           <Link href="/" className="hover:text-[var(--gold)] transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/gallery" className="hover:text-[var(--gold)] transition-colors">Gallery</Link>
+          <Link href="/gallery" className="hover:text-[var(--gold)] transition-colors">Art Gallery</Link>
           <span>/</span>
           <span style={{ color: "var(--text)" }}>{artwork.title}</span>
         </motion.div>
@@ -27,24 +30,21 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
 
       <div className="px-6 md:px-14 max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-16 items-start">
-          {/* Image */}
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="sticky top-24">
-            <div className="rounded-2xl overflow-hidden border relative group" style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}>
-              <div className="art-gradient relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", minHeight: "400px" }}>
+          {/* Image - clickable for full view */}
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            <div
+              className="rounded-2xl overflow-hidden border relative group cursor-zoom-in"
+              style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}
+              onClick={() => setLightboxOpen(true)}
+            >
+              <div className="art-gradient relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", minHeight: "500px" }}>
                 {artwork.imageUrl && <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-cover" />}
               </div>
-            </div>
-
-            {/* View in Room */}
-            <div className="mt-6 rounded-xl overflow-hidden border p-8 text-center" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
-              <div className="text-[12px] tracking-wider uppercase font-semibold mb-4" style={{ color: "var(--gold)" }}>View in a Room</div>
-              <div className="relative mx-auto" style={{ maxWidth: "400px" }}>
-                <div className="w-full aspect-[16/10] rounded-lg flex items-center justify-center" style={{ background: "var(--bg3)" }}>
-                  <div className="w-2/5 rounded border overflow-hidden relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", maxHeight: "120px", borderColor: "var(--border2)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}>
-                    {artwork.imageUrl && <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-cover" />}
-                  </div>
+              {/* Zoom hint */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+                <div className="px-4 py-2 rounded-full text-[13px] font-medium backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(0,0,0,0.6)", color: "white" }}>
+                  🔍 Click to view full size
                 </div>
-                <div className="mt-2 text-[11px]" style={{ color: "var(--text3)" }}>Simulated room view — actual size may vary</div>
               </div>
             </div>
           </motion.div>
@@ -61,11 +61,13 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             <div className="font-[Playfair_Display] text-[38px] font-bold mb-2" style={{ color: "var(--gold)" }}>
               {artwork.badge === "sold" ? (
                 <span style={{ color: "var(--rose)" }}>Sold</span>
-              ) : (
+              ) : artwork.price ? (
                 <>
                   £{artwork.price.toLocaleString()}
                   {artwork.originalPrice && <span className="text-[18px] line-through ml-3 font-normal" style={{ color: "var(--text3)" }}>£{artwork.originalPrice.toLocaleString()}</span>}
                 </>
+              ) : (
+                <span className="text-[22px]" style={{ color: "var(--text3)" }}>Contact for price</span>
               )}
             </div>
             <div className="text-[12px] mb-8" style={{ color: "var(--text3)" }}>Free shipping worldwide &bull; Certificate of Authenticity included</div>
@@ -106,6 +108,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
         </div>
       </div>
 
+      {/* Related Works */}
       {related.length > 0 && (
         <div className="px-6 md:px-14 mt-24 max-w-[1400px] mx-auto">
           <h3 className="text-[28px] font-semibold mb-8 text-center">More Like This</h3>
@@ -114,6 +117,81 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
           </div>
         </div>
       )}
+
+      {/* Full-Screen Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[3000] flex items-center justify-center cursor-zoom-out"
+            style={{ background: "rgba(0,0,0,0.95)" }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl transition-all hover:bg-white/10 z-10"
+            >
+              &times;
+            </button>
+
+            {/* Title bar */}
+            <div className="absolute top-6 left-6 z-10">
+              <h3 className="text-white text-[20px] font-[Cormorant_Garamond] font-semibold">{artwork.title}</h3>
+              <p className="text-white/50 text-[13px]">{artwork.medium} &bull; {artwork.dimensions}</p>
+            </div>
+
+            {/* Full-size image */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative max-w-[90vw] max-h-[85vh] rounded-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+              style={{ boxShadow: "0 0 100px rgba(212,168,67,0.15)" }}
+            >
+              {artwork.imageUrl ? (
+                <img
+                  src={artwork.imageUrl}
+                  alt={artwork.title}
+                  className="max-w-[90vw] max-h-[85vh] object-contain"
+                  style={{ display: "block" }}
+                />
+              ) : (
+                <div
+                  className="art-gradient"
+                  style={{
+                    background: artwork.gradient,
+                    width: "70vw",
+                    height: "70vh",
+                  }}
+                />
+              )}
+            </motion.div>
+
+            {/* Price and action at bottom */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-10">
+              {artwork.price > 0 && (
+                <span className="text-white font-[Playfair_Display] text-[22px] font-bold" style={{ color: "var(--gold)" }}>
+                  £{artwork.price.toLocaleString()}
+                </span>
+              )}
+              {artwork.badge !== "sold" && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); addToCart(artwork); setLightboxOpen(false); }}
+                  className="px-8 py-3 rounded-md font-bold text-[12px] tracking-wider uppercase transition-all hover:shadow-lg"
+                  style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+                >
+                  Add to Cart
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
