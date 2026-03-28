@@ -257,17 +257,6 @@ export default function AdminArtworksPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Aspect Ratio</label>
-                  <div className="flex gap-2 flex-wrap">
-                    {["3/4", "4/5", "1/1", "4/3", "5/4", "5/6"].map((r) => (
-                      <button key={r} type="button" onClick={() => setForm({ ...form, aspectRatio: r })} className={`px-4 py-1.5 rounded-full text-[12px] border transition-all ${form.aspectRatio === r ? "border-[var(--gold)]" : "border-[var(--border)]"}`} style={{ background: form.aspectRatio === r ? "var(--gold)" : "transparent", color: form.aspectRatio === r ? "#1A1830" : "var(--text2)" }}>
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Image Upload */}
                 <div>
                   <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Artwork Image *</label>
