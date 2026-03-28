@@ -6,8 +6,11 @@ import Link from "next/link";
 import { getState, subscribe, toggleTheme, setCartOpen } from "@/lib/store";
 
 const links = [
-  { label: "Gallery", href: "/gallery" },
-  { label: "Collections", href: "/collections" },
+  { label: "Art Gallery", href: "/gallery" },
+  { label: "Jewellery", href: "/jewellery" },
+  { label: "Clothing", href: "/clothing" },
+  { label: "Home Decor", href: "/home-decor" },
+  { label: "Books", href: "/books" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

@@ -22,10 +22,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif", "application/pdf"];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Please upload JPEG, PNG, WebP, or GIF." },
+        { error: "Invalid file type. Please upload JPEG, PNG, WebP, GIF, or PDF." },
         { status: 400 }
       );
     }

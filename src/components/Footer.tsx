@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 const galleryLinks = [
-  { label: "All Artworks", href: "/gallery" },
-  { label: "Collections", href: "/collections" },
-  { label: "New Arrivals", href: "/gallery?filter=new" },
-  { label: "Limited Prints", href: "/gallery" },
+  { label: "Art Gallery", href: "/gallery" },
+  { label: "Jewellery", href: "/jewellery" },
+  { label: "Clothing", href: "/clothing" },
+  { label: "Home Decor", href: "/home-decor" },
+  { label: "Books", href: "/books" },
 ];
 
 const aboutLinks = [
