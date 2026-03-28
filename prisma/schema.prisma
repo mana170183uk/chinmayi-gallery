@@ -33,6 +33,51 @@ model Artwork {
   @@index([slug])
 }
 
+// Generic product for Jewellery, Clothing, Home Decor
+model Product {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  type          String   // "jewellery" | "clothing" | "home-decor"
+  description   String
+  price         Int
+  originalPrice Int?
+  imageUrl      String?
+  gradient      String   @default("linear-gradient(135deg, #667eea, #764ba2)")
+  badge         String?  // "new" | "sold" | "featured"
+  material      String?  // e.g. "Sterling Silver", "Cotton", etc.
+  sizes         String?  // e.g. "S, M, L, XL" for clothing
+  inStock       Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([type])
+  @@index([slug])
+}
+
+// Books with PDF and Amazon URL
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  author      String   @default("Chinmayi")
+  description String
+  price       Int?
+  imageUrl    String?  // cover image
+  pdfUrl      String?  // uploaded PDF
+  amazonUrl   String?  // Amazon purchase link
+  gradient    String   @default("linear-gradient(135deg, #667eea, #764ba2)")
+  badge       String?  // "new" | "bestseller"
+  pages       Int?
+  isbn        String?
+  publishYear Int?
+  inStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}
+
 model Collection {
   id          String @id @default(cuid())
   slug        String @unique
