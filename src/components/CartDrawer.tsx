@@ -28,7 +28,7 @@ export default function CartDrawer() {
       setItems(s.cart);
       setTotal(getCartTotal());
     });
-    return unsub;
+    return () => { unsub(); };
   }, []);
 
   return (

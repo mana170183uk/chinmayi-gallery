@@ -33,7 +33,7 @@ export default function Navbar() {
     const s = getState();
     setCartCount(s.cart.length);
     setTheme(s.theme);
-    return unsub;
+    return () => { unsub(); };
   }, []);
 
   return (
