@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       medium: body.medium,
       dimensions: body.dimensions,
       year: parseInt(body.year),
-      price: parseInt(body.price),
+      price: body.price ? parseInt(body.price) : 0,
       originalPrice: body.originalPrice ? parseInt(body.originalPrice) : null,
       description: body.description,
       gradient: body.gradient,
