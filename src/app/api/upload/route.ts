@@ -46,20 +46,11 @@ export async function POST(request: NextRequest) {
       .toLowerCase();
     const filename = `artworks/${safeName}-${Date.now()}.${ext}`;
 
-    let blob;
-    try {
-      blob = await put(filename, file, {
-        access: "public",
-        addRandomSuffix: false,
-        token,
-      });
-    } catch {
-      // If public access fails, try without specifying access
-      blob = await put(filename, file, {
-        addRandomSuffix: false,
-        token,
-      });
-    }
+    const blob = await put(filename, file, {
+      access: "public",
+      addRandomSuffix: false,
+      token,
+    });
 
     return NextResponse.json({
       url: blob.url,
