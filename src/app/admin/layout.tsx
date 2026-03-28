@@ -1,0 +1,59 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const sidebarLinks = [
+  { label: "Dashboard", href: "/admin", icon: "📊" },
+  { label: "Artworks", href: "/admin/artworks", icon: "🎨" },
+  { label: "Collections", href: "/admin/collections", icon: "📁" },
+  { label: "Orders", href: "/admin", icon: "📦" },
+  { label: "Analytics", href: "/admin", icon: "📈" },
+  { label: "Settings", href: "/admin", icon: "⚙️" },
+];
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  return (
+    <div className="min-h-screen pt-[72px] flex relative z-[1]">
+      {/* Sidebar */}
+      <aside className="w-64 fixed top-[72px] left-0 bottom-0 border-r overflow-y-auto hidden lg:block" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+        <div className="p-6">
+          <h3 className="text-[18px] font-semibold mb-1">Admin Panel</h3>
+          <p className="text-[12px]" style={{ color: "var(--text3)" }}>Manage your gallery</p>
+        </div>
+        <nav className="px-3 pb-6">
+          {sidebarLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium mb-1 transition-all ${
+                pathname === link.href
+                  ? "text-[#1A1830]"
+                  : "hover:bg-[var(--bg3)]"
+              }`}
+              style={{
+                background: pathname === link.href ? "var(--gold)" : "transparent",
+                color: pathname === link.href ? "#1A1830" : "var(--text2)",
+              }}
+            >
+              <span className="text-[16px]">{link.icon}</span>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="px-6 pb-6">
+          <Link href="/" className="text-[13px] hover:text-[var(--gold)] transition-colors" style={{ color: "var(--text3)" }}>
+            ← Back to Website
+          </Link>
+        </div>
+      </aside>
+
+      {/* Content */}
+      <div className="flex-1 lg:ml-64 p-6 md:p-10">
+        {children}
+      </div>
+    </div>
+  );
+}

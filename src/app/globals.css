@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+/* ═══════ CUSTOM THEME SYSTEM ═══════ */
+:root,
+[data-theme="dark"] {
+  --bg: #0E0E1A;
+  --bg2: #141428;
+  --bg3: #1A1A35;
+  --bg-card: #171730;
+  --bg-glass: rgba(20, 20, 40, 0.65);
+  --bg-glass2: rgba(26, 26, 53, 0.8);
+  --surface: #1E1E3A;
+  --surface2: #252545;
+  --text: #E8E6F0;
+  --text2: #9B98B0;
+  --text3: #6C6988;
+  --heading: #F5F2FF;
+  --gold: #D4A843;
+  --gold2: #E8C36A;
+  --gold-glow: rgba(212, 168, 67, 0.15);
+  --gold-glow2: rgba(212, 168, 67, 0.06);
+  --rose: #E94560;
+  --rose-glow: rgba(233, 69, 96, 0.15);
+  --emerald: #34D399;
+  --border: rgba(255, 255, 255, 0.06);
+  --border2: rgba(212, 168, 67, 0.12);
+  --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --art-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 80px rgba(212, 168, 67, 0.07);
+  --art-glow: 0 0 60px rgba(212, 168, 67, 0.12), 0 0 120px rgba(212, 168, 67, 0.04);
+  --nav-bg: rgba(14, 14, 26, 0.85);
+  --footer-bg: #0A0A14;
+  --card-hover-border: rgba(212, 168, 67, 0.25);
+  --input-bg: rgba(30, 30, 58, 0.8);
+  --scrollbar: #1E1E3A;
+  --scrollbar-thumb: #D4A843;
+}
+
+[data-theme="light"] {
+  --bg: #FAF8F4;
+  --bg2: #F3F0E8;
+  --bg3: #EDE9DF;
+  --bg-card: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-glass2: rgba(250, 248, 244, 0.85);
+  --surface: #FFFFFF;
+  --surface2: #F5F2EB;
+  --text: #2C2A35;
+  --text2: #6B6880;
+  --text3: #9B98A8;
+  --heading: #1A1830;
+  --gold: #B8923A;
+  --gold2: #C9A24E;
+  --gold-glow: rgba(184, 146, 58, 0.1);
+  --gold-glow2: rgba(184, 146, 58, 0.04);
+  --rose: #C9365A;
+  --rose-glow: rgba(201, 54, 90, 0.1);
+  --emerald: #059669;
+  --border: rgba(0, 0, 0, 0.06);
+  --border2: rgba(184, 146, 58, 0.12);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  --art-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --art-glow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --nav-bg: rgba(250, 248, 244, 0.88);
+  --footer-bg: #1A1830;
+  --card-hover-border: rgba(184, 146, 58, 0.3);
+  --input-bg: #FFFFFF;
+  --scrollbar: #EDE9DF;
+  --scrollbar-thumb: #B8923A;
+}
+
+/* ═══════ BASE ═══════ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "DM Sans", "Inter", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  line-height: 1.65;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  color: var(--heading);
+  transition: color 0.5s;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ═══════ CUSTOM CURSOR ═══════ */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+}
+
+.cursor-ring.hovering {
+  transform: scale(1.5);
+  opacity: 0.8;
+  border-color: var(--gold);
+}
+
+/* ═══════ ART PLACEHOLDER GRADIENTS ═══════ */
+.art-gradient {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ═══════ MASONRY ═══════ */
+.masonry-grid {
+  columns: 4;
+  column-gap: 18px;
+}
+
+.masonry-grid > * {
+  break-inside: avoid;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1024px) {
+  .masonry-grid {
+    columns: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .masonry-grid {
+    columns: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-grid {
+    columns: 1;
+  }
+}
+
+/* ═══════ LENIS SMOOTH SCROLL ═══════ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ═══════ PAGE TRANSITION ═══════ */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* ═══════ SELECTION ═══════ */
+::selection {
+  background: rgba(212, 168, 67, 0.3);
+  color: var(--heading);
+}
+
+/* ═══════ ADMIN STYLES ═══════ */
+.admin-sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+}
