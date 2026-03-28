@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put, del } from "@vercel/blob";
 
-// Run this function in London for lower latency
-export const runtime = "edge";
-export const preferredRegion = "lhr1";
+// Use Node.js runtime for reliable env var access
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    if (!token) {
+      return NextResponse.json(
+        { error: "Image storage not configured. Please add BLOB_READ_WRITE_TOKEN in Vercel settings." },
+        { status: 500 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
@@ -42,6 +49,7 @@ export async function POST(request: NextRequest) {
     const blob = await put(filename, file, {
       access: "public",
       addRandomSuffix: false,
+      token,
     });
 
     return NextResponse.json({
@@ -58,14 +66,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE an uploaded image
 export async function DELETE(request: NextRequest) {
   try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
     const { url } = await request.json();
     if (!url) {
       return NextResponse.json({ error: "No URL provided" }, { status: 400 });
     }
-    await del(url);
+    await del(url, { token });
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Delete failed";
