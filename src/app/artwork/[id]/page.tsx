@@ -52,7 +52,11 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
             className="sticky top-24"
           >
             <div className="rounded-2xl overflow-hidden border relative group" style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}>
-              <div className="art-gradient" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio, minHeight: "400px" }} />
+              <div className="art-gradient relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio, minHeight: "400px" }}>
+                {artwork.imageUrl && (
+                  <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+              </div>
               {/* Zoom hint */}
               <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-[11px] font-medium backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(0,0,0,0.5)", color: "white" }}>
                 🔍 Click to zoom
@@ -64,7 +68,11 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
               <div className="text-[12px] tracking-wider uppercase font-semibold mb-4" style={{ color: "var(--gold)" }}>View in a Room</div>
               <div className="relative mx-auto" style={{ maxWidth: "400px" }}>
                 <div className="w-full aspect-[16/10] rounded-lg flex items-center justify-center" style={{ background: "var(--bg3)" }}>
-                  <div className="w-2/5 rounded border" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio, maxHeight: "120px", borderColor: "var(--border2)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }} />
+                  <div className="w-2/5 rounded border overflow-hidden relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio, maxHeight: "120px", borderColor: "var(--border2)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}>
+                    {artwork.imageUrl && (
+                      <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-cover" />
+                    )}
+                  </div>
                 </div>
                 <div className="mt-2 text-[11px]" style={{ color: "var(--text3)" }}>Simulated room view — actual size may vary</div>
               </div>

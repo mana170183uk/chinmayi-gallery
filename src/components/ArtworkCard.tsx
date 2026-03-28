@@ -85,12 +85,21 @@ export default function ArtworkCard({ artwork, index }: Props) {
 
           {/* Art Image */}
           <div
-            className="art-gradient"
+            className="art-gradient relative"
             style={{
               background: artwork.gradient,
               aspectRatio: artwork.aspectRatio,
             }}
-          />
+          >
+            {artwork.imageUrl && (
+              <img
+                src={artwork.imageUrl}
+                alt={artwork.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+              />
+            )}
+          </div>
 
           {/* Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/85 to-transparent opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-400">
