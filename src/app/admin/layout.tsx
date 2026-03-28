@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: "📊" },
@@ -14,6 +15,51 @@ const sidebarLinks = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+
+  // Skip auth check on login page
+  const isLoginPage = pathname === "/admin/login";
+
+  useEffect(() => {
+    if (isLoginPage) {
+      setAuthenticated(true);
+      return;
+    }
+
+    fetch("/api/admin/verify")
+      .then((res) => {
+        if (res.ok) {
+          setAuthenticated(true);
+        } else {
+          router.push("/admin/login");
+        }
+      })
+      .catch(() => router.push("/admin/login"));
+  }, [pathname, isLoginPage, router]);
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/login", { method: "DELETE" });
+    router.push("/admin/login");
+    router.refresh();
+  };
+
+  // Show login page without sidebar
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Loading state
+  if (authenticated === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-[72px] relative z-[1]">
+        <div className="text-center">
+          <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin mx-auto mb-4" style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }} />
+          <p className="text-[14px]" style={{ color: "var(--text3)" }}>Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-[72px] flex relative z-[1]">
@@ -43,10 +89,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
           ))}
         </nav>
-        <div className="px-6 pb-6">
-          <Link href="/" className="text-[13px] hover:text-[var(--gold)] transition-colors" style={{ color: "var(--text3)" }}>
+        <div className="px-6 pb-6 space-y-3">
+          <Link href="/" className="block text-[13px] hover:text-[var(--gold)] transition-colors" style={{ color: "var(--text3)" }}>
             ← Back to Website
           </Link>
+          <button
+            onClick={handleLogout}
+            className="block text-[13px] transition-colors hover:text-[var(--rose)]"
+            style={{ color: "var(--text3)" }}
+          >
+            Logout
+          </button>
         </div>
       </aside>
 
