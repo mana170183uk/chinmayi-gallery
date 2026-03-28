@@ -30,6 +30,7 @@ interface FormData {
   price: string;
   description: string;
   gradient: string;
+  imageUrl: string;
   aspectRatio: string;
   badge: string;
 }
@@ -37,7 +38,7 @@ interface FormData {
 const emptyForm: FormData = {
   title: "", category: "landscape", medium: "", dimensions: "",
   year: new Date().getFullYear().toString(), price: "", description: "",
-  gradient: gradientPresets[0].value, aspectRatio: "3/4", badge: "",
+  gradient: gradientPresets[0].value, imageUrl: "", aspectRatio: "3/4", badge: "",
 };
 
 export default function AdminArtworksPage() {
@@ -68,6 +69,32 @@ export default function AdminArtworksPage() {
     a.category.toLowerCase().includes(search.toLowerCase())
   );
 
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formDataUpload = new window.FormData();
+    formDataUpload.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formDataUpload });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Upload failed");
+        return;
+      }
+      const data = await res.json();
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch {
+      alert("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleEdit = (art: Artwork) => {
     setForm({
       title: art.title,
@@ -78,6 +105,7 @@ export default function AdminArtworksPage() {
       price: art.price.toString(),
       description: art.description,
       gradient: art.gradient,
+      imageUrl: (art as unknown as Record<string, string>).imageUrl || "",
       aspectRatio: art.aspectRatio,
       badge: art.badge || "",
     });
@@ -240,22 +268,59 @@ export default function AdminArtworksPage() {
                   </div>
                 </div>
 
+                {/* Image Upload */}
                 <div>
-                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Colour Theme (Image Placeholder)</label>
+                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Artwork Image *</label>
+                  <div className="flex gap-4 items-start">
+                    <div className="flex-1">
+                      <label
+                        className={`flex flex-col items-center justify-center w-full h-40 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-[var(--gold)] ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+                        style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
+                      >
+                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                        {uploading ? (
+                          <>
+                            <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin mb-2" style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }} />
+                            <span className="text-[13px]" style={{ color: "var(--text3)" }}>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-3xl mb-2">📤</span>
+                            <span className="text-[13px] font-medium" style={{ color: "var(--text2)" }}>Click to upload image</span>
+                            <span className="text-[11px] mt-1" style={{ color: "var(--text3)" }}>JPEG, PNG, WebP up to 10MB</span>
+                          </>
+                        )}
+                      </label>
+                      {form.imageUrl && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="text-[11px] truncate flex-1" style={{ color: "var(--emerald)" }}>Image uploaded successfully</span>
+                          <button type="button" onClick={() => setForm({ ...form, imageUrl: "" })} className="text-[11px] hover:text-[var(--rose)]" style={{ color: "var(--text3)" }}>Remove</button>
+                        </div>
+                      )}
+                    </div>
+                    {/* Preview */}
+                    <div className="w-32 flex-shrink-0">
+                      <div className="rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)", aspectRatio: form.aspectRatio }}>
+                        {form.imageUrl ? (
+                          <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full" style={{ background: form.gradient }} />
+                        )}
+                      </div>
+                      <p className="text-[10px] text-center mt-1" style={{ color: "var(--text3)" }}>Preview</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fallback Gradient (used when no image) */}
+                <div>
+                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>
+                    Fallback Colour {form.imageUrl && <span className="normal-case font-normal">(used if image fails to load)</span>}
+                  </label>
                   <div className="grid grid-cols-6 gap-2">
                     {gradientPresets.map((g) => (
                       <button key={g.name} type="button" onClick={() => setForm({ ...form, gradient: g.value })} className={`aspect-square rounded-lg border-2 transition-all ${form.gradient === g.value ? "border-[var(--gold)] scale-110" : "border-transparent"}`} style={{ background: g.value }} title={g.name} />
                     ))}
-                  </div>
-                  <p className="text-[11px] mt-2" style={{ color: "var(--text3)" }}>
-                    These gradients are placeholders. Upload real images after deployment with a CMS or image storage service.
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Preview</label>
-                  <div className="w-40 rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)" }}>
-                    <div style={{ background: form.gradient, aspectRatio: form.aspectRatio }} />
                   </div>
                 </div>
 
@@ -296,7 +361,11 @@ export default function AdminArtworksPage() {
               {filtered.map((art) => (
                 <tr key={art.id} className="border-b hover:bg-[var(--bg2)] transition-colors" style={{ borderColor: "var(--border)" }}>
                   <td className="px-6 py-3">
-                    <div className="w-12 h-12 rounded-lg" style={{ background: art.gradient }} />
+                    <div className="w-12 h-12 rounded-lg overflow-hidden" style={{ background: art.gradient }}>
+                      {(art as unknown as Record<string, string>).imageUrl && (
+                        <img src={(art as unknown as Record<string, string>).imageUrl} alt={art.title} className="w-full h-full object-cover" />
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-3 font-medium">{art.title}</td>
                   <td className="px-6 py-3 capitalize" style={{ color: "var(--text2)" }}>{art.category}</td>

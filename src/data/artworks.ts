@@ -10,6 +10,7 @@ export interface Artwork {
   originalPrice?: number;
   description: string;
   gradient: string;
+  imageUrl?: string;
   aspectRatio: string;
   badge?: "new" | "sold" | "featured";
   collection?: string;
