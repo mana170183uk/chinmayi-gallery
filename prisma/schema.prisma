@@ -16,6 +16,7 @@ model Artwork {
   dimensions    String
   year          Int
   price         Int
+  framedPrice   Int?
   originalPrice Int?
   description   String
   gradient      String

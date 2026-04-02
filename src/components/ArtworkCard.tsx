@@ -95,7 +95,7 @@ export default function ArtworkCard({ artwork, index }: Props) {
               <img
                 src={artwork.imageUrl}
                 alt={artwork.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-contain"
                 loading="lazy"
               />
             )}

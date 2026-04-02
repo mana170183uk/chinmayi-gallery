@@ -7,6 +7,7 @@ export interface Artwork {
   dimensions: string;
   year: number;
   price: number;
+  framedPrice?: number;
   originalPrice?: number;
   description: string;
   gradient: string;
@@ -298,4 +299,4 @@ export const testimonials = [
   },
 ];
 
-export const categories = ["all", "landscape", "abstract", "floral", "portrait", "contemporary"];
+export const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"];

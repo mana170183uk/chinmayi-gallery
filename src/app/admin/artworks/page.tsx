@@ -28,6 +28,7 @@ interface FormData {
   dimensions: string;
   year: string;
   price: string;
+  framedPrice: string;
   description: string;
   gradient: string;
   imageUrl: string;
@@ -37,7 +38,7 @@ interface FormData {
 
 const emptyForm: FormData = {
   title: "", category: "landscape", medium: "", dimensions: "",
-  year: new Date().getFullYear().toString(), price: "", description: "",
+  year: new Date().getFullYear().toString(), price: "", framedPrice: "", description: "",
   gradient: gradientPresets[0].value, imageUrl: "", aspectRatio: "3/4", badge: "",
 };
 
@@ -103,6 +104,7 @@ export default function AdminArtworksPage() {
       dimensions: art.dimensions,
       year: art.year.toString(),
       price: art.price.toString(),
+      framedPrice: (art as unknown as Record<string, number>).framedPrice?.toString() || "",
       description: art.description,
       gradient: art.gradient,
       imageUrl: (art as unknown as Record<string, string>).imageUrl || "",
@@ -143,17 +145,17 @@ export default function AdminArtworksPage() {
         // Fallback to local state
         const slug = form.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
         if (editId) {
-          setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), badge: (form.badge || undefined) as Artwork["badge"] } : a));
+          setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
         } else {
-          setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
+          setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
         }
       }
     } else {
       const slug = form.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
       if (editId) {
-        setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), badge: (form.badge || undefined) as Artwork["badge"] } : a));
+        setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
       } else {
-        setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
+        setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
       }
     }
 
@@ -219,8 +221,8 @@ export default function AdminArtworksPage() {
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Category *</label>
                     <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
-                      {["landscape", "abstract", "floral", "portrait", "contemporary"].map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                      {["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"].map((c) => (
+                        <option key={c} value={c}>{c.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}</option>
                       ))}
                     </select>
                   </div>
@@ -233,18 +235,22 @@ export default function AdminArtworksPage() {
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Dimensions *</label>
-                    <input required value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder='24 × 36 in' className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                    <input required value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder='61 × 91 cm' className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Year</label>
                     <input type="number" value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
-                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Price (£)</label>
-                    <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Unframed Price (£)</label>
+                    <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Optional" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Framed Price (£)</label>
+                    <input type="number" value={form.framedPrice} onChange={(e) => setForm({ ...form, framedPrice: e.target.value })} placeholder="Optional" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Status</label>

@@ -43,6 +43,7 @@ export async function PUT(
       ...(body.dimensions && { dimensions: body.dimensions }),
       ...(body.year && { year: parseInt(body.year) }),
       ...(body.price && { price: parseInt(body.price) }),
+      ...(body.framedPrice !== undefined && { framedPrice: body.framedPrice ? parseInt(body.framedPrice) : null }),
       ...(body.originalPrice !== undefined && { originalPrice: body.originalPrice ? parseInt(body.originalPrice) : null }),
       ...(body.description && { description: body.description }),
       ...(body.gradient && { gradient: body.gradient }),
