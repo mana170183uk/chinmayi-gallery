@@ -38,7 +38,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
               onClick={() => setLightboxOpen(true)}
             >
               <div className="art-gradient relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", minHeight: "500px" }}>
-                {artwork.imageUrl && <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-cover" />}
+                {artwork.imageUrl && <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-contain" />}
               </div>
               {/* Zoom hint */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
@@ -58,19 +58,30 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             <div className="text-[15px] italic mb-1" style={{ color: "var(--text2)" }}>{artwork.medium}</div>
             <div className="text-[14px] mb-8" style={{ color: "var(--text3)" }}>{artwork.dimensions}</div>
 
-            <div className="font-[Playfair_Display] text-[38px] font-bold mb-2" style={{ color: "var(--gold)" }}>
+            <div className="mb-2">
               {artwork.badge === "sold" ? (
-                <span style={{ color: "var(--rose)" }}>Sold</span>
-              ) : artwork.price ? (
-                <>
-                  £{artwork.price.toLocaleString()}
-                  {artwork.originalPrice && <span className="text-[18px] line-through ml-3 font-normal" style={{ color: "var(--text3)" }}>£{artwork.originalPrice.toLocaleString()}</span>}
-                </>
+                <div className="font-[Playfair_Display] text-[38px] font-bold" style={{ color: "var(--rose)" }}>Sold</div>
+              ) : artwork.price || artwork.framedPrice ? (
+                <div className="space-y-1">
+                  {artwork.price > 0 && (
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-[13px] uppercase tracking-wider font-medium" style={{ color: "var(--text3)" }}>Unframed</span>
+                      <span className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--gold)" }}>£{artwork.price.toLocaleString()}</span>
+                      {artwork.originalPrice && <span className="text-[16px] line-through font-normal" style={{ color: "var(--text3)" }}>£{artwork.originalPrice.toLocaleString()}</span>}
+                    </div>
+                  )}
+                  {artwork.framedPrice && artwork.framedPrice > 0 && (
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-[13px] uppercase tracking-wider font-medium" style={{ color: "var(--text3)" }}>Framed</span>
+                      <span className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--gold)" }}>£{artwork.framedPrice.toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
               ) : (
-                <span className="text-[22px]" style={{ color: "var(--text3)" }}>Contact for price</span>
+                <div className="font-[Playfair_Display] text-[22px]" style={{ color: "var(--text3)" }}>Contact for price</div>
               )}
             </div>
-            <div className="text-[12px] mb-8" style={{ color: "var(--text3)" }}>Free shipping worldwide &bull; Certificate of Authenticity included</div>
+            <div className="text-[12px] mb-8" style={{ color: "var(--text3)" }}>Certificate of Authenticity included</div>
 
             {artwork.badge !== "sold" && (
               <div className="flex gap-3 items-center flex-wrap mb-10">
@@ -100,7 +111,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             </div>
 
             <div className="space-y-3 border-t pt-8" style={{ borderColor: "var(--border)" }}>
-              {["✓ Certificate of Authenticity included", "✓ Museum-grade materials and archival varnish", "✓ Free worldwide shipping with insurance", "✓ 14-day money-back guarantee", "✓ Professionally packaged for safe delivery"].map((item) => (
+              {["✓ Certificate of Authenticity included", "✓ Museum-grade materials and archival varnish", "✓ Professionally packaged for safe delivery"].map((item) => (
                 <div key={item} className="text-[13px]" style={{ color: "var(--text2)" }}>{item}</div>
               ))}
             </div>

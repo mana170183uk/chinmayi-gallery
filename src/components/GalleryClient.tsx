@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import ArtworkCard from "@/components/ArtworkCard";
 import type { Artwork } from "@/data/artworks";
 
-const categories = ["all", "landscape", "abstract", "floral", "portrait", "contemporary"];
+const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"];
 
 function GalleryContent({ artworks }: { artworks: Artwork[] }) {
   const searchParams = useSearchParams();
@@ -51,7 +51,7 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
                 color: activeFilter === cat ? "#1A1830" : "var(--text2)",
               }}
             >
-              {cat === "all" ? "All Works" : cat}
+              {cat === "all" ? "All Works" : cat.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}
             </button>
           ))}
         </div>

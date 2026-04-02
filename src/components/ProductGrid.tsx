@@ -40,8 +40,8 @@ export default function ProductGrid({ products, emptyMessage }: { products: Prod
           style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
         >
           {/* Image */}
-          <div className="relative aspect-square overflow-hidden" style={{ background: p.gradient }}>
-            {p.imageUrl && <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />}
+          <div className="relative aspect-[3/4] overflow-hidden" style={{ background: p.gradient }}>
+            {p.imageUrl && <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />}
             {p.badge && (
               <span className={`absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10 ${p.badge === "sold" || !p.inStock ? "bg-[var(--rose)]" : p.badge === "new" ? "bg-[var(--emerald)]" : ""}`} style={p.badge === "featured" ? { background: "var(--gold)", color: "#1A1830" } : {}}>
                 {!p.inStock ? "Sold Out" : p.badge}
