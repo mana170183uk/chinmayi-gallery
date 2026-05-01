@@ -16,7 +16,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
-    <section className="min-h-screen pt-24 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-32 pb-24 relative z-[1]">
       {/* Breadcrumb */}
       <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
@@ -37,8 +37,12 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
               style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}
               onClick={() => setLightboxOpen(true)}
             >
-              <div className="art-gradient relative" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", minHeight: "500px" }}>
-                {artwork.imageUrl && <img src={artwork.imageUrl} alt={artwork.title} className="absolute inset-0 w-full h-full object-contain" />}
+              <div className="relative" style={{ background: "var(--bg-card)" }}>
+                {artwork.imageUrl ? (
+                  <img src={artwork.imageUrl} alt={artwork.title} className="w-full h-auto block" />
+                ) : (
+                  <div className="art-gradient" style={{ background: artwork.gradient, aspectRatio: artwork.aspectRatio || "3/4", minHeight: "500px" }} />
+                )}
               </div>
               {/* Zoom hint */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
@@ -136,69 +140,78 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[3000] flex items-center justify-center cursor-zoom-out"
-            style={{ background: "rgba(0,0,0,0.95)" }}
+            className="cursor-zoom-out"
+            style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: "#000" }}
             onClick={() => setLightboxOpen(false)}
           >
             {/* Close button */}
             <button
               onClick={() => setLightboxOpen(false)}
-              className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl transition-all hover:bg-white/10 z-10"
+              className="rounded-full flex items-center justify-center text-white text-3xl transition-all hover:bg-white/10"
+              style={{ position: "absolute", top: 10, right: 10, width: 40, height: 40, zIndex: 10 }}
             >
               &times;
             </button>
 
-            {/* Title bar */}
-            <div className="absolute top-6 left-6 z-10">
-              <h3 className="text-white text-[20px] font-[Cormorant_Garamond] font-semibold">{artwork.title}</h3>
-              <p className="text-white/50 text-[13px]">{artwork.medium} &bull; {artwork.dimensions}</p>
-            </div>
+            {/* Full-size image - fills entire screen */}
+            {artwork.imageUrl ? (
+              <motion.img
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                src={artwork.imageUrl}
+                alt={artwork.title}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  padding: 4,
+                }}
+              />
+            ) : (
+              <div
+                className="art-gradient"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: artwork.gradient,
+                }}
+              />
+            )}
 
-            {/* Full-size image */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-[90vw] max-h-[85vh] rounded-lg overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-              style={{ boxShadow: "0 0 100px rgba(212,168,67,0.15)" }}
+            {/* Title and price overlay at bottom */}
+            <div
+              className="flex items-center justify-between px-6 py-3"
+              style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10, background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}
             >
-              {artwork.imageUrl ? (
-                <img
-                  src={artwork.imageUrl}
-                  alt={artwork.title}
-                  className="max-w-[90vw] max-h-[85vh] object-contain"
-                  style={{ display: "block" }}
-                />
-              ) : (
-                <div
-                  className="art-gradient"
-                  style={{
-                    background: artwork.gradient,
-                    width: "70vw",
-                    height: "70vh",
-                  }}
-                />
-              )}
-            </motion.div>
-
-            {/* Price and action at bottom */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-10">
-              {artwork.price > 0 && (
-                <span className="text-white font-[Playfair_Display] text-[22px] font-bold" style={{ color: "var(--gold)" }}>
-                  £{artwork.price.toLocaleString()}
-                </span>
-              )}
-              {artwork.badge !== "sold" && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); addToCart(artwork); setLightboxOpen(false); }}
-                  className="px-8 py-3 rounded-md font-bold text-[12px] tracking-wider uppercase transition-all hover:shadow-lg"
-                  style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
-                >
-                  Add to Cart
-                </button>
-              )}
+              <div>
+                <h3 className="text-white text-[16px] font-[Cormorant_Garamond] font-semibold">{artwork.title}</h3>
+                <p className="text-white/50 text-[12px]">{artwork.medium} &bull; {artwork.dimensions}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                {artwork.price > 0 && (
+                  <span className="text-white font-[Playfair_Display] text-[20px] font-bold" style={{ color: "var(--gold)" }}>
+                    £{artwork.price.toLocaleString()}
+                  </span>
+                )}
+                {artwork.badge !== "sold" && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); addToCart(artwork); setLightboxOpen(false); }}
+                    className="px-6 py-2 rounded-md font-bold text-[11px] tracking-wider uppercase transition-all hover:shadow-lg"
+                    style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
