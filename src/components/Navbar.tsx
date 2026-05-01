@@ -41,11 +41,20 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Shipping banner */}
+      <div
+        className="fixed top-0 left-0 right-0 z-[1001] text-center py-1.5 text-[11px] tracking-wider font-medium"
+        style={{ background: "var(--gold)", color: "#1A1830" }}
+      >
+        Free Worldwide Shipping &bull; 14-Day Money-Back Guarantee
+      </div>
+
       <nav
-        className={`fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
+        className={`fixed left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
           scrolled ? "h-[60px] shadow-lg" : "h-[72px]"
         }`}
         style={{
+          top: "28px",
           background: "var(--nav-bg)",
           borderColor: "var(--border)",
         }}
@@ -180,8 +189,9 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-[72px] left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-4 md:hidden"
+            className="fixed left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-4 md:hidden"
             style={{
+              top: "100px",
               background: "var(--nav-bg)",
               borderColor: "var(--border)",
             }}

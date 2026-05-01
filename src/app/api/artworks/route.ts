@@ -31,33 +31,53 @@ export async function GET(request: NextRequest) {
 
 // POST /api/artworks - create a new artwork
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  const slug = body.title
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
+    if (!body.title) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    }
 
-  const artwork = await prisma.artwork.create({
-    data: {
-      title: body.title,
-      slug,
-      category: body.category,
-      medium: body.medium,
-      dimensions: body.dimensions,
-      year: parseInt(body.year),
-      price: body.price ? parseInt(body.price) : 0,
-      framedPrice: body.framedPrice ? parseInt(body.framedPrice) : null,
-      originalPrice: body.originalPrice ? parseInt(body.originalPrice) : null,
-      description: body.description,
-      gradient: body.gradient,
-      imageUrl: body.imageUrl || null,
-      aspectRatio: body.aspectRatio || "3/4",
-      badge: body.badge || null,
-      collection: body.collection || body.category,
-      featured: body.featured || false,
-    },
-  });
+    const baseSlug = body.title
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
 
-  return NextResponse.json(artwork, { status: 201 });
+    // Ensure slug uniqueness — append suffix if collision
+    let slug = baseSlug || `artwork-${Date.now()}`;
+    let suffix = 1;
+    while (await prisma.artwork.findUnique({ where: { slug } })) {
+      suffix++;
+      slug = `${baseSlug}-${suffix}`;
+    }
+
+    const artwork = await prisma.artwork.create({
+      data: {
+        title: body.title,
+        slug,
+        category: body.category || "contemporary",
+        medium: body.medium || "Mixed Media",
+        dimensions: body.dimensions || "",
+        year: body.year ? parseInt(body.year) : new Date().getFullYear(),
+        price: body.price ? parseInt(body.price) : 0,
+        framedPrice: body.framedPrice ? parseInt(body.framedPrice) : null,
+        originalPrice: body.originalPrice ? parseInt(body.originalPrice) : null,
+        description: body.description || "",
+        gradient: body.gradient || "linear-gradient(135deg, #667eea, #764ba2)",
+        imageUrl: body.imageUrl || null,
+        aspectRatio: body.aspectRatio || "3/4",
+        badge: body.badge || null,
+        collection: body.collection || body.category || "contemporary",
+        featured: body.featured || false,
+      },
+    });
+
+    return NextResponse.json(artwork, { status: 201 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create artwork";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

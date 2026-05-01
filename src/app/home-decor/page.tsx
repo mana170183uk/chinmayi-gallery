@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomeDecorPage() {
   let products: Record<string, unknown>[] = [];
-  try { products = await prisma.product.findMany({ where: { type: "home-decor" }, orderBy: { createdAt: "desc" } }); } catch {}
+  try { products = await prisma.product.findMany({ where: { type: "home-decor" }, include: { images: { orderBy: { sortOrder: "asc" } } }, orderBy: { createdAt: "desc" } }); } catch {}
   return (
     <ProductPage
       title="Home Decor"

@@ -88,7 +88,41 @@ export default function AdminArtworksPage() {
         return;
       }
       const data = await res.json();
-      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+      // Auto-detect image dimensions and aspect ratio
+      const img = new window.Image();
+      img.onload = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+        const d = gcd(w, h);
+        const ratioW = w / d;
+        const ratioH = h / d;
+        // Use simple ratio or fall back to w/h decimal
+        let aspectRatio = `${ratioW}/${ratioH}`;
+        // For very unusual ratios, simplify to nearest common one
+        const r = w / h;
+        if (r > 1.25 && r < 1.4) aspectRatio = "4/3";
+        else if (r > 1.55 && r < 1.85) aspectRatio = "16/9";
+        else if (r > 1.15 && r < 1.28) aspectRatio = "5/4";
+        else if (r > 0.72 && r < 0.82) aspectRatio = "3/4";
+        else if (r > 0.92 && r < 1.08) aspectRatio = "1/1";
+        else if (r > 0.55 && r < 0.68) aspectRatio = "9/16";
+        else if (r > 0.78 && r < 0.83) aspectRatio = "4/5";
+
+        const widthCm = Math.round(w * 0.0264583 * 10) / 10;
+        const heightCm = Math.round(h * 0.0264583 * 10) / 10;
+
+        setForm((prev) => ({
+          ...prev,
+          imageUrl: data.url,
+          aspectRatio,
+          dimensions: prev.dimensions || `${widthCm} × ${heightCm} cm`,
+        }));
+      };
+      img.onerror = () => {
+        setForm((prev) => ({ ...prev, imageUrl: data.url }));
+      };
+      img.src = data.url;
     } catch {
       alert("Upload failed. Please try again.");
     } finally {
@@ -236,6 +270,7 @@ export default function AdminArtworksPage() {
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Dimensions *</label>
                     <input required value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder='61 × 91 cm' className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                    <p className="text-[10px] mt-1" style={{ color: "var(--text3)" }}>Use cm (e.g. 61 × 91 cm)</p>
                   </div>
                 </div>
 
@@ -257,7 +292,8 @@ export default function AdminArtworksPage() {
                     <select value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
                       <option value="">Available</option>
                       <option value="new">New</option>
-                      <option value="featured">Featured</option>
+                      <option value="print-available">Print Available</option>
+                      <option value="unavailable">Unavailable</option>
                       <option value="sold">Sold</option>
                     </select>
                   </div>

@@ -48,16 +48,28 @@ export default function ArtworkCard({ artwork, index }: Props) {
               Sold
             </span>
           )}
+          {artwork.badge === "unavailable" && (
+            <span className="absolute top-3 right-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
+              style={{ background: "#6b7280" }}>
+              Unavailable
+            </span>
+          )}
           {artwork.badge === "new" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
-              style={{ background: "var(--emerald)" }}>
+              style={{ background: "#10b981", boxShadow: "0 0 12px rgba(16,185,129,0.6)" }}>
               New
             </span>
           )}
-          {artwork.badge === "featured" && (
-            <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase z-10"
-              style={{ background: "var(--gold)", color: "#1A1830" }}>
-              Featured
+          {artwork.badge === "print-available" && (
+            <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
+              style={{ background: "#3b82f6", boxShadow: "0 0 12px rgba(59,130,246,0.5)" }}>
+              Print Available
+            </span>
+          )}
+          {(!artwork.badge || artwork.badge === "featured") && (
+            <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
+              style={{ background: "#22c55e", boxShadow: "0 0 12px rgba(34,197,94,0.5)" }}>
+              Available
             </span>
           )}
 
@@ -84,20 +96,16 @@ export default function ArtworkCard({ artwork, index }: Props) {
           </div>
 
           {/* Art Image */}
-          <div
-            className="art-gradient relative"
-            style={{
-              background: artwork.gradient,
-              aspectRatio: artwork.aspectRatio,
-            }}
-          >
-            {artwork.imageUrl && (
+          <div className="relative" style={{ background: artwork.imageUrl ? "var(--bg-card)" : artwork.gradient }}>
+            {artwork.imageUrl ? (
               <img
                 src={artwork.imageUrl}
                 alt={artwork.title}
-                className="absolute inset-0 w-full h-full object-contain"
+                className="w-full h-auto block"
                 loading="lazy"
               />
+            ) : (
+              <div className="art-gradient" style={{ aspectRatio: artwork.aspectRatio || "3/4" }} />
             )}
           </div>
 
@@ -113,7 +121,7 @@ export default function ArtworkCard({ artwork, index }: Props) {
                   ? "Sold"
                   : artwork.price
                     ? `£${artwork.price.toLocaleString()}`
-                    : ""}
+                    : "Contact for Price"}
               </span>
             </div>
           </div>

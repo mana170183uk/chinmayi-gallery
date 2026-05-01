@@ -86,7 +86,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
                 whileHover={{ y: -8, rotateY: i % 2 === 0 ? -2 : 2 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="art-gradient relative" style={{ background: art.gradient, aspectRatio: art.aspectRatio || "3/4" }}>
+                <div className="relative" style={{ background: art.imageUrl ? "var(--bg-card)" : art.gradient, aspectRatio: art.aspectRatio || "3/4", overflow: "hidden" }}>
                   {art.imageUrl && <img src={art.imageUrl} alt={art.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />}
                 </div>
                 <div className="absolute bottom-3 left-3 z-10 text-[12px] font-medium text-white px-3 py-1 rounded-full backdrop-blur-md opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all" style={{ background: "rgba(0,0,0,0.4)" }}>
@@ -159,8 +159,12 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-[1200px] mx-auto relative z-[1]">
             <div className="rounded-2xl overflow-hidden relative border" style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}>
-              <div className="art-gradient relative" style={{ background: featured.gradient, aspectRatio: "3/4" }}>
-                {featured.imageUrl && <img src={featured.imageUrl} alt={featured.title} className="absolute inset-0 w-full h-full object-cover" />}
+              <div className="relative" style={{ background: featured.imageUrl ? "var(--bg-card)" : featured.gradient }}>
+                {featured.imageUrl ? (
+                  <img src={featured.imageUrl} alt={featured.title} className="w-full h-auto block" />
+                ) : (
+                  <div className="art-gradient" style={{ aspectRatio: "3/4" }} />
+                )}
               </div>
             </div>
             <div>

@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
 
   const products = await prisma.product.findMany({
     where,
+    include: { images: { orderBy: { sortOrder: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -34,7 +35,17 @@ export async function POST(request: NextRequest) {
       material: body.material || null,
       sizes: body.sizes || null,
       inStock: body.inStock !== false,
+      ...(body.additionalImages?.length > 0 && {
+        images: {
+          create: body.additionalImages.map((img: { url: string; label?: string }, i: number) => ({
+            url: img.url,
+            label: img.label || null,
+            sortOrder: i,
+          })),
+        },
+      }),
     },
+    include: { images: true },
   });
 
   return NextResponse.json(product, { status: 201 });
@@ -42,6 +53,11 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const body = await request.json();
+  // Delete old additional images if new ones provided
+  if (body.additionalImages !== undefined) {
+    await prisma.productImage.deleteMany({ where: { productId: body.id } });
+  }
+
   const product = await prisma.product.update({
     where: { id: body.id },
     data: {
@@ -55,7 +71,17 @@ export async function PUT(request: NextRequest) {
       material: body.material,
       sizes: body.sizes,
       inStock: body.inStock,
+      ...(body.additionalImages?.length > 0 && {
+        images: {
+          create: body.additionalImages.map((img: { url: string; label?: string }, i: number) => ({
+            url: img.url,
+            label: img.label || null,
+            sortOrder: i,
+          })),
+        },
+      }),
     },
+    include: { images: true },
   });
   return NextResponse.json(product);
 }

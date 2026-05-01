@@ -9,6 +9,8 @@ const sidebarLinks = [
   { label: "Artworks", href: "/admin/artworks", icon: "🎨" },
   { label: "Products", href: "/admin/products", icon: "🛍️" },
   { label: "Books", href: "/admin/books", icon: "📚" },
+  { label: "Exhibitions", href: "/admin/exhibitions", icon: "🖼️" },
+  { label: "Workshops", href: "/admin/workshops", icon: "🎓" },
   { label: "Orders", href: "/admin", icon: "📦" },
   { label: "Settings", href: "/admin", icon: "⚙️" },
 ];
