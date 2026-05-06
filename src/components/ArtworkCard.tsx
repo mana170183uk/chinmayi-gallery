@@ -60,13 +60,13 @@ export default function ArtworkCard({ artwork, index }: Props) {
               New
             </span>
           )}
-          {artwork.badge === "print-available" && (
+          {(artwork.category === "print" || artwork.category === "prints") && artwork.badge !== "sold" && artwork.badge !== "unavailable" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
               style={{ background: "#3b82f6", boxShadow: "0 0 12px rgba(59,130,246,0.5)" }}>
-              Print Available
+              Print
             </span>
           )}
-          {(!artwork.badge || artwork.badge === "featured") && (
+          {(!artwork.badge || artwork.badge === "featured") && artwork.category !== "print" && artwork.category !== "prints" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
               style={{ background: "#22c55e", boxShadow: "0 0 12px rgba(34,197,94,0.5)" }}>
               Available

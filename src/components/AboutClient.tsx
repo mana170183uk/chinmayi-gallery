@@ -3,6 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+interface ExhibitionImage {
+  id: string;
+  url: string;
+  caption?: string | null;
+  sortOrder: number;
+}
+
 interface Exhibition {
   id: string;
   year: string;
@@ -10,6 +17,8 @@ interface Exhibition {
   venue: string;
   description?: string | null;
   imageUrl?: string | null;
+  videoUrl?: string | null;
+  images?: ExhibitionImage[];
 }
 
 interface Workshop {
@@ -24,6 +33,15 @@ interface Workshop {
 interface Props {
   exhibitions: Exhibition[];
   workshops: Workshop[];
+  aboutImageUrl?: string;
+}
+
+function youtubeEmbed(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  const v = url.match(/vimeo\.com\/(\d+)/);
+  if (v) return `https://player.vimeo.com/video/${v[1]}`;
+  return null;
 }
 
 const fadeUp = {
@@ -39,7 +57,7 @@ const process = [
   { step: "04", title: "Refinement", desc: "The final stage involves stepping back, living with the painting, and making subtle adjustments until every element sings in harmony." },
 ];
 
-export default function AboutClient({ exhibitions, workshops }: Props) {
+export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
   return (
     <section className="min-h-screen pt-36 pb-24 relative z-[1]">
       {/* Hero */}
@@ -47,7 +65,7 @@ export default function AboutClient({ exhibitions, workshops }: Props) {
         <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
           <motion.div variants={fadeUp}>
             <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "var(--border2)", boxShadow: "var(--art-glow), var(--art-shadow)" }}>
-              <img src="/chinmayi-artist.jpg" alt="Chinmayi - Artist" className="w-full h-auto block" />
+              <img src={aboutImageUrl} alt="Chinmayi - Artist" className="w-full h-auto block" />
             </div>
           </motion.div>
           <motion.div variants={fadeUp}>
@@ -121,30 +139,57 @@ export default function AboutClient({ exhibitions, workshops }: Props) {
           <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,48px)] font-semibold">Exhibitions</motion.h2>
         </motion.div>
 
-        <div className="space-y-0">
-          {exhibitions.map((ex, i) => (
-            <motion.div
-              key={ex.id}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="flex items-start gap-6 py-6 border-b group transition-colors hover:bg-[var(--bg2)]"
-              style={{ borderColor: "var(--border)" }}
-            >
-              {ex.imageUrl && (
-                <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 hidden sm:block">
-                  <img src={ex.imageUrl} alt={ex.title} className="w-full h-full object-cover" />
+        <div className="space-y-8">
+          {exhibitions.map((ex, i) => {
+            const allImages = [
+              ...(ex.imageUrl ? [{ id: "main", url: ex.imageUrl, caption: null, sortOrder: -1 }] : []),
+              ...(ex.images || []),
+            ];
+            const embed = ex.videoUrl ? youtubeEmbed(ex.videoUrl) : null;
+            return (
+              <motion.div
+                key={ex.id}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="py-6 border-b group transition-colors"
+                style={{ borderColor: "var(--border)" }}
+              >
+                <div className="flex items-start gap-6">
+                  <div className="font-[Playfair_Display] text-[24px] font-bold w-16 flex-shrink-0" style={{ color: "var(--gold)" }}>{ex.year}</div>
+                  <div className="flex-1">
+                    <div className="text-[16px] font-semibold group-hover:text-[var(--gold)] transition-colors">{ex.title}</div>
+                    <div className="text-[14px] mt-1" style={{ color: "var(--text3)" }}>{ex.venue}</div>
+                    {ex.description && <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "var(--text2)" }}>{ex.description}</p>}
+                  </div>
                 </div>
-              )}
-              <div className="font-[Playfair_Display] text-[24px] font-bold w-16 flex-shrink-0" style={{ color: "var(--gold)" }}>{ex.year}</div>
-              <div className="flex-1">
-                <div className="text-[16px] font-semibold group-hover:text-[var(--gold)] transition-colors">{ex.title}</div>
-                <div className="text-[14px] mt-1" style={{ color: "var(--text3)" }}>{ex.venue}</div>
-                {ex.description && <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "var(--text2)" }}>{ex.description}</p>}
-              </div>
-            </motion.div>
-          ))}
+
+                {(allImages.length > 0 || embed || ex.videoUrl) && (
+                  <div className="mt-4 ml-0 sm:ml-22 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {allImages.map((img) => (
+                      <div key={img.id} className="rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)" }}>
+                        <img src={img.url} alt={img.caption || ex.title} className="w-full h-auto block" />
+                        {img.caption && <div className="px-2 py-1 text-[11px]" style={{ background: "var(--bg2)", color: "var(--text3)" }}>{img.caption}</div>}
+                      </div>
+                    ))}
+                    {embed && (
+                      <div className="rounded-lg overflow-hidden border col-span-2" style={{ borderColor: "var(--border)" }}>
+                        <div style={{ aspectRatio: "16/9" }}>
+                          <iframe src={embed} title={ex.title} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                        </div>
+                      </div>
+                    )}
+                    {!embed && ex.videoUrl && (
+                      <div className="rounded-lg overflow-hidden border col-span-2" style={{ borderColor: "var(--border)" }}>
+                        <video src={ex.videoUrl} controls className="w-full h-auto block" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 

@@ -119,6 +119,13 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
                 <div key={item} className="text-[13px]" style={{ color: "var(--text2)" }}>{item}</div>
               ))}
             </div>
+
+            <div className="mt-6 p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+              <div className="text-[11px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>Postage</div>
+              <p className="text-[13px] leading-relaxed" style={{ color: "var(--text2)" }}>
+                Postal charges are not included. Free delivery within Essex. A minimal charge applies for other locations in the UK and other countries.
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>

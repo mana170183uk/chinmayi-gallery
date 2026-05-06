@@ -6,7 +6,18 @@ import { useSearchParams } from "next/navigation";
 import ArtworkCard from "@/components/ArtworkCard";
 import type { Artwork } from "@/data/artworks";
 
-const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"];
+const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "prints", "sold"];
+
+const categoryLabels: Record<string, string> = {
+  all: "All Available Work",
+  landscape: "Landscape",
+  portrait: "Portrait",
+  "palm-leaf-etching": "Palm Leaf Etching",
+  "indian-styled-art": "Indian Styled Art",
+  contemporary: "Contemporary",
+  prints: "Prints",
+  sold: "Sold",
+};
 
 function GalleryContent({ artworks }: { artworks: Artwork[] }) {
   const searchParams = useSearchParams();
@@ -16,9 +27,24 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
 
   const filtered = useMemo(() => {
     const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
-    let list = activeFilter === "all"
-      ? artworks
-      : artworks.filter((a) => norm(a.category) === activeFilter || norm(a.collection) === activeFilter);
+    const isSold = (a: Artwork) => a.badge === "sold";
+    const isUnavailable = (a: Artwork) => a.badge === "unavailable";
+    const isPrint = (a: Artwork) => norm(a.category) === "print" || norm(a.category) === "prints";
+
+    let list: Artwork[];
+    if (activeFilter === "all") {
+      list = artworks.filter((a) => !isSold(a) && !isUnavailable(a) && !isPrint(a));
+    } else if (activeFilter === "sold") {
+      list = artworks.filter(isSold);
+    } else if (activeFilter === "prints") {
+      list = artworks.filter((a) => isPrint(a) && !isSold(a));
+    } else {
+      list = artworks.filter(
+        (a) =>
+          (norm(a.category) === activeFilter || norm(a.collection) === activeFilter) &&
+          !isSold(a) && !isUnavailable(a)
+      );
+    }
 
     if (sortBy === "price-low") list = [...list].sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") list = [...list].sort((a, b) => b.price - a.price);
@@ -33,9 +59,13 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Browse Collection
         </div>
-        <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-4">The Gallery</h1>
+        <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-4">{categoryLabels[activeFilter] || "The Gallery"}</h1>
         <p className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>
-          {filtered.length} original artworks available for your collection
+          {activeFilter === "sold"
+            ? `${filtered.length} sold paintings`
+            : activeFilter === "prints"
+              ? `${filtered.length} prints available`
+              : `${filtered.length} original artworks available for your collection`}
         </p>
       </motion.div>
 
@@ -52,7 +82,7 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
                 color: activeFilter === cat ? "#1A1830" : "var(--text2)",
               }}
             >
-              {cat === "all" ? "All Works" : cat.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}
+              {categoryLabels[cat] || cat}
             </button>
           ))}
         </div>

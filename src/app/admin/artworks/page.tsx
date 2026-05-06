@@ -255,7 +255,7 @@ export default function AdminArtworksPage() {
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Category *</label>
                     <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
-                      {["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"].map((c) => (
+                      {["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "print"].map((c) => (
                         <option key={c} value={c}>{c.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}</option>
                       ))}
                     </select>
@@ -292,7 +292,6 @@ export default function AdminArtworksPage() {
                     <select value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
                       <option value="">Available</option>
                       <option value="new">New</option>
-                      <option value="print-available">Print Available</option>
                       <option value="unavailable">Unavailable</option>
                       <option value="sold">Sold</option>
                     </select>

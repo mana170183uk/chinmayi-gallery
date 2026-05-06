@@ -183,11 +183,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
 
             <div className="space-y-3 border-t pt-8" style={{ borderColor: "var(--border)" }}>
-              {["Free worldwide shipping", "14-day money-back guarantee", "Professionally packaged for safe delivery"].map((item) => (
+              {["14-day money-back guarantee", "Professionally packaged for safe delivery"].map((item) => (
                 <div key={item} className="text-[13px] flex items-center gap-2" style={{ color: "var(--text2)" }}>
                   <span style={{ color: "var(--emerald)" }}>&#10003;</span> {item}
                 </div>
               ))}
+            </div>
+
+            <div className="mt-6 p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+              <div className="text-[11px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>Postage</div>
+              <p className="text-[13px] leading-relaxed" style={{ color: "var(--text2)" }}>
+                Postal charges are not included. Free delivery within Essex. A minimal charge applies for other locations in the UK and other countries.
+              </p>
             </div>
           </motion.div>
         </div>

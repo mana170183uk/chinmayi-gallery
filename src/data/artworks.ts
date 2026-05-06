@@ -13,7 +13,7 @@ export interface Artwork {
   gradient: string;
   imageUrl?: string;
   aspectRatio: string;
-  badge?: "new" | "sold" | "featured" | "print-available" | "unavailable";
+  badge?: "new" | "sold" | "featured" | "unavailable";
   collection?: string;
 }
 

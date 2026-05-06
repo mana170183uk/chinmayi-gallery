@@ -11,8 +11,8 @@ const sidebarLinks = [
   { label: "Books", href: "/admin/books", icon: "📚" },
   { label: "Exhibitions", href: "/admin/exhibitions", icon: "🖼️" },
   { label: "Workshops", href: "/admin/workshops", icon: "🎓" },
-  { label: "Orders", href: "/admin", icon: "📦" },
-  { label: "Settings", href: "/admin", icon: "⚙️" },
+  { label: "Orders", href: "/admin/orders", icon: "📦" },
+  { label: "Settings", href: "/admin/settings", icon: "⚙️" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
