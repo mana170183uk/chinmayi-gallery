@@ -7,6 +7,7 @@ import { getState, subscribe, toggleTheme, setCartOpen } from "@/lib/store";
 
 const links = [
   { label: "Art Gallery", href: "/gallery" },
+  { label: "Sold Collection", href: "/sold" },
   { label: "Jewellery", href: "/jewellery" },
   { label: "Clothing", href: "/clothing" },
   { label: "Home Decor", href: "/home-decor" },
