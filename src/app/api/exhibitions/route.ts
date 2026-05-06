@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const exhibitions = await prisma.exhibition.findMany({
+      include: { images: { orderBy: { sortOrder: "asc" } } },
       orderBy: [{ sortOrder: "asc" }, { year: "desc" }],
     });
     return NextResponse.json(exhibitions);
@@ -22,8 +23,19 @@ export async function POST(request: NextRequest) {
         venue: body.venue || "",
         description: body.description || null,
         imageUrl: body.imageUrl || null,
+        videoUrl: body.videoUrl || null,
         sortOrder: body.sortOrder ? parseInt(body.sortOrder) : 0,
+        ...(body.additionalImages?.length > 0 && {
+          images: {
+            create: body.additionalImages.map((img: { url: string; caption?: string }, i: number) => ({
+              url: img.url,
+              caption: img.caption || null,
+              sortOrder: i,
+            })),
+          },
+        }),
       },
+      include: { images: true },
     });
     return NextResponse.json(exhibition, { status: 201 });
   } catch (error) {
@@ -35,6 +47,11 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
+
+    if (body.additionalImages !== undefined) {
+      await prisma.exhibitionImage.deleteMany({ where: { exhibitionId: body.id } });
+    }
+
     const exhibition = await prisma.exhibition.update({
       where: { id: body.id },
       data: {
@@ -43,8 +60,19 @@ export async function PUT(request: NextRequest) {
         venue: body.venue,
         description: body.description || null,
         imageUrl: body.imageUrl || null,
+        videoUrl: body.videoUrl || null,
         sortOrder: body.sortOrder ? parseInt(body.sortOrder) : 0,
+        ...(body.additionalImages?.length > 0 && {
+          images: {
+            create: body.additionalImages.map((img: { url: string; caption?: string }, i: number) => ({
+              url: img.url,
+              caption: img.caption || null,
+              sortOrder: i,
+            })),
+          },
+        }),
       },
+      include: { images: true },
     });
     return NextResponse.json(exhibition);
   } catch (error) {

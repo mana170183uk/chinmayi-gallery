@@ -139,26 +139,40 @@ model Testimonial {
 
 model SiteSettings {
   id    String @id @default("main")
-  heroTitle     String @default("Where Art Meets Soul")
-  heroSubtitle  String @default("Discover breathtaking original paintings and limited-edition prints.")
-  artistName    String @default("Chinmayi")
-  artistBio     String @default("")
-  contactEmail  String @default("hello@chinmayigallery.com")
-  instagramUrl  String @default("")
-  pinterestUrl  String @default("")
-  facebookUrl   String @default("")
+  heroTitle      String @default("Where Art Meets Soul")
+  heroSubtitle   String @default("Discover breathtaking original paintings and limited-edition prints.")
+  artistName     String @default("Chinmayi")
+  artistBio      String @default("")
+  aboutImageUrl  String @default("/chinmayi-artist.jpg")
+  contactEmail   String @default("hello@chinmayigallery.com")
+  instagramUrl   String @default("")
+  pinterestUrl   String @default("")
+  facebookUrl    String @default("")
 }
 
 model Exhibition {
-  id        String   @id @default(cuid())
-  year      String
-  title     String
-  venue     String
+  id          String              @id @default(cuid())
+  year        String
+  title       String
+  venue       String
   description String?
-  imageUrl  String?
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  imageUrl    String?
+  videoUrl    String?
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  images      ExhibitionImage[]
+}
+
+model ExhibitionImage {
+  id           String     @id @default(cuid())
+  exhibitionId String
+  url          String
+  caption      String?
+  sortOrder    Int        @default(0)
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
+
+  @@index([exhibitionId])
 }
 
 model Workshop {

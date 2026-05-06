@@ -4,12 +4,12 @@ import AboutClient from "@/components/AboutClient";
 export const dynamic = "force-dynamic";
 
 const fallbackExhibitions = [
-  { id: "1", year: "2026", title: "Colours of the Soul — Solo Exhibition", venue: "The Gallery, London", description: null, imageUrl: null, sortOrder: 0 },
-  { id: "2", year: "2025", title: "Contemporary Visions", venue: "Mumbai Art Fair", description: null, imageUrl: null, sortOrder: 1 },
-  { id: "3", year: "2025", title: "Nature's Palette — Group Show", venue: "Singapore Art Space", description: null, imageUrl: null, sortOrder: 2 },
-  { id: "4", year: "2024", title: "Emerging Voices in Fine Art", venue: "Saatchi Gallery, London", description: null, imageUrl: null, sortOrder: 3 },
-  { id: "5", year: "2024", title: "Light & Shadow", venue: "Delhi Art Summit", description: null, imageUrl: null, sortOrder: 4 },
-  { id: "6", year: "2023", title: "First Light — Debut Exhibition", venue: "The Nehru Centre, London", description: null, imageUrl: null, sortOrder: 5 },
+  { id: "1", year: "2026", title: "Colours of the Soul — Solo Exhibition", venue: "The Gallery, London", description: null, imageUrl: null, videoUrl: null, sortOrder: 0, images: [] },
+  { id: "2", year: "2025", title: "Contemporary Visions", venue: "Mumbai Art Fair", description: null, imageUrl: null, videoUrl: null, sortOrder: 1, images: [] },
+  { id: "3", year: "2025", title: "Nature's Palette — Group Show", venue: "Singapore Art Space", description: null, imageUrl: null, videoUrl: null, sortOrder: 2, images: [] },
+  { id: "4", year: "2024", title: "Emerging Voices in Fine Art", venue: "Saatchi Gallery, London", description: null, imageUrl: null, videoUrl: null, sortOrder: 3, images: [] },
+  { id: "5", year: "2024", title: "Light & Shadow", venue: "Delhi Art Summit", description: null, imageUrl: null, videoUrl: null, sortOrder: 4, images: [] },
+  { id: "6", year: "2023", title: "First Light — Debut Exhibition", venue: "The Nehru Centre, London", description: null, imageUrl: null, videoUrl: null, sortOrder: 5, images: [] },
 ];
 
 const fallbackWorkshops = [
@@ -21,9 +21,13 @@ const fallbackWorkshops = [
 export default async function AboutPage() {
   let exhibitions = fallbackExhibitions;
   let workshops = fallbackWorkshops;
+  let aboutImageUrl = "/chinmayi-artist.jpg";
 
   try {
-    const dbExhibitions = await prisma.exhibition.findMany({ orderBy: [{ sortOrder: "asc" }, { year: "desc" }] });
+    const dbExhibitions = await prisma.exhibition.findMany({
+      include: { images: { orderBy: { sortOrder: "asc" } } },
+      orderBy: [{ sortOrder: "asc" }, { year: "desc" }],
+    });
     if (dbExhibitions.length > 0) exhibitions = JSON.parse(JSON.stringify(dbExhibitions));
   } catch {}
 
@@ -32,5 +36,10 @@ export default async function AboutPage() {
     if (dbWorkshops.length > 0) workshops = JSON.parse(JSON.stringify(dbWorkshops));
   } catch {}
 
-  return <AboutClient exhibitions={exhibitions} workshops={workshops} />;
+  try {
+    const settings = await prisma.siteSettings.findUnique({ where: { id: "main" } });
+    if (settings?.aboutImageUrl) aboutImageUrl = settings.aboutImageUrl;
+  } catch {}
+
+  return <AboutClient exhibitions={exhibitions} workshops={workshops} aboutImageUrl={aboutImageUrl} />;
 }
