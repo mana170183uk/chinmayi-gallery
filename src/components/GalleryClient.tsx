@@ -2,6 +2,7 @@
 
 import { useState, useMemo, Suspense } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ArtworkCard from "@/components/ArtworkCard";
 import type { Artwork } from "@/data/artworks";
@@ -67,6 +68,11 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
               ? `${filtered.length} prints available`
               : `${filtered.length} original artworks available for your collection`}
         </p>
+        <div className="mt-4 flex items-center justify-center gap-3 text-[12px]">
+          <Link href="/sold" className="inline-flex items-center gap-1.5 hover:text-[var(--gold)] transition-colors" style={{ color: "var(--text3)" }}>
+            View Sold Collection <span aria-hidden>→</span>
+          </Link>
+        </div>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-[1440px] mx-auto">

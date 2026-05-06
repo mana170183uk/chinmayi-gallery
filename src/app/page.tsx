@@ -15,6 +15,10 @@ export default async function HomePage() {
     Boolean(a.imageUrl) && a.badge !== "sold" && a.badge !== "unavailable"
   );
 
+  const soldWorks = allArtworks
+    .filter((a) => Boolean(a.imageUrl) && a.badge === "sold")
+    .slice(0, 4);
+
   const featured = artworks.find((a) => a.badge === "featured" || a.slug === "twilight-reverie") || artworks[0];
   const featuredWorks = artworks.slice(0, 8);
 
@@ -22,6 +26,7 @@ export default async function HomePage() {
     <HomeClient
       artworks={JSON.parse(JSON.stringify(artworks))}
       featuredWorks={JSON.parse(JSON.stringify(featuredWorks))}
+      soldWorks={JSON.parse(JSON.stringify(soldWorks))}
       featured={JSON.parse(JSON.stringify(featured))}
       collections={JSON.parse(JSON.stringify(collections))}
       testimonials={JSON.parse(JSON.stringify(testimonials))}

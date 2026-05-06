@@ -26,6 +26,7 @@ interface Testimonial {
 interface Props {
   artworks: Artwork[];
   featuredWorks: Artwork[];
+  soldWorks?: Artwork[];
   featured: Artwork;
   collections: Collection[];
   testimonials: Testimonial[];
@@ -40,7 +41,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.12 } },
 };
 
-export default function HomeClient({ artworks, featuredWorks, featured, collections, testimonials }: Props) {
+export default function HomeClient({ artworks, featuredWorks, soldWorks = [], featured, collections, testimonials }: Props) {
   return (
     <>
       {/* ═══════ HERO ═══════ */}
@@ -120,6 +121,52 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
           </Link>
         </motion.div>
       </section>
+
+      {/* ═══════ PAST WORKS / SOLD COLLECTION ═══════ */}
+      {soldWorks.length > 0 && (
+        <section className="py-24 px-6 md:px-14 relative z-[1]">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
+              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Past Works
+            </motion.div>
+            <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,50px)] font-semibold mb-4">Sold Collection</motion.h2>
+            <motion.p variants={fadeUp} className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>
+              A glimpse of pieces that have already found their forever homes.
+            </motion.p>
+          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-[1200px] mx-auto">
+            {soldWorks.map((art, i) => (
+              <motion.div
+                key={art.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+              >
+                <Link href="/sold">
+                  <div className="rounded-xl overflow-hidden relative border group cursor-pointer transition-all hover:-translate-y-2" style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}>
+                    <span className="absolute top-3 right-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10" style={{ background: "var(--rose)" }}>
+                      Sold
+                    </span>
+                    <div className="relative" style={{ background: "var(--bg-card)" }}>
+                      <img src={art.imageUrl} alt={art.title} className="w-full h-auto block group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    </div>
+                    <div className="p-3">
+                      <h4 className="text-[14px] font-[Cormorant_Garamond] font-semibold truncate group-hover:text-[var(--gold)] transition-colors">{art.title}</h4>
+                      <p className="text-[11px]" style={{ color: "var(--text3)" }}>{art.medium}</p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mt-12">
+            <Link href="/sold" className="inline-block px-10 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>
+              View Sold Collection
+            </Link>
+          </motion.div>
+        </section>
+      )}
 
       {/* ═══════ COLLECTIONS ═══════ */}
       <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
