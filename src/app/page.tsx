@@ -10,8 +10,10 @@ export default async function HomePage() {
     getTestimonials(),
   ]);
 
-  // Only show artworks with real images on the public homepage (no gradient placeholders)
-  const artworks = allArtworks.filter((a) => Boolean(a.imageUrl));
+  // Public homepage: only artworks with real images, exclude sold and unavailable
+  const artworks = allArtworks.filter((a) =>
+    Boolean(a.imageUrl) && a.badge !== "sold" && a.badge !== "unavailable"
+  );
 
   const featured = artworks.find((a) => a.badge === "featured" || a.slug === "twilight-reverie") || artworks[0];
   const featuredWorks = artworks.slice(0, 8);
