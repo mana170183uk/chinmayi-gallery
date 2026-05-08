@@ -59,7 +59,7 @@ const process = [
 
 export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
   return (
-    <section className="min-h-screen pt-36 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-28 pb-24 relative z-[1]">
       {/* Hero */}
       <div className="px-6 md:px-14 max-w-[1200px] mx-auto mb-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
@@ -86,9 +86,9 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
             <div className="flex gap-12 mt-10 pt-8 border-t flex-wrap" style={{ borderColor: "var(--border)" }}>
               {[
                 { num: "150+", label: "Artworks Created" },
-                { num: String(exhibitions.length), label: "Exhibitions" },
-                { num: "8", label: "Countries" },
-                { num: "200+", label: "Happy Collectors" },
+                { num: "40+", label: "Exhibitions" },
+                { num: "2", label: "Countries" },
+                { num: "50+", label: "Happy Collectors" },
               ].map((s) => (
                 <div key={s.label} className="text-center">
                   <div className="font-[Playfair_Display] text-[clamp(28px,3vw,40px)] font-bold" style={{ color: "var(--gold)" }}>{s.num}</div>

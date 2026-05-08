@@ -8,11 +8,47 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
 };
 
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+const emptyForm: FormData = { name: "", email: "", subject: "", message: "" };
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [form, setForm] = useState<FormData>(emptyForm);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        setErrorMsg(d.error || "Could not send your message. Please try again or email chinmayi_n@yahoo.com directly.");
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+      setForm(emptyForm);
+    } catch {
+      setErrorMsg("Could not send your message. Please try again or email chinmayi_n@yahoo.com directly.");
+    }
+    setSubmitting(false);
+  };
 
   return (
-    <section className="min-h-screen pt-36 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-28 pb-24 px-6 md:px-14 relative z-[1]">
       <div className="max-w-[1000px] mx-auto">
         <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.12 } } }} className="text-center mb-16">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -29,9 +65,9 @@ export default function ContactPage() {
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
             <div className="space-y-8">
               {[
-                { icon: "📍", title: "Studio Location", lines: ["London, United Kingdom", "(By appointment only)"] },
-                { icon: "📧", title: "Email", lines: ["hello@chinmayigallery.com", "commissions@chinmayigallery.com"] },
-                { icon: "📱", title: "Social Media", lines: ["@chinmayigallery on Instagram", "@chinmayiart on Pinterest"] },
+                { icon: "📍", title: "Studio Location", lines: ["Essex, United Kingdom", "(By appointment only)"] },
+                { icon: "📧", title: "Email", lines: ["chinmayi_n@yahoo.com"] },
+                { icon: "📱", title: "Social Media", lines: ["@chinu_the_artist on Instagram"] },
                 { icon: "🕐", title: "Response Time", lines: ["We typically respond within 24 hours", "Commission inquiries: 48 hours"] },
               ].map((item) => (
                 <div key={item.title} className="flex gap-4">
@@ -70,24 +106,21 @@ export default function ContactPage() {
                 <p style={{ color: "var(--text2)" }}>Your message has been sent. We&apos;ll get back to you within 24 hours.</p>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
-                className="space-y-5"
-              >
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Name</label>
-                    <input required className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                    <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Email</label>
-                    <input type="email" required className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                    <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Subject</label>
-                  <select required className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none cursor-pointer transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
+                  <select required value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none cursor-pointer transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
                     <option value="">Select a topic</option>
                     <option>Purchase Inquiry</option>
                     <option>Commission Request</option>
@@ -99,11 +132,17 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Message</label>
-                  <textarea required rows={6} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none resize-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                  <textarea required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none resize-none transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                 </div>
 
-                <button type="submit" className="w-full py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>
-                  Send Message
+                {errorMsg && (
+                  <div className="text-[13px] p-3 rounded-lg border" style={{ background: "rgba(239,68,68,0.08)", borderColor: "rgba(239,68,68,0.4)", color: "var(--rose)" }}>
+                    {errorMsg}
+                  </div>
+                )}
+
+                <button type="submit" disabled={submitting} className="w-full py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>
+                  {submitting ? "Sending..." : "Send Message"}
                 </button>
               </form>
             )}

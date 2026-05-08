@@ -2,23 +2,47 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { artworks, collections } from "@/data/artworks";
 
+interface RecentOrder {
+  id: string;
+  artwork: string;
+  customer: string;
+  amount: string;
+  status: string;
+}
+
 const stats = [
-  { label: "Total Artworks", value: artworks.length.toString(), icon: "🎨", change: "+3 this month" },
-  { label: "Collections", value: collections.length.toString(), icon: "📁", change: "5 active" },
-  { label: "Total Revenue", value: "£" + artworks.filter(a => a.badge === "sold").reduce((s, a) => s + a.price, 0).toLocaleString(), icon: "💷", change: "+12% vs last month" },
+  { label: "Total Artworks", value: artworks.length.toString(), icon: "🎨", change: "" },
+  { label: "Collections", value: collections.length.toString(), icon: "📁", change: `${collections.length} active` },
+  { label: "Total Revenue", value: "£" + artworks.filter(a => a.badge === "sold").reduce((s, a) => s + a.price, 0).toLocaleString(), icon: "💷", change: "" },
   { label: "Available", value: artworks.filter(a => a.badge !== "sold").length.toString(), icon: "✓", change: artworks.filter(a => a.badge === "sold").length + " sold" },
 ];
 
-const recentOrders = [
-  { id: "#1042", artwork: "Emerald Dreams", customer: "Sarah M.", amount: "£1,850", status: "Shipped" },
-  { id: "#1041", artwork: "Golden Hour", customer: "James P.", amount: "£1,650", status: "Processing" },
-  { id: "#1040", artwork: "Azure Horizon", customer: "Amelia C.", amount: "£2,100", status: "Delivered" },
-  { id: "#1039", artwork: "Velvet Night", customer: "Robert K.", amount: "£1,900", status: "Delivered" },
-];
-
 export default function AdminDashboard() {
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (!Array.isArray(data)) { setLoadingOrders(false); return; }
+        setRecentOrders(
+          data.slice(0, 8).map((o: { id: string; customerName: string; total: number; status: string; items?: { artwork?: { title?: string } | null }[] }) => ({
+            id: "#" + o.id.slice(-6).toUpperCase(),
+            artwork: o.items?.[0]?.artwork?.title || `${o.items?.length || 0} item${o.items?.length === 1 ? "" : "s"}`,
+            customer: o.customerName,
+            amount: "£" + (o.total || 0).toLocaleString(),
+            status: o.status.charAt(0).toUpperCase() + o.status.slice(1),
+          }))
+        );
+        setLoadingOrders(false);
+      })
+      .catch(() => setLoadingOrders(false));
+  }, []);
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -74,6 +98,12 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
+              {loadingOrders && (
+                <tr><td colSpan={5} className="px-6 py-12 text-center" style={{ color: "var(--text3)" }}>Loading orders...</td></tr>
+              )}
+              {!loadingOrders && recentOrders.length === 0 && (
+                <tr><td colSpan={5} className="px-6 py-12 text-center" style={{ color: "var(--text3)" }}>No orders yet. Customer orders will appear here.</td></tr>
+              )}
               {recentOrders.map((order) => (
                 <tr key={order.id} className="border-b hover:bg-[var(--bg2)] transition-colors" style={{ borderColor: "var(--border)" }}>
                   <td className="px-6 py-4 font-medium" style={{ color: "var(--gold)" }}>{order.id}</td>

@@ -47,7 +47,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const typeMeta = typeLabels[product.type] || { label: product.type, href: "/" };
 
   return (
-    <section className="min-h-screen pt-32 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-24 pb-24 relative z-[1]">
       {/* Breadcrumb */}
       <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
         <div className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
@@ -183,7 +183,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
 
             <div className="space-y-3 border-t pt-8" style={{ borderColor: "var(--border)" }}>
-              {["14-day money-back guarantee", "Professionally packaged for safe delivery"].map((item) => (
+              {["Professionally packaged for safe delivery"].map((item) => (
                 <div key={item} className="text-[13px] flex items-center gap-2" style={{ color: "var(--text2)" }}>
                   <span style={{ color: "var(--emerald)" }}>&#10003;</span> {item}
                 </div>

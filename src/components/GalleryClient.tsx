@@ -2,22 +2,20 @@
 
 import { useState, useMemo, Suspense } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ArtworkCard from "@/components/ArtworkCard";
 import type { Artwork } from "@/data/artworks";
 
-const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "prints", "sold"];
+const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "prints"];
 
 const categoryLabels: Record<string, string> = {
-  all: "All Available Work",
+  all: "All Works",
   landscape: "Landscape",
   portrait: "Portrait",
   "palm-leaf-etching": "Palm Leaf Etching",
   "indian-styled-art": "Indian Styled Art",
   contemporary: "Contemporary",
   prints: "Prints",
-  sold: "Sold",
 };
 
 function GalleryContent({ artworks }: { artworks: Artwork[] }) {
@@ -28,22 +26,20 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
 
   const filtered = useMemo(() => {
     const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
-    const isSold = (a: Artwork) => a.badge === "sold";
     const isUnavailable = (a: Artwork) => a.badge === "unavailable";
     const isPrint = (a: Artwork) => norm(a.category) === "print" || norm(a.category) === "prints";
 
+    // Sold paintings stay visible in their normal categories so sections don't look empty.
     let list: Artwork[];
     if (activeFilter === "all") {
-      list = artworks.filter((a) => !isSold(a) && !isUnavailable(a) && !isPrint(a));
-    } else if (activeFilter === "sold") {
-      list = artworks.filter(isSold);
+      list = artworks.filter((a) => !isUnavailable(a) && !isPrint(a));
     } else if (activeFilter === "prints") {
-      list = artworks.filter((a) => isPrint(a) && !isSold(a));
+      list = artworks.filter((a) => isPrint(a) && !isUnavailable(a));
     } else {
       list = artworks.filter(
         (a) =>
           (norm(a.category) === activeFilter || norm(a.collection) === activeFilter) &&
-          !isSold(a) && !isUnavailable(a)
+          !isUnavailable(a)
       );
     }
 
@@ -55,24 +51,17 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
   }, [activeFilter, sortBy, artworks]);
 
   return (
-    <section className="min-h-screen pt-36 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-28 pb-24 px-6 md:px-14 relative z-[1]">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Browse Collection
         </div>
         <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-4">{categoryLabels[activeFilter] || "The Gallery"}</h1>
         <p className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>
-          {activeFilter === "sold"
-            ? `${filtered.length} sold paintings`
-            : activeFilter === "prints"
-              ? `${filtered.length} prints available`
-              : `${filtered.length} original artworks available for your collection`}
+          {activeFilter === "prints"
+            ? `${filtered.length} prints available`
+            : `${filtered.length} artworks in this collection`}
         </p>
-        <div className="mt-4 flex items-center justify-center gap-3 text-[12px]">
-          <Link href="/sold" className="inline-flex items-center gap-1.5 hover:text-[var(--gold)] transition-colors" style={{ color: "var(--text3)" }}>
-            View Sold Collection <span aria-hidden>→</span>
-          </Link>
-        </div>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-[1440px] mx-auto">
