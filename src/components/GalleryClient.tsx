@@ -9,7 +9,7 @@ import type { Artwork } from "@/data/artworks";
 const categories = ["all", "landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "prints"];
 
 const categoryLabels: Record<string, string> = {
-  all: "All Works",
+  all: "All Available Works",
   landscape: "Landscape",
   portrait: "Portrait",
   "palm-leaf-etching": "Palm Leaf Etching",
@@ -26,20 +26,20 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
 
   const filtered = useMemo(() => {
     const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
-    const isUnavailable = (a: Artwork) => a.badge === "unavailable";
     const isPrint = (a: Artwork) => norm(a.category) === "print" || norm(a.category) === "prints";
 
-    // Sold paintings stay visible in their normal categories so sections don't look empty.
+    // "All Available Works" = only Available + New (no Sold, no Unavailable, no Prints).
+    // Category and Prints tabs show everything in that category, including Sold and Unavailable.
     let list: Artwork[];
     if (activeFilter === "all") {
-      list = artworks.filter((a) => !isUnavailable(a) && !isPrint(a));
+      list = artworks.filter(
+        (a) => a.badge !== "sold" && a.badge !== "unavailable" && !isPrint(a)
+      );
     } else if (activeFilter === "prints") {
-      list = artworks.filter((a) => isPrint(a) && !isUnavailable(a));
+      list = artworks.filter(isPrint);
     } else {
       list = artworks.filter(
-        (a) =>
-          (norm(a.category) === activeFilter || norm(a.collection) === activeFilter) &&
-          !isUnavailable(a)
+        (a) => norm(a.category) === activeFilter || norm(a.collection) === activeFilter
       );
     }
 
@@ -58,9 +58,11 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         </div>
         <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-4">{categoryLabels[activeFilter] || "The Gallery"}</h1>
         <p className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>
-          {activeFilter === "prints"
-            ? `${filtered.length} prints available`
-            : `${filtered.length} artworks in this collection`}
+          {activeFilter === "all"
+            ? `${filtered.length} available for your collection`
+            : activeFilter === "prints"
+              ? `${filtered.length} prints`
+              : `${filtered.length} artworks in this collection`}
         </p>
       </motion.div>
 
