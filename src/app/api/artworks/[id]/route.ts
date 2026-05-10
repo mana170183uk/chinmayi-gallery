@@ -51,7 +51,8 @@ export async function PUT(
       ...(body.aspectRatio && { aspectRatio: body.aspectRatio }),
       ...(body.badge !== undefined && { badge: body.badge || null }),
       ...(body.collection && { collection: body.collection }),
-      ...(body.featured !== undefined && { featured: body.featured }),
+      ...(body.featured !== undefined && { featured: Boolean(body.featured) }),
+      ...(body.homePick !== undefined && { homePick: Boolean(body.homePick) }),
     },
   });
 

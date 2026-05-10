@@ -44,14 +44,16 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "Chinmayi Gallery — Fine Art Collection",
+  title: "Chinun — Fine Art by Chinmayi Nath",
   description:
-    "Discover breathtaking original paintings and fine art prints by Chinmayi. Explore landscapes, portraits, abstracts and more in our premium online gallery.",
-  keywords: ["art gallery", "fine art", "paintings", "original artwork", "art prints", "Chinmayi"],
+    "Original paintings and fine art prints by artist Chinmayi Nath. Landscapes, portraits, palm leaf etching, Indian styled art and contemporary works from her Essex studio.",
+  keywords: ["Chinun", "Chinmayi Nath", "fine art", "paintings", "palm leaf etching", "Indian art", "Essex artist"],
+  metadataBase: new URL("https://chinun.uk"),
   openGraph: {
-    title: "Chinmayi Gallery — Fine Art Collection",
-    description: "Discover breathtaking original paintings and limited-edition fine art prints.",
+    title: "Chinun — Fine Art by Chinmayi Nath",
+    description: "Original paintings, prints and handmade pieces by artist Chinmayi Nath.",
     type: "website",
+    url: "https://chinun.uk",
   },
 };
 

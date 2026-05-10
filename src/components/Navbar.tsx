@@ -53,16 +53,16 @@ export default function Navbar() {
         {/* Brand */}
         <Link href="/" className="flex flex-col cursor-pointer group">
           <span
-            className="font-[Playfair_Display] text-[22px] font-bold tracking-wider leading-tight transition-colors"
+            className="font-[Playfair_Display] text-[24px] font-bold tracking-[2px] leading-tight transition-colors"
             style={{ color: "var(--gold)" }}
           >
-            Chinmayi
+            Chinun
           </span>
           <span
-            className="text-[10.5px] font-medium tracking-[5px] uppercase mt-[1px] transition-colors"
+            className="text-[9.5px] font-medium tracking-[3px] uppercase mt-[1px] transition-colors"
             style={{ color: "var(--text2)" }}
           >
-            Gallery
+            By Artist Chinmayi Nath
           </span>
         </Link>
 

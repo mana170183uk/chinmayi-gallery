@@ -27,7 +27,7 @@ interface Props {
   artworks: Artwork[];
   featuredWorks: Artwork[];
   featured: Artwork;
-  collections: Collection[];
+  collections?: Collection[];
   testimonials: Testimonial[];
 }
 
@@ -40,7 +40,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.12 } },
 };
 
-export default function HomeClient({ artworks, featuredWorks, featured, collections, testimonials }: Props) {
+export default function HomeClient({ artworks, featuredWorks, featured, testimonials }: Props) {
   return (
     <>
       {/* ═══════ HERO ═══════ */}
@@ -121,32 +121,6 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
         </motion.div>
       </section>
 
-      {/* ═══════ COLLECTIONS ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
-            <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Browse by Theme
-          </motion.div>
-          <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,50px)] font-semibold mb-4">Curated Collections</motion.h2>
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1200px] mx-auto">
-          {collections.slice(0, 3).map((col, i) => (
-            <motion.div key={col.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 }}>
-              <Link href={`/gallery?collection=${col.slug || col.id}`}>
-                <div className="rounded-2xl overflow-hidden relative border group cursor-pointer" style={{ aspectRatio: "3/4", borderColor: "var(--border)" }}>
-                  <div className="absolute inset-0" style={{ background: col.gradient }} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
-                    <div className="text-[11px] tracking-[2px] uppercase font-semibold mb-2" style={{ color: "var(--gold)" }}>{col.count} Artworks</div>
-                    <h3 className="text-[28px] text-white mb-2">{col.title}</h3>
-                    <p className="text-[14px] text-white/70">{col.description}</p>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
       {/* ═══════ FEATURED MASTERPIECE ═══════ */}
       {featured && (
         <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
@@ -188,31 +162,51 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
         </section>
       )}
 
-      {/* ═══════ ABOUT PREVIEW ═══════ */}
+      {/* ═══════ CUSTOM DESIGNS MADE TO ORDER ═══════ */}
       <section className="py-24 px-6 md:px-14 relative z-[1]">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center max-w-[1200px] mx-auto">
-          <div className="rounded-2xl overflow-hidden relative border" style={{ borderColor: "var(--border2)" }}>
-            <div className="art-gradient" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)", aspectRatio: "4/5" }} />
-          </div>
-          <div>
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
-              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> The Artist
+              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Bespoke Commissions
             </div>
-            <h3 className="text-[clamp(28px,3vw,38px)] font-semibold mb-6">Painting Emotions, One Stroke at a Time</h3>
-            <p className="text-[15px] leading-relaxed mb-4" style={{ color: "var(--text2)" }}>
-              Chinmayi is a contemporary fine artist whose work explores the intersection of emotion, colour and texture.
+            <h3 className="font-[Playfair_Display] text-[clamp(28px,3.5vw,42px)] font-semibold mb-4">Custom Designs Made to Order</h3>
+            <p className="text-[16px] max-w-[640px] mx-auto" style={{ color: "var(--text2)" }}>
+              Want something uniquely yours? Commission a one-of-a-kind piece tailored to your vision —
+              your chosen style, palette, dimensions and subject. Perfect for personal spaces, gifts and
+              memorable occasions.
             </p>
-            <p className="text-[15px] leading-relaxed" style={{ color: "var(--text2)" }}>
-              Every painting is created with museum-grade materials — premium oils, Belgian linen canvas, and archival varnishes.
-            </p>
-            <div className="flex gap-12 mt-8 pt-8 border-t flex-wrap" style={{ borderColor: "var(--border)" }}>
-              {[{ num: "150+", label: "Artworks" }, { num: "40+", label: "Exhibitions" }, { num: "2", label: "Countries" }, { num: "50+", label: "Collectors" }].map((s) => (
-                <div key={s.label} className="text-center">
-                  <div className="font-[Playfair_Display] text-[clamp(28px,3vw,40px)] font-bold" style={{ color: "var(--gold)" }}>{s.num}</div>
-                  <div className="text-[11px] uppercase tracking-wider mt-1" style={{ color: "var(--text3)" }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              { step: "01", title: "Share Your Vision", desc: "Tell us your idea, preferred style, palette and the size you have in mind." },
+              { step: "02", title: "Sketches & Approval", desc: "Receive composition sketches and a timeline. Refine together until it feels right." },
+              { step: "03", title: "Hand-Painted For You", desc: "Created with museum-grade materials, packaged with care, delivered to your door." },
+            ].map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.5 }}
+                className="p-8 rounded-2xl border backdrop-blur-xl"
+                style={{ background: "var(--bg-glass2)", borderColor: "var(--border)" }}
+              >
+                <div className="font-[Playfair_Display] text-[36px] font-bold mb-3" style={{ color: "var(--gold)", opacity: 0.4 }}>{s.step}</div>
+                <h4 className="text-[18px] font-semibold mb-2">{s.title}</h4>
+                <p className="text-[14px] leading-relaxed" style={{ color: "var(--text2)" }}>{s.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/contact"
+              className="inline-block px-10 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+            >
+              Start a Commission
+            </Link>
           </div>
         </motion.div>
       </section>
@@ -254,7 +248,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, collecti
           <p className="text-[16px] mb-8" style={{ color: "var(--text2)" }}>
             Be the first to see new paintings, receive exhibition invitations and get exclusive access to limited-edition prints.
           </p>
-          <form className="flex gap-3 flex-col sm:flex-row" onSubmit={(e) => { e.preventDefault(); alert("Welcome to the Chinmayi Gallery family!"); }}>
+          <form className="flex gap-3 flex-col sm:flex-row" onSubmit={(e) => { e.preventDefault(); alert("Welcome to the Chinun family!"); }}>
             <input type="email" placeholder="your@email.com" required className="flex-1 px-5 py-3.5 rounded-md text-[14px] outline-none border transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
             <button type="submit" className="px-8 py-3.5 rounded-md text-[13px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Subscribe</button>
           </form>

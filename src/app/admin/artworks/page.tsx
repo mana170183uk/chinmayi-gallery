@@ -34,12 +34,24 @@ interface FormData {
   imageUrl: string;
   aspectRatio: string;
   badge: string;
+  featured: boolean;
+  homePick: boolean;
 }
 
 const emptyForm: FormData = {
   title: "", category: "landscape", medium: "", dimensions: "",
   year: new Date().getFullYear().toString(), price: "", framedPrice: "", description: "",
   gradient: gradientPresets[0].value, imageUrl: "", aspectRatio: "3/4", badge: "",
+  featured: false, homePick: false,
+};
+
+const categoryDisplay: Record<string, string> = {
+  landscape: "Landscape",
+  portrait: "Portrait",
+  "palm-leaf-etching": "Palm Leaf Etching",
+  "indian-styled-art": "Indian Styled Art",
+  contemporary: "Contemporary & Nature",
+  print: "Print",
 };
 
 export default function AdminArtworksPage() {
@@ -131,6 +143,7 @@ export default function AdminArtworksPage() {
   };
 
   const handleEdit = (art: Artwork) => {
+    const a = art as unknown as Record<string, unknown>;
     setForm({
       title: art.title,
       category: art.category,
@@ -138,12 +151,14 @@ export default function AdminArtworksPage() {
       dimensions: art.dimensions,
       year: art.year.toString(),
       price: art.price.toString(),
-      framedPrice: (art as unknown as Record<string, number>).framedPrice?.toString() || "",
+      framedPrice: (a.framedPrice as number | undefined)?.toString() || "",
       description: art.description,
       gradient: art.gradient,
-      imageUrl: (art as unknown as Record<string, string>).imageUrl || "",
+      imageUrl: (a.imageUrl as string | undefined) || "",
       aspectRatio: art.aspectRatio,
       badge: art.badge || "",
+      featured: Boolean(a.featured),
+      homePick: Boolean(a.homePick),
     });
     setEditId(art.id);
     setShowForm(true);
@@ -255,8 +270,8 @@ export default function AdminArtworksPage() {
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Category *</label>
                     <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
-                      {["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary", "print"].map((c) => (
-                        <option key={c} value={c}>{c.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ")}</option>
+                      {Object.entries(categoryDisplay).map(([c, label]) => (
+                        <option key={c} value={c}>{label}</option>
                       ))}
                     </select>
                   </div>
@@ -292,7 +307,7 @@ export default function AdminArtworksPage() {
                     <select value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none cursor-pointer focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
                       <option value="">Available</option>
                       <option value="new">New</option>
-                      <option value="unavailable">Unavailable</option>
+                      <option value="nfs">NFS (Not For Sale)</option>
                       <option value="sold">Sold</option>
                     </select>
                   </div>
@@ -359,6 +374,39 @@ export default function AdminArtworksPage() {
                   <textarea required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none resize-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                 </div>
 
+                {/* Homepage placement options */}
+                <div className="p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+                  <div className="text-[12px] uppercase tracking-wider font-semibold mb-3" style={{ color: "var(--gold)" }}>Homepage Placement</div>
+                  <label className="flex items-start gap-3 cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={form.homePick}
+                      onChange={(e) => setForm({ ...form, homePick: e.target.checked })}
+                      className="mt-1 w-4 h-4 cursor-pointer accent-[var(--gold)]"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold">Show on home page (Curated Artworks)</div>
+                      <div className="text-[11px]" style={{ color: "var(--text3)" }}>
+                        If selected, this piece will appear in the homepage Curated Artworks grid for its category. Otherwise the system auto-picks one per category.
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.featured}
+                      onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                      className="mt-1 w-4 h-4 cursor-pointer accent-[var(--gold)]"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold">Artwork of the Month (Featured Masterpiece)</div>
+                      <div className="text-[11px]" style={{ color: "var(--text3)" }}>
+                        Replaces the large Featured Masterpiece block on the home page. Tick this on one artwork at a time — change it whenever you like.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
                 <div className="flex gap-3 pt-2">
                   <button type="submit" className="flex-1 py-3 rounded-lg font-semibold text-[13px] tracking-wider uppercase transition-all hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>
                     {editId ? "Save Changes" : "Add Artwork"}
@@ -398,16 +446,16 @@ export default function AdminArtworksPage() {
                     </div>
                   </td>
                   <td className="px-6 py-3 font-medium">{art.title}</td>
-                  <td className="px-6 py-3 capitalize" style={{ color: "var(--text2)" }}>{art.category}</td>
+                  <td className="px-6 py-3" style={{ color: "var(--text2)" }}>{categoryDisplay[art.category] || art.category}</td>
                   <td className="px-6 py-3 font-semibold" style={{ color: "var(--gold)" }}>£{art.price.toLocaleString()}</td>
                   <td className="px-6 py-3">
                     <span className={`px-3 py-1 rounded-full text-[11px] font-semibold ${
                       art.badge === "sold" ? "text-red-400 bg-red-400/10" :
                       art.badge === "new" ? "text-green-400 bg-green-400/10" :
-                      art.badge === "featured" ? "text-yellow-400 bg-yellow-400/10" :
+                      art.badge === "nfs" ? "text-purple-400 bg-purple-400/10" :
                       "text-blue-400 bg-blue-400/10"
                     }`}>
-                      {art.badge || "Available"}
+                      {art.badge === "nfs" ? "NFS" : (art.badge || "Available")}
                     </span>
                   </td>
                   <td className="px-6 py-3 text-right">

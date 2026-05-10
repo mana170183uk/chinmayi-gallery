@@ -48,10 +48,10 @@ export default function ArtworkCard({ artwork, index }: Props) {
               Sold
             </span>
           )}
-          {artwork.badge === "unavailable" && (
+          {(artwork.badge === "nfs" || artwork.badge === "unavailable") && (
             <span className="absolute top-3 right-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
-              style={{ background: "#6b7280" }}>
-              Unavailable
+              style={{ background: "#7c3aed" }}>
+              NFS
             </span>
           )}
           {artwork.badge === "new" && (
@@ -60,7 +60,7 @@ export default function ArtworkCard({ artwork, index }: Props) {
               New
             </span>
           )}
-          {(artwork.category === "print" || artwork.category === "prints") && artwork.badge !== "sold" && artwork.badge !== "unavailable" && (
+          {(artwork.category === "print" || artwork.category === "prints") && artwork.badge !== "sold" && artwork.badge !== "nfs" && artwork.badge !== "unavailable" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
               style={{ background: "#3b82f6", boxShadow: "0 0 12px rgba(59,130,246,0.5)" }}>
               Print

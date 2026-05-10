@@ -13,8 +13,10 @@ export interface Artwork {
   gradient: string;
   imageUrl?: string;
   aspectRatio: string;
-  badge?: "new" | "sold" | "featured" | "unavailable";
+  badge?: "new" | "sold" | "featured" | "unavailable" | "nfs";
   collection?: string;
+  featured?: boolean;
+  homePick?: boolean;
 }
 
 export const artworks: Artwork[] = [

@@ -28,8 +28,11 @@ export default function Footer() {
     <footer style={{ background: "var(--footer-bg)" }} className="pt-20 pb-10 px-6 md:px-14 text-[#9B98B0]">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-10 border-b border-white/[0.06]">
         <div>
-          <div className="font-[Playfair_Display] text-[22px] font-bold mb-3.5" style={{ color: "#D4A843" }}>
-            Chinmayi Gallery
+          <div className="font-[Playfair_Display] text-[26px] font-bold mb-1 tracking-[2px]" style={{ color: "#D4A843" }}>
+            Chinun
+          </div>
+          <div className="text-[10px] tracking-[3px] uppercase mb-3.5 text-[#8B88A0]">
+            By Artist Chinmayi Nath
           </div>
           <p className="text-sm leading-relaxed text-[#8B88A0]">
             A premium online gallery showcasing original fine art paintings and limited-edition
@@ -80,7 +83,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-5 text-[13px] text-[#6C6988] gap-4">
-        <span>&copy; 2026 Chinmayi Gallery. All rights reserved.</span>
+        <span>&copy; 2026 Chinun. All rights reserved.</span>
         <span className="text-[12px]">
           Designed &amp; Developed by{" "}
           <a href="https://totalcloudai.com" target="_blank" rel="noopener noreferrer" className="text-[#D4A843] hover:underline transition-colors">

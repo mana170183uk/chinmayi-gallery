@@ -25,6 +25,7 @@ model Artwork {
   badge         String?
   collection    String?
   featured      Boolean  @default(false)
+  homePick      Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

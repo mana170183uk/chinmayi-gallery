@@ -14,8 +14,18 @@ const categoryLabels: Record<string, string> = {
   portrait: "Portrait",
   "palm-leaf-etching": "Palm Leaf Etching",
   "indian-styled-art": "Indian Styled Art",
-  contemporary: "Contemporary",
+  contemporary: "Contemporary & Nature",
   prints: "Prints",
+};
+
+const categoryTaglines: Record<string, string> = {
+  all: "",
+  landscape: "Sweeping vistas and serene natural scenes",
+  portrait: "Emotions & expressions",
+  "palm-leaf-etching": "A unique ancient artform",
+  "indian-styled-art": "Bold colours and expressive forms",
+  contemporary: "Modern & organic beauty",
+  prints: "Capturing the beauty of the original",
 };
 
 function GalleryContent({ artworks }: { artworks: Artwork[] }) {
@@ -28,12 +38,12 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
     const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
     const isPrint = (a: Artwork) => norm(a.category) === "print" || norm(a.category) === "prints";
 
-    // "All Available Works" = only Available + New (no Sold, no Unavailable, no Prints).
-    // Category and Prints tabs show everything in that category, including Sold and Unavailable.
+    // "All Available Works" = only Available + New (no Sold, no NFS/Unavailable, no Prints).
+    // Category and Prints tabs show everything in that category, including Sold and NFS.
     let list: Artwork[];
     if (activeFilter === "all") {
       list = artworks.filter(
-        (a) => a.badge !== "sold" && a.badge !== "unavailable" && !isPrint(a)
+        (a) => a.badge !== "sold" && a.badge !== "nfs" && a.badge !== "unavailable" && !isPrint(a)
       );
     } else if (activeFilter === "prints") {
       list = artworks.filter(isPrint);
@@ -56,7 +66,10 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Browse Collection
         </div>
-        <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-4">{categoryLabels[activeFilter] || "The Gallery"}</h1>
+        <h1 className="text-[clamp(36px,5vw,56px)] font-semibold mb-2">{categoryLabels[activeFilter] || "The Gallery"}</h1>
+        {categoryTaglines[activeFilter] && (
+          <p className="text-[13px] italic mb-3" style={{ color: "var(--text3)" }}>{categoryTaglines[activeFilter]}</p>
+        )}
         <p className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>
           {activeFilter === "all"
             ? `${filtered.length} available for your collection`

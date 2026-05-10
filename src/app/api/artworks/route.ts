@@ -71,7 +71,8 @@ export async function POST(request: NextRequest) {
         aspectRatio: body.aspectRatio || "3/4",
         badge: body.badge || null,
         collection: body.collection || body.category || "contemporary",
-        featured: body.featured || false,
+        featured: Boolean(body.featured),
+        homePick: Boolean(body.homePick),
       },
     });
 
