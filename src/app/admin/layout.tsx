@@ -11,6 +11,7 @@ const sidebarLinks = [
   { label: "Books", href: "/admin/books", icon: "📚" },
   { label: "Exhibitions", href: "/admin/exhibitions", icon: "🖼️" },
   { label: "Workshops", href: "/admin/workshops", icon: "🎓" },
+  { label: "Testimonials", href: "/admin/testimonials", icon: "⭐" },
   { label: "Orders", href: "/admin/orders", icon: "📦" },
   { label: "Settings", href: "/admin/settings", icon: "⚙️" },
 ];

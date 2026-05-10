@@ -212,29 +212,31 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
       </section>
 
       {/* ═══════ TESTIMONIALS ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
-            <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> What Collectors Say
-          </motion.div>
-          <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,50px)] font-semibold mb-4">Testimonials</motion.h2>
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1200px] mx-auto">
-          {testimonials.map((t, i) => (
-            <motion.div key={t.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 }} className="p-8 rounded-2xl backdrop-blur-xl border transition-all hover:border-[var(--card-hover-border)] hover:-translate-y-1" style={{ background: "var(--bg-glass2)", borderColor: "var(--border)" }}>
-              <div className="text-[15px] tracking-wider mb-4" style={{ color: "var(--gold)" }}>★★★★★</div>
-              <p className="text-[14.5px] leading-relaxed italic mb-5" style={{ color: "var(--text2)" }}>&ldquo;{t.text}&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[15px]" style={{ background: t.avatarGradient }}>{t.avatar}</div>
-                <div>
-                  <div className="text-[14px] font-semibold">{t.name}</div>
-                  <div className="text-[12px]" style={{ color: "var(--text3)" }}>{t.role}</div>
-                </div>
-              </div>
+      {testimonials.length > 0 && (
+        <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
+              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> What Collectors Say
             </motion.div>
-          ))}
-        </div>
-      </section>
+            <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,50px)] font-semibold mb-4">Testimonials</motion.h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1200px] mx-auto">
+            {testimonials.map((t, i) => (
+              <motion.div key={t.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 }} className="p-8 rounded-2xl backdrop-blur-xl border transition-all hover:border-[var(--card-hover-border)] hover:-translate-y-1" style={{ background: "var(--bg-glass2)", borderColor: "var(--border)" }}>
+                <div className="text-[15px] tracking-wider mb-4" style={{ color: "var(--gold)" }}>★★★★★</div>
+                <p className="text-[14.5px] leading-relaxed italic mb-5" style={{ color: "var(--text2)" }}>&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[15px]" style={{ background: t.avatarGradient }}>{t.avatar}</div>
+                  <div>
+                    <div className="text-[14px] font-semibold">{t.name}</div>
+                    <div className="text-[12px]" style={{ color: "var(--text3)" }}>{t.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ═══════ NEWSLETTER ═══════ */}
       <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
