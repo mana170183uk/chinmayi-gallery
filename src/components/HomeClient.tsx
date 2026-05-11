@@ -250,7 +250,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
           <p className="text-[16px] mb-8" style={{ color: "var(--text2)" }}>
             Be the first to see new paintings, receive exhibition invitations and get exclusive access to limited-edition prints.
           </p>
-          <form className="flex gap-3 flex-col sm:flex-row" onSubmit={(e) => { e.preventDefault(); alert("Welcome to the Chinun family!"); }}>
+          <form className="flex gap-3 flex-col sm:flex-row" onSubmit={(e) => { e.preventDefault(); alert("Welcome to the ChinuN family!"); }}>
             <input type="email" placeholder="your@email.com" required className="flex-1 px-5 py-3.5 rounded-md text-[14px] outline-none border transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
             <button type="submit" className="px-8 py-3.5 rounded-md text-[13px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Subscribe</button>
           </form>

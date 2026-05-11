@@ -56,7 +56,7 @@ export default function Navbar() {
             className="font-[Playfair_Display] text-[24px] font-bold tracking-[2px] leading-tight transition-colors"
             style={{ color: "var(--gold)" }}
           >
-            Chinun
+            ChinuN
           </span>
           <span
             className="text-[9.5px] font-medium tracking-[3px] uppercase mt-[1px] transition-colors"

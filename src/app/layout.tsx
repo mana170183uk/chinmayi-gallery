@@ -44,13 +44,13 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "Chinun — Fine Art by Chinmayi Nath",
+  title: "ChinuN — Fine Art by Chinmayi Nath",
   description:
     "Original paintings and fine art prints by artist Chinmayi Nath. Landscapes, portraits, palm leaf etching, Indian styled art and contemporary works from her Essex studio.",
-  keywords: ["Chinun", "Chinmayi Nath", "fine art", "paintings", "palm leaf etching", "Indian art", "Essex artist"],
+  keywords: ["ChinuN", "Chinmayi Nath", "fine art", "paintings", "palm leaf etching", "Indian art", "Essex artist"],
   metadataBase: new URL("https://chinun.uk"),
   openGraph: {
-    title: "Chinun — Fine Art by Chinmayi Nath",
+    title: "ChinuN — Fine Art by Chinmayi Nath",
     description: "Original paintings, prints and handmade pieces by artist Chinmayi Nath.",
     type: "website",
     url: "https://chinun.uk",
