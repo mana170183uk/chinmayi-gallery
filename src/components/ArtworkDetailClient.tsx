@@ -16,7 +16,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
-    <section className="min-h-screen pt-24 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-32 pb-24 relative z-[1]">
       {/* Breadcrumb */}
       <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>

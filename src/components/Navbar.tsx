@@ -41,11 +41,20 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Site-wide delivery banner */}
+      <div
+        className="fixed top-0 left-0 right-0 z-[1001] text-center py-1.5 text-[12px] tracking-wider font-medium"
+        style={{ background: "var(--gold)", color: "#1A1830" }}
+      >
+        Free Standard UK delivery for orders over £75
+      </div>
+
       <nav
-        className={`fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
+        className={`fixed left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
           scrolled ? "h-[60px] shadow-lg" : "h-[72px]"
         }`}
         style={{
+          top: "30px",
           background: "var(--nav-bg)",
           borderColor: "var(--border)",
         }}
@@ -190,7 +199,7 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-4 md:hidden"
             style={{
-              top: "72px",
+              top: "102px",
               background: "var(--nav-bg)",
               borderColor: "var(--border)",
             }}
