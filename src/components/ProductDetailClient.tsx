@@ -192,8 +192,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
             <div className="mt-6 p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
               <div className="text-[11px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>Postage</div>
+              <p className="text-[13px] leading-relaxed mb-2" style={{ color: "var(--text2)" }}>
+                <strong style={{ color: "var(--text)" }}>Free Standard UK delivery for orders over £75.</strong>
+              </p>
               <p className="text-[13px] leading-relaxed" style={{ color: "var(--text2)" }}>
-                Postal charges are not included. Free delivery within Essex. A minimal charge applies for other locations in the UK and other countries.
+                Free local delivery within Essex. A minimal charge applies for other locations in the UK and international orders under £75.
               </p>
             </div>
           </motion.div>

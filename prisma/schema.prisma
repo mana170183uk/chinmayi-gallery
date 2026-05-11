@@ -145,7 +145,7 @@ model SiteSettings {
   artistName     String @default("Chinmayi")
   artistBio      String @default("")
   aboutImageUrl  String @default("/chinmayi-artist.jpg")
-  contactEmail   String @default("hello@chinmayigallery.com")
+  contactEmail   String @default("chinmayi_n@yahoo.com")
   instagramUrl   String @default("")
   pinterestUrl   String @default("")
   facebookUrl    String @default("")

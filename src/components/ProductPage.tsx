@@ -35,7 +35,11 @@ export default function ProductPage({ title, subtitle, label, products, emptyMes
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> {label}
         </div>
         <h1 className="font-[Playfair_Display] text-[clamp(36px,5vw,56px)] font-bold mb-4">{title}</h1>
-        <p className="text-[16px] max-w-[560px] mx-auto" style={{ color: "var(--text2)" }}>{subtitle}</p>
+        <p className="text-[16px] max-w-[560px] mx-auto mb-5" style={{ color: "var(--text2)" }}>{subtitle}</p>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[12px] font-medium" style={{ borderColor: "var(--border)", background: "var(--bg2)", color: "var(--text2)" }}>
+          <span style={{ color: "var(--gold)" }}>✦</span>
+          Free Standard UK delivery for orders over £75
+        </div>
       </motion.div>
       <ProductGrid products={products} emptyMessage={emptyMessage} />
     </section>

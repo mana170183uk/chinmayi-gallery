@@ -28,11 +28,16 @@ export default function Footer() {
     <footer style={{ background: "var(--footer-bg)" }} className="pt-20 pb-10 px-6 md:px-14 text-[#9B98B0]">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-10 border-b border-white/[0.06]">
         <div>
-          <div className="font-[Playfair_Display] text-[26px] font-bold mb-1 tracking-[2px]" style={{ color: "#D4A843" }}>
-            ChinuN
-          </div>
-          <div className="text-[10px] tracking-[3px] uppercase mb-3.5 text-[#8B88A0]">
-            By Artist Chinmayi Nath
+          <div className="flex items-center gap-3 mb-3">
+            <img src="/chinun-logo.jpg" alt="ChinuN logo" className="h-14 w-14 rounded-lg object-cover" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.4)" }} />
+            <div>
+              <div className="font-[Playfair_Display] text-[24px] font-bold tracking-[2px] leading-tight" style={{ color: "#D4A843" }}>
+                ChinuN
+              </div>
+              <div className="text-[9px] tracking-[3px] uppercase mt-[2px] text-[#8B88A0]">
+                By Artist Chinmayi Nath
+              </div>
+            </div>
           </div>
           <p className="text-sm leading-relaxed text-[#8B88A0]">
             A premium online gallery showcasing original fine art paintings and limited-edition

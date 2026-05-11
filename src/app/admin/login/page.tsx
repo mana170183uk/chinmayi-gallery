@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@chinmayigallery.com"
+              placeholder="admin@chinun.uk"
               className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]"
               style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}
             />

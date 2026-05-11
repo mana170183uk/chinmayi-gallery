@@ -51,19 +51,27 @@ export default function Navbar() {
         }}
       >
         {/* Brand */}
-        <Link href="/" className="flex flex-col cursor-pointer group">
-          <span
-            className="font-[Playfair_Display] text-[24px] font-bold tracking-[2px] leading-tight transition-colors"
-            style={{ color: "var(--gold)" }}
-          >
-            ChinuN
-          </span>
-          <span
-            className="text-[9.5px] font-medium tracking-[3px] uppercase mt-[1px] transition-colors"
-            style={{ color: "var(--text2)" }}
-          >
-            By Artist Chinmayi Nath
-          </span>
+        <Link href="/" className="flex items-center gap-3 cursor-pointer group">
+          <img
+            src="/chinun-logo.jpg"
+            alt="ChinuN logo"
+            className="h-12 w-12 rounded-lg object-cover transition-transform group-hover:scale-105"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.4)" }}
+          />
+          <div className="flex flex-col">
+            <span
+              className="font-[Playfair_Display] text-[22px] font-bold tracking-[2px] leading-tight transition-colors"
+              style={{ color: "var(--gold)" }}
+            >
+              ChinuN
+            </span>
+            <span
+              className="text-[9px] font-medium tracking-[3px] uppercase mt-[1px] transition-colors"
+              style={{ color: "var(--text2)" }}
+            >
+              By Artist Chinmayi Nath
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Links */}

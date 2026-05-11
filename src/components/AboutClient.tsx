@@ -88,7 +88,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
                 { num: "150+", label: "Artworks Created" },
                 { num: "40+", label: "Exhibitions" },
                 { num: "2", label: "Countries" },
-                { num: "50+", label: "Happy Collectors" },
+                { num: "70+", label: "Happy Collectors" },
               ].map((s) => (
                 <div key={s.label} className="text-center">
                   <div className="font-[Playfair_Display] text-[clamp(28px,3vw,40px)] font-bold" style={{ color: "var(--gold)" }}>{s.num}</div>

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@chinmayigallery.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@chinun.uk";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ChinmayiGallery@2026";
 
 function generateToken() {
