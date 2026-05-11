@@ -82,14 +82,8 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-5 text-[13px] text-[#6C6988] gap-4">
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-5 text-[13px] gap-4" style={{ color: "#8B88A0" }}>
         <span>&copy; 2026 ChinuN. All rights reserved.</span>
-        <span className="text-[12px]">
-          Designed &amp; Developed by{" "}
-          <a href="https://totalcloudai.com" target="_blank" rel="noopener noreferrer" className="text-[#D4A843] hover:underline transition-colors">
-            TotalCloudAI Ltd
-          </a>
-        </span>
         <div className="flex gap-3">
           {["Instagram", "Pinterest", "Facebook"].map((s) => (
             <a
@@ -101,6 +95,22 @@ export default function Footer() {
             </a>
           ))}
         </div>
+      </div>
+
+      {/* Designed & Developed credit */}
+      <div className="max-w-[1200px] mx-auto mt-6 pt-5 border-t text-center" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <span className="text-[13px]" style={{ color: "#9B98B0" }}>
+          Designed &amp; Developed By{" "}
+          <a
+            href="https://totalcloudai.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold hover:underline transition-colors"
+            style={{ color: "#D4A843" }}
+          >
+            TotalCloudAI Ltd
+          </a>
+        </span>
       </div>
     </footer>
   );
