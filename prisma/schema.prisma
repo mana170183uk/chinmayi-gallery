@@ -188,6 +188,12 @@ model Workshop {
   updatedAt   DateTime @updatedAt
 }
 
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
 model ContactSubmission {
   id        String   @id @default(cuid())
   name      String

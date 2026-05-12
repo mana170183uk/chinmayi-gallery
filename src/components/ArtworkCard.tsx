@@ -109,14 +109,20 @@ export default function ArtworkCard({ artwork, index }: Props) {
             )}
           </div>
 
-          {/* Always-visible title strip */}
-          <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-8">
-            <h4 className="text-[15px] text-white font-[Cormorant_Garamond] font-semibold leading-tight line-clamp-1">
+          {/* Always-visible title strip — stronger gradient + text shadow for legibility */}
+          <div
+            className="absolute bottom-0 left-0 right-0 px-4 py-3 pt-10"
+            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.7) 50%, rgba(0,0,0,0))" }}
+          >
+            <h4
+              className="text-[15px] font-[Cormorant_Garamond] font-semibold leading-tight line-clamp-1"
+              style={{ color: "#ffffff", textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}
+            >
               {artwork.title}
             </h4>
-            <div className="flex justify-between items-center text-[11px] text-white/70 mt-1">
-              <span className="truncate pr-2">{artwork.medium}</span>
-              <span className="font-semibold text-[13px] whitespace-nowrap" style={{ color: "var(--gold)" }}>
+            <div className="flex justify-between items-center text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.85)" }}>
+              <span className="truncate pr-2" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>{artwork.medium}</span>
+              <span className="font-semibold text-[13px] whitespace-nowrap" style={{ color: "#FFD66B", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
                 {artwork.badge === "sold"
                   ? "Sold"
                   : artwork.price

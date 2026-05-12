@@ -59,7 +59,7 @@ const process = [
 
 export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
   return (
-    <section className="min-h-screen pt-36 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-40 pb-24 relative z-[1]">
       {/* Hero */}
       <div className="px-6 md:px-14 max-w-[1200px] mx-auto mb-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
@@ -70,9 +70,9 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
           </motion.div>
           <motion.div variants={fadeUp}>
             <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-6" style={{ color: "var(--gold)" }}>
-              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> The Artist
+              <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Meet the Artist
             </div>
-            <h1 className="font-[Playfair_Display] text-[clamp(36px,5vw,56px)] font-bold leading-tight mb-6">About Chinmayi</h1>
+            <h1 className="font-[Playfair_Display] text-[clamp(36px,5vw,56px)] font-bold leading-tight mb-6">Meet Chinmayi</h1>
             <p className="text-[16px] leading-relaxed mb-5" style={{ color: "var(--text2)" }}>
               Chinmayi is a contemporary fine artist whose work explores the intersection of emotion, colour and texture. Drawing inspiration from natural landscapes, Indian heritage, palm leaf etching traditions, and the quiet moments in between, each painting tells a story that resonates with the heart.
             </p>

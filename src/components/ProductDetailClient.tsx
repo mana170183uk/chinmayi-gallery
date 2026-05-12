@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { addToCart } from "@/lib/store";
 
 interface ProductImage {
   id: string;
@@ -47,7 +48,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const typeMeta = typeLabels[product.type] || { label: product.type, href: "/" };
 
   return (
-    <section className="min-h-screen pt-32 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-36 pb-24 relative z-[1]">
       {/* Breadcrumb */}
       <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
         <div className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
@@ -153,12 +154,37 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {/* Add to cart */}
             {product.inStock && product.badge !== "sold" && (
               <div className="flex gap-3 items-center flex-wrap mb-10">
-                <button className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>
+                <button
+                  onClick={() => {
+                    if (sizeList.length > 0 && !selectedSize) {
+                      alert("Please select a size first.");
+                      return;
+                    }
+                    addToCart(
+                      {
+                        id: product.id,
+                        kind: "product",
+                        title: selectedSize ? `${product.title} (${selectedSize})` : product.title,
+                        price: product.price,
+                        imageUrl: product.imageUrl,
+                        slug: product.slug,
+                        subtitle: product.material,
+                      },
+                      "product"
+                    );
+                  }}
+                  className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+                >
                   Add to Cart
                 </button>
-                <button className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>
+                <Link
+                  href={`/contact?subject=Purchase%20Inquiry&item=${encodeURIComponent(product.title)}`}
+                  className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  style={{ borderColor: "var(--border)", color: "var(--text)" }}
+                >
                   Make an Enquiry
-                </button>
+                </Link>
               </div>
             )}
 

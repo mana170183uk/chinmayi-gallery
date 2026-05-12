@@ -8,11 +8,11 @@ import {
   setCartOpen,
   removeFromCart,
   getCartTotal,
+  type CartLineItem,
 } from "@/lib/store";
-import type { Artwork } from "@/data/artworks";
 
 interface CartItem {
-  artwork: Artwork;
+  item: CartLineItem;
   quantity: number;
 }
 
@@ -83,29 +83,39 @@ export default function CartDrawer() {
                   </p>
                 </div>
               ) : (
-                items.map((item, i) => (
+                items.map((ci) => (
                   <div
-                    key={item.artwork.id}
+                    key={`${ci.item.kind}-${ci.item.id}`}
                     className="flex gap-4 py-4 border-b"
                     style={{ borderColor: "var(--border)" }}
                   >
                     <div
-                      className="w-20 h-20 rounded-lg flex-shrink-0"
-                      style={{ background: item.artwork.gradient }}
-                    />
+                      className="w-20 h-20 rounded-lg flex-shrink-0 overflow-hidden"
+                      style={{ background: "var(--bg2)" }}
+                    >
+                      {ci.item.imageUrl && (
+                        <img src={ci.item.imageUrl} alt="" className="w-full h-full object-cover" />
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-[Cormorant_Garamond] text-[16px] font-semibold truncate">
-                        {item.artwork.title}
+                        {ci.item.title}
                       </div>
-                      <div className="text-[12px] mt-1" style={{ color: "var(--text3)" }}>
-                        {item.artwork.medium}
+                      {ci.item.subtitle && (
+                        <div className="text-[12px] mt-1" style={{ color: "var(--text3)" }}>
+                          {ci.item.subtitle}
+                        </div>
+                      )}
+                      <div className="text-[10px] uppercase tracking-wider mt-1" style={{ color: "var(--text3)" }}>
+                        {ci.item.kind === "product" ? "Product" : ci.item.kind === "book" ? "Book" : "Artwork"}
+                        {ci.quantity > 1 && ` · Qty ${ci.quantity}`}
                       </div>
                       <div className="font-semibold mt-2" style={{ color: "var(--gold)" }}>
-                        £{item.artwork.price.toLocaleString()}
+                        £{(ci.item.price * ci.quantity).toLocaleString()}
                       </div>
                     </div>
                     <button
-                      onClick={() => removeFromCart(item.artwork.id)}
+                      onClick={() => removeFromCart(ci.item.id, ci.item.kind)}
                       className="text-[16px] self-start transition-colors hover:text-[var(--rose)]"
                       style={{ color: "var(--text3)" }}
                     >

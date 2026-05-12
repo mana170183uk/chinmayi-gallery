@@ -5,8 +5,20 @@ import { Artwork } from "@/data/artworks";
 // Simple global state (no external dependency needed)
 type Listener = () => void;
 
+export type CartItemKind = "artwork" | "product" | "book";
+
+export interface CartLineItem {
+  id: string;
+  kind: CartItemKind;
+  title: string;
+  price: number;
+  imageUrl?: string | null;
+  slug?: string | null;
+  subtitle?: string | null; // e.g. medium for artwork, material for product
+}
+
 interface CartItem {
-  artwork: Artwork;
+  item: CartLineItem;
   quantity: number;
 }
 
@@ -54,25 +66,58 @@ export function toggleTheme() {
   setTheme(state.theme === "dark" ? "light" : "dark");
 }
 
-export function addToCart(artwork: Artwork) {
-  const existing = state.cart.find((i) => i.artwork.id === artwork.id);
-  if (existing) return;
-  state = { ...state, cart: [...state.cart, { artwork, quantity: 1 }] };
+// Accepts either an Artwork or a generic CartLineItem
+export function addToCart(
+  input: Artwork | CartLineItem,
+  kind: CartItemKind = "artwork"
+) {
+  const item: CartLineItem =
+    "kind" in input
+      ? (input as CartLineItem)
+      : {
+          id: (input as Artwork).id,
+          kind,
+          title: (input as Artwork).title,
+          price: (input as Artwork).price,
+          imageUrl: (input as Artwork).imageUrl,
+          slug: (input as Artwork).slug,
+          subtitle: (input as Artwork).medium,
+        };
+  const existing = state.cart.find((i) => i.item.id === item.id && i.item.kind === item.kind);
+  if (existing) {
+    state = {
+      ...state,
+      cart: state.cart.map((i) =>
+        i.item.id === item.id && i.item.kind === item.kind
+          ? { ...i, quantity: i.quantity + 1 }
+          : i
+      ),
+    };
+  } else {
+    state = { ...state, cart: [...state.cart, { item, quantity: 1 }] };
+  }
+  // Auto-open the cart drawer so customers see the item was added
+  state = { ...state, cartOpen: true };
   notify();
 }
 
-export function removeFromCart(artworkId: string) {
-  state = { ...state, cart: state.cart.filter((i) => i.artwork.id !== artworkId) };
+export function removeFromCart(itemId: string, kind?: CartItemKind) {
+  state = {
+    ...state,
+    cart: state.cart.filter((i) =>
+      kind ? !(i.item.id === itemId && i.item.kind === kind) : i.item.id !== itemId
+    ),
+  };
   notify();
 }
 
-export function toggleWishlist(artworkId: string) {
-  const has = state.wishlist.includes(artworkId);
+export function toggleWishlist(itemId: string) {
+  const has = state.wishlist.includes(itemId);
   state = {
     ...state,
     wishlist: has
-      ? state.wishlist.filter((id) => id !== artworkId)
-      : [...state.wishlist, artworkId],
+      ? state.wishlist.filter((id) => id !== itemId)
+      : [...state.wishlist, itemId],
   };
   notify();
 }
@@ -88,7 +133,7 @@ export function setLightbox(artwork: Artwork | null) {
 }
 
 export function getCartTotal() {
-  return state.cart.reduce((sum, item) => sum + item.artwork.price * item.quantity, 0);
+  return state.cart.reduce((sum, ci) => sum + ci.item.price * ci.quantity, 0);
 }
 
 export function initTheme() {

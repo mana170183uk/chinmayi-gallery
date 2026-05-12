@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -17,11 +18,25 @@ interface FormData {
 
 const emptyForm: FormData = { name: "", email: "", subject: "", message: "" };
 
-export default function ContactPage() {
+function ContactContent() {
+  const searchParams = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState<FormData>(emptyForm);
+
+  // Prefill from query params (e.g. /contact?subject=Make%20an%20Offer&item=Title)
+  useEffect(() => {
+    const qSubject = searchParams.get("subject");
+    const qItem = searchParams.get("item");
+    setForm((prev) => ({
+      ...prev,
+      ...(qSubject ? { subject: qSubject } : {}),
+      ...(qItem
+        ? { message: prev.message || `I'm interested in: ${qItem}\n\n` }
+        : {}),
+    }));
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +63,7 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="min-h-screen pt-36 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-40 pb-24 px-6 md:px-14 relative z-[1]">
       <div className="max-w-[1000px] mx-auto">
         <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.12 } } }} className="text-center mb-16">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -120,14 +135,24 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Subject</label>
-                  <select required value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none cursor-pointer transition-colors focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}>
-                    <option value="">Select a topic</option>
+                  <input
+                    required
+                    value={form.subject}
+                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    placeholder="Purchase Inquiry / Make an Offer / Commission Request / ..."
+                    className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none transition-colors focus:border-[var(--gold)]"
+                    style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}
+                    list="subject-options"
+                  />
+                  <datalist id="subject-options">
                     <option>Purchase Inquiry</option>
+                    <option>Make an Offer</option>
                     <option>Commission Request</option>
                     <option>Exhibition Inquiry</option>
+                    <option>Workshop Enquiry</option>
                     <option>Press & Media</option>
                     <option>General Question</option>
-                  </select>
+                  </datalist>
                 </div>
 
                 <div>
@@ -150,5 +175,13 @@ export default function ContactPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={null}>
+      <ContactContent />
+    </Suspense>
   );
 }

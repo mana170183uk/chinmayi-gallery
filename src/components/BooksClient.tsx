@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { addToCart } from "@/lib/store";
 
 interface Book {
   id: string;
@@ -20,7 +21,7 @@ interface Book {
 
 export default function BooksClient({ books }: { books: Book[] }) {
   return (
-    <section className="min-h-screen pt-36 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-40 pb-24 px-6 md:px-14 relative z-[1]">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Library
@@ -83,15 +84,36 @@ export default function BooksClient({ books }: { books: Book[] }) {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-2">
+                  {book.price && book.price > 0 && (
+                    <button
+                      onClick={() =>
+                        addToCart(
+                          {
+                            id: book.id,
+                            kind: "book",
+                            title: book.title,
+                            price: book.price as number,
+                            imageUrl: book.imageUrl,
+                            subtitle: `by ${book.author}`,
+                          },
+                          "book"
+                        )
+                      }
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-md text-[13px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                      style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+                    >
+                      Add to Cart
+                    </button>
+                  )}
                   {book.amazonUrl && (
                     <a
                       href={book.amazonUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 rounded-md text-[13px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                      style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                      style={{ borderColor: "var(--border)", color: "var(--text)" }}
                     >
-                      🛒 Buy on Amazon
+                      Buy on Amazon
                     </a>
                   )}
                   {book.pdfUrl && (
@@ -99,10 +121,10 @@ export default function BooksClient({ books }: { books: Book[] }) {
                       href={book.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
-                      style={{ borderColor: "var(--border)", color: "var(--text)" }}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-md text-[12px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                      style={{ borderColor: "var(--border)", color: "var(--text2)" }}
                     >
-                      📄 Download PDF
+                      Download PDF
                     </a>
                   )}
                 </div>

@@ -9,18 +9,18 @@ const galleryLinks = [
 ];
 
 const aboutLinks = [
-  { label: "The Artist", href: "/about" },
-  { label: "Exhibitions", href: "/about" },
-  { label: "Commissions", href: "/contact" },
-  { label: "Press", href: "/about" },
+  { label: "Meet Artist", href: "/about" },
+  { label: "Exhibitions", href: "/about#exhibitions" },
+  { label: "Workshops", href: "/about#workshops" },
+  { label: "Commissions", href: "/contact?subject=Commission%20Request" },
 ];
 
 const supportLinks = [
-  { label: "Shipping & Returns", href: "/contact" },
-  { label: "Care Instructions", href: "/contact" },
-  { label: "FAQ", href: "/contact" },
+  { label: "Shipping & Returns", href: "/shipping-returns" },
+  { label: "Care Instructions", href: "/care-instructions" },
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
-  { label: "Privacy Policy", href: "/contact" },
+  { label: "Privacy Policy", href: "/privacy" },
 ];
 
 export default function Footer() {

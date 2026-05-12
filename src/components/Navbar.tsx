@@ -6,12 +6,12 @@ import Link from "next/link";
 import { getState, subscribe, toggleTheme, setCartOpen } from "@/lib/store";
 
 const links = [
+  { label: "Meet Artist", href: "/about" },
   { label: "Art Gallery", href: "/gallery" },
   { label: "Jewellery", href: "/jewellery" },
   { label: "Clothing", href: "/clothing" },
   { label: "Home Decor", href: "/home-decor" },
   { label: "Books", href: "/books" },
-  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -41,41 +41,41 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Site-wide delivery banner */}
+      {/* Site-wide delivery banner — subtle, not eye-catching */}
       <div
-        className="fixed top-0 left-0 right-0 z-[1001] text-center py-1.5 text-[12px] tracking-wider font-medium"
-        style={{ background: "var(--gold)", color: "#1A1830" }}
+        className="fixed top-0 left-0 right-0 z-[1001] text-center py-1.5 text-[11px] tracking-wider font-normal border-b"
+        style={{ background: "var(--bg2)", color: "var(--text2)", borderColor: "var(--border)" }}
       >
         Free Standard UK delivery for orders over £75
       </div>
 
       <nav
         className={`fixed left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
-          scrolled ? "h-[60px] shadow-lg" : "h-[72px]"
+          scrolled ? "h-[68px] shadow-lg" : "h-[84px]"
         }`}
         style={{
-          top: "30px",
+          top: "28px",
           background: "var(--nav-bg)",
           borderColor: "var(--border)",
         }}
       >
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-3 cursor-pointer group">
+        {/* Brand — larger logo, highlighted artist name */}
+        <Link href="/" className="flex items-center gap-3.5 cursor-pointer group">
           <img
             src="/chinun-logo.jpg"
             alt="ChinuN logo"
-            className="h-12 w-12 rounded-lg object-cover transition-transform group-hover:scale-105"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.4)" }}
+            className="h-16 w-16 rounded-xl object-cover transition-transform group-hover:scale-105"
+            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.45)" }}
           />
           <div className="flex flex-col">
             <span
-              className="font-[Playfair_Display] text-[22px] font-bold tracking-[2px] leading-tight transition-colors"
-              style={{ color: "var(--gold)" }}
+              className="font-[Playfair_Display] text-[30px] font-extrabold tracking-[1.5px] leading-none transition-colors"
+              style={{ color: "var(--gold)", textShadow: "0 2px 8px rgba(212,168,67,0.25)" }}
             >
               ChinuN
             </span>
             <span
-              className="text-[9px] font-medium tracking-[3px] uppercase mt-[1px] transition-colors"
+              className="text-[10px] font-semibold tracking-[3px] uppercase mt-1 transition-colors"
               style={{ color: "var(--text2)" }}
             >
               By Artist Chinmayi Nath

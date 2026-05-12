@@ -16,7 +16,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
-    <section className="min-h-screen pt-32 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-36 pb-24 relative z-[1]">
       {/* Breadcrumb */}
       <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
@@ -90,7 +90,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             {artwork.badge !== "sold" && (
               <div className="flex gap-3 items-center flex-wrap mb-10">
                 <button onClick={() => addToCart(artwork)} className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Add to Cart</button>
-                <button className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>Make an Offer</button>
+                <Link href={`/contact?subject=Make%20an%20Offer&item=${encodeURIComponent(artwork.title)}`} className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>Make an Offer</Link>
                 <button onClick={() => toggleWishlist(artwork.id)} className="w-[52px] h-[52px] rounded-lg inline-flex items-center justify-center border text-[20px] transition-all hover:border-[var(--rose)] hover:text-[var(--rose)]" style={{ borderColor: "var(--border)", color: "var(--text2)" }}>♡</button>
               </div>
             )}
