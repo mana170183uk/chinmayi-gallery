@@ -51,7 +51,7 @@ export default function Navbar() {
 
       <nav
         className={`fixed left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
-          scrolled ? "h-[68px] shadow-lg" : "h-[84px]"
+          scrolled ? "h-[80px] shadow-lg" : "h-[100px]"
         }`}
         style={{
           top: "28px",
@@ -59,44 +59,44 @@ export default function Navbar() {
           borderColor: "var(--border)",
         }}
       >
-        {/* Brand — larger logo, highlighted artist name */}
-        <Link href="/" className="flex items-center gap-3.5 cursor-pointer group">
+        {/* Brand — large logo, prominent ChinuN wordmark */}
+        <Link href="/" className="flex items-center gap-4 cursor-pointer group">
           <img
             src="/chinun-logo.jpg"
             alt="ChinuN logo"
-            className="h-16 w-16 rounded-xl object-cover transition-transform group-hover:scale-105"
-            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.45)" }}
+            className="h-20 w-20 rounded-xl object-cover transition-transform group-hover:scale-105"
+            style={{ boxShadow: "0 4px 18px rgba(0,0,0,0.5)" }}
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col whitespace-nowrap">
             <span
-              className="font-[Playfair_Display] text-[30px] font-extrabold tracking-[1.5px] leading-none transition-colors"
-              style={{ color: "var(--gold)", textShadow: "0 2px 8px rgba(212,168,67,0.25)" }}
+              className="font-[Playfair_Display] text-[38px] font-extrabold tracking-[1.5px] leading-none transition-colors"
+              style={{ color: "var(--gold)", textShadow: "0 2px 10px rgba(212,168,67,0.3)" }}
             >
               ChinuN
             </span>
             <span
-              className="text-[10px] font-semibold tracking-[3px] uppercase mt-1 transition-colors"
-              style={{ color: "var(--text2)" }}
+              className="text-[14px] font-semibold tracking-[2.5px] uppercase mt-2 transition-colors"
+              style={{ color: "var(--text)" }}
             >
               By Artist Chinmayi Nath
             </span>
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex gap-7">
+        {/* Desktop Links — single line, no wrap */}
+        <div className="hidden md:flex items-center flex-nowrap gap-1 lg:gap-2">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-[13px] font-medium tracking-[0.8px] uppercase relative group transition-colors"
-              style={{ color: "var(--text2)" }}
+              className="relative group whitespace-nowrap px-2 lg:px-3 py-2 rounded-md text-[13px] lg:text-[14px] font-bold tracking-[1px] uppercase transition-all hover:bg-[var(--bg2)]"
+              style={{ color: "var(--text)" }}
             >
               <span className="group-hover:text-[var(--gold)] transition-colors">
                 {link.label}
               </span>
               <span
-                className="absolute -bottom-1 left-0 w-0 h-[1.5px] group-hover:w-full transition-all duration-300"
+                className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-0 h-[2px] group-hover:w-[70%] transition-all duration-300 rounded-full"
                 style={{ background: "var(--gold)" }}
               />
             </Link>
@@ -199,7 +199,7 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-4 md:hidden"
             style={{
-              top: "102px",
+              top: "128px",
               background: "var(--nav-bg)",
               borderColor: "var(--border)",
             }}
@@ -209,8 +209,8 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-[14px] font-medium tracking-[0.8px] uppercase py-3 border-b transition-colors hover:text-[var(--gold)]"
-                style={{ color: "var(--text2)", borderColor: "var(--border)" }}
+                className="text-[15px] font-bold tracking-[1.2px] uppercase py-3 border-b transition-colors hover:text-[var(--gold)]"
+                style={{ color: "var(--text)", borderColor: "var(--border)" }}
               >
                 {link.label}
               </Link>

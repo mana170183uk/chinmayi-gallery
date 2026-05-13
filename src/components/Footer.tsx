@@ -34,7 +34,7 @@ export default function Footer() {
               <div className="font-[Playfair_Display] text-[24px] font-bold tracking-[2px] leading-tight" style={{ color: "#D4A843" }}>
                 ChinuN
               </div>
-              <div className="text-[9px] tracking-[3px] uppercase mt-[2px] text-[#8B88A0]">
+              <div className="text-[12px] font-semibold tracking-[2.5px] uppercase mt-[3px] text-[#B8B5C8]">
                 By Artist Chinmayi Nath
               </div>
             </div>

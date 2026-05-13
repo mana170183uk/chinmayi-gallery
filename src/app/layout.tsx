@@ -44,7 +44,11 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "ChinuN — Fine Art by Chinmayi Nath",
+  // %s gets replaced by per-page title; pages without their own use the default
+  title: {
+    default: "ChinuN — Fine Art by Chinmayi Nath",
+    template: "%s | ChinuN",
+  },
   description:
     "Original paintings and fine art prints by artist Chinmayi Nath. Landscapes, portraits, palm leaf etching, Indian styled art and contemporary works from her Essex studio.",
   keywords: ["ChinuN", "Chinmayi Nath", "fine art", "paintings", "palm leaf etching", "Indian art", "Essex artist"],
@@ -54,6 +58,7 @@ export const metadata: Metadata = {
     description: "Original paintings, prints and handmade pieces by artist Chinmayi Nath.",
     type: "website",
     url: "https://chinun.uk",
+    siteName: "ChinuN",
   },
 };
 

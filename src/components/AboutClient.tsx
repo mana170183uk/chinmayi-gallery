@@ -59,7 +59,7 @@ const process = [
 
 export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
   return (
-    <section className="min-h-screen pt-40 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-44 pb-24 relative z-[1]">
       {/* Hero */}
       <div className="px-6 md:px-14 max-w-[1200px] mx-auto mb-24">
         <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">

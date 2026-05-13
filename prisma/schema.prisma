@@ -104,15 +104,18 @@ model Collection {
 }
 
 model Order {
-  id          String      @id @default(cuid())
-  customerName  String
-  customerEmail String
-  total       Int
-  status      String      @default("pending")
-  shippingAddress String?
-  items       OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id               String      @id @default(cuid())
+  customerName     String
+  customerEmail    String
+  total            Int
+  status           String      @default("pending")
+  shippingAddress  String?
+  paymentReference String?
+  paymentMethod    String?     // e.g. "bank_transfer"
+  itemsJson        String?     // JSON snapshot of cart at checkout (supports artwork, product, book)
+  items            OrderItem[] // optional links to Artwork rows (legacy)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 }
 
 model OrderItem {

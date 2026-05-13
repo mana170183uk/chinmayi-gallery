@@ -59,13 +59,14 @@ export async function POST(request: NextRequest) {
     const resend = new Resend(apiKey);
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1a1a1a;">
-        <h2 style="color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 8px;">New Enquiry — Chinmayi Gallery</h2>
+        <h2 style="color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 8px;">New Enquiry — ChinuN</h2>
         <p style="margin: 16px 0 4px;"><strong>Subject:</strong> ${escapeHtml(subject)}</p>
         <p style="margin: 4px 0;"><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p>
         <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e5e5;">
         <p style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e5e5;">
         <p style="font-size: 12px; color: #888;">Reply directly to this email to respond to ${escapeHtml(name)}.</p>
+        <p style="font-size: 12px; color: #888;">— chinun.uk</p>
       </div>
     `;
 
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
       from: FROM_EMAIL,
       to: [TO_EMAIL],
       replyTo: email,
-      subject: `[Chinmayi Gallery] ${subject} — from ${name}`,
+      subject: `[ChinuN] ${subject} — from ${name}`,
       html,
     });
 

@@ -139,15 +139,17 @@ export default function CartDrawer() {
                   £{total.toLocaleString()}
                 </strong>
               </div>
-              <button
-                className="w-full py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:shadow-lg"
+              <a
+                href="/checkout"
+                onClick={() => setCartOpen(false)}
+                className={`block w-full py-4 rounded-md text-center font-bold text-[13px] tracking-wider uppercase transition-all hover:shadow-lg ${items.length === 0 ? "pointer-events-none opacity-50" : ""}`}
                 style={{
                   background: "linear-gradient(135deg, var(--gold), var(--gold2))",
                   color: "#1A1830",
                 }}
               >
                 Proceed to Checkout
-              </button>
+              </a>
             </div>
           </motion.div>
         </>
