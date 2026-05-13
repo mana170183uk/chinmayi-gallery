@@ -5,6 +5,22 @@ import { prisma } from "@/lib/prisma";
 const TO_EMAIL = "chinmayi_n@yahoo.com";
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "ChinuN Orders <onboarding@resend.dev>";
 
+// Essex postcode area prefixes — must stay in sync with src/app/checkout/page.tsx
+// and docs/essex-postcodes.md
+const ESSEX_POSTCODE_PREFIXES = ["CM", "CO", "SS", "IG", "RM"] as const;
+
+function isEssexPostcode(postcode: string): boolean {
+  if (!postcode) return false;
+  const p = postcode.trim().toUpperCase().replace(/\s+/g, "");
+  return ESSEX_POSTCODE_PREFIXES.some((prefix) => p.startsWith(prefix));
+}
+
+function calcShipping(subtotal: number, postcode: string): { cost: number; reason: string } {
+  if (isEssexPostcode(postcode)) return { cost: 0, reason: "FREE — local Essex delivery" };
+  if (subtotal >= 75) return { cost: 0, reason: "FREE — UK orders over £75" };
+  return { cost: 5, reason: "£5 standard UK delivery" };
+}
+
 function genReference(): string {
   return `CHN-${Math.random().toString(36).slice(2, 7).toUpperCase()}-${Date.now().toString().slice(-4)}`;
 }
@@ -44,7 +60,9 @@ export async function POST(request: NextRequest) {
     customerName?: string;
     customerEmail?: string;
     shippingAddress?: string;
+    postcode?: string;
     items?: CheckoutItem[];
+    subtotal?: number;
     total?: number;
   };
   try {
@@ -56,11 +74,18 @@ export async function POST(request: NextRequest) {
   const name = (body.customerName || "").trim();
   const email = (body.customerEmail || "").trim();
   const address = (body.shippingAddress || "").trim();
+  const postcode = (body.postcode || "").trim();
   const items = body.items || [];
-  const total = typeof body.total === "number" ? body.total : items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const subtotal = typeof body.subtotal === "number" ? body.subtotal : items.reduce((s, i) => s + i.price * i.quantity, 0);
 
-  if (!name || !email || !address) {
-    return NextResponse.json({ error: "Name, email and shipping address are required." }, { status: 400 });
+  // Recompute shipping server-side so the client can't manipulate it
+  const shippingInfo = calcShipping(subtotal, postcode);
+  const shipping = shippingInfo.cost;
+  const shippingReason = shippingInfo.reason;
+  const total = subtotal + shipping;
+
+  if (!name || !email || !address || !postcode) {
+    return NextResponse.json({ error: "Name, email, shipping address and postcode are required." }, { status: 400 });
   }
   if (items.length === 0) {
     return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
@@ -109,7 +134,11 @@ export async function POST(request: NextRequest) {
       <table style="width:100%;border-collapse:collapse;margin-top:16px;">
         <thead><tr style="background:#f7f7f7;"><th style="padding:8px 12px;text-align:left;">Item</th><th style="padding:8px 12px;">Qty</th><th style="padding:8px 12px;text-align:right;">Subtotal</th></tr></thead>
         <tbody>${itemsHtml}</tbody>
-        <tfoot><tr><td colspan="2" style="padding:12px;text-align:right;font-weight:bold;">Total:</td><td style="padding:12px;text-align:right;font-weight:bold;color:#b8860b;">£${total.toLocaleString()}</td></tr></tfoot>
+        <tfoot>
+          <tr><td colspan="2" style="padding:8px 12px;text-align:right;color:#666;">Subtotal:</td><td style="padding:8px 12px;text-align:right;">£${subtotal.toLocaleString()}</td></tr>
+          <tr><td colspan="2" style="padding:8px 12px;text-align:right;color:#666;">Shipping (${escapeHtml(shippingReason)}):</td><td style="padding:8px 12px;text-align:right;">${shipping === 0 ? "FREE" : "£" + shipping.toLocaleString()}</td></tr>
+          <tr style="border-top:2px solid #b8860b;"><td colspan="2" style="padding:12px;text-align:right;font-weight:bold;">Total:</td><td style="padding:12px;text-align:right;font-weight:bold;color:#b8860b;">£${total.toLocaleString()}</td></tr>
+        </tfoot>
       </table>
       <p style="margin-top:24px;font-size:13px;color:#888;">Awaiting bank transfer. The customer has been emailed with payment instructions referencing <strong>${escapeHtml(reference)}</strong>.</p>
     </div>

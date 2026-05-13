@@ -19,12 +19,32 @@ interface CartItem {
 
 export const dynamic = "force-dynamic";
 
+const FLAT_SHIPPING = 5; // £5 flat for non-Essex UK orders
+
+// Essex postcode area prefixes — based on Royal Mail postcode areas that
+// cover Essex (Chelmsford, Colchester, Southend, Ilford, Romford).
+// Source / safe list — keep in sync with /shipping-returns and orders API.
+const ESSEX_POSTCODE_PREFIXES = ["CM", "CO", "SS", "IG", "RM"] as const;
+
+function isEssexPostcode(postcode: string): boolean {
+  if (!postcode) return false;
+  const p = postcode.trim().toUpperCase().replace(/\s+/g, "");
+  return ESSEX_POSTCODE_PREFIXES.some((prefix) => p.startsWith(prefix));
+}
+
+function calcShipping(subtotal: number, postcode: string): { cost: number; reason: string } {
+  if (isEssexPostcode(postcode)) return { cost: 0, reason: "FREE — local Essex delivery" };
+  if (subtotal >= 75) return { cost: 0, reason: "FREE — UK orders over £75" };
+  if (!postcode.trim()) return { cost: FLAT_SHIPPING, reason: `Estimated £${FLAT_SHIPPING} — confirm with your postcode` };
+  return { cost: FLAT_SHIPPING, reason: `£${FLAT_SHIPPING} standard UK delivery` };
+}
+
 export default function CheckoutPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const [hydrated, setHydrated] = useState(false);
   const [step, setStep] = useState<"review" | "details" | "payment" | "submitted">("review");
-  const [customer, setCustomer] = useState({ name: "", email: "", address: "" });
+  const [customer, setCustomer] = useState({ name: "", email: "", address: "", postcode: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
@@ -49,12 +69,14 @@ export default function CheckoutPage() {
   }, [step, reference]);
 
   const placeOrder = async () => {
-    if (!customer.name || !customer.email || !customer.address) {
-      setError("Please fill in your name, email and shipping address.");
+    if (!customer.name || !customer.email || !customer.address || !customer.postcode) {
+      setError("Please fill in your name, email, shipping address and postcode.");
       return;
     }
     setError("");
     setSubmitting(true);
+    const shipping = calcShipping(total, customer.postcode);
+    const grandTotal = total + shipping.cost;
     try {
       const res = await fetch("/api/orders", {
         method: "POST",
@@ -62,7 +84,8 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           customerName: customer.name,
           customerEmail: customer.email,
-          shippingAddress: customer.address,
+          shippingAddress: `${customer.address}, ${customer.postcode.toUpperCase()}`,
+          postcode: customer.postcode.toUpperCase(),
           items: items.map((ci) => ({
             id: ci.item.id,
             kind: ci.item.kind,
@@ -70,7 +93,10 @@ export default function CheckoutPage() {
             price: ci.item.price,
             quantity: ci.quantity,
           })),
-          total,
+          subtotal: total,
+          shipping: shipping.cost,
+          shippingReason: shipping.reason,
+          total: grandTotal,
         }),
       });
       if (!res.ok) {
@@ -152,20 +178,29 @@ export default function CheckoutPage() {
             </div>
             <div className="p-6 rounded-xl border h-fit" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
               <h3 className="font-semibold text-[16px] mb-4">Order Summary</h3>
-              <div className="flex justify-between text-[14px] mb-2">
-                <span style={{ color: "var(--text2)" }}>Subtotal</span>
-                <span>£{total.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-[14px] mb-4">
-                <span style={{ color: "var(--text2)" }}>Shipping</span>
-                <span style={{ color: total >= 75 ? "var(--emerald)" : "var(--text2)" }}>
-                  {total >= 75 ? "FREE" : "Calculated next step"}
-                </span>
-              </div>
-              <div className="border-t pt-4 flex justify-between" style={{ borderColor: "var(--border)" }}>
-                <span className="font-semibold">Total</span>
-                <strong className="font-[Playfair_Display] text-[24px]" style={{ color: "var(--gold)" }}>£{total.toLocaleString()}</strong>
-              </div>
+              {(() => {
+                const shipping = calcShipping(total, customer.postcode);
+                const isFree = shipping.cost === 0;
+                return (
+                  <>
+                    <div className="flex justify-between text-[14px] mb-2">
+                      <span style={{ color: "var(--text2)" }}>Subtotal</span>
+                      <span>£{total.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-[14px] mb-1">
+                      <span style={{ color: "var(--text2)" }}>Shipping</span>
+                      <span style={{ color: isFree ? "var(--emerald)" : "var(--text)" }}>
+                        {isFree ? "FREE" : `£${shipping.cost.toLocaleString()}`}
+                      </span>
+                    </div>
+                    <p className="text-[11px] mb-4" style={{ color: "var(--text3)" }}>{shipping.reason}</p>
+                    <div className="border-t pt-4 flex justify-between" style={{ borderColor: "var(--border)" }}>
+                      <span className="font-semibold">Total</span>
+                      <strong className="font-[Playfair_Display] text-[24px]" style={{ color: "var(--gold)" }}>£{(total + shipping.cost).toLocaleString()}</strong>
+                    </div>
+                  </>
+                );
+              })()}
               <button
                 onClick={() => setStep("details")}
                 className="w-full mt-6 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
@@ -202,7 +237,23 @@ export default function CheckoutPage() {
               </div>
               <div>
                 <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Shipping Address *</label>
-                <textarea rows={3} value={customer.address} onChange={(e) => setCustomer({ ...customer, address: e.target.value })} required placeholder="Street, town, postcode, country" className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none resize-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                <textarea rows={3} value={customer.address} onChange={(e) => setCustomer({ ...customer, address: e.target.value })} required placeholder="Street, town, country" className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none resize-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+              </div>
+              <div>
+                <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Postcode *</label>
+                <input
+                  value={customer.postcode}
+                  onChange={(e) => setCustomer({ ...customer, postcode: e.target.value })}
+                  required
+                  placeholder="e.g. CM1 1AB"
+                  className="w-full px-4 py-3 rounded-lg text-[14px] border outline-none uppercase focus:border-[var(--gold)]"
+                  style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}
+                />
+                {customer.postcode && (
+                  <p className="text-[11px] mt-2" style={{ color: isEssexPostcode(customer.postcode) ? "var(--emerald)" : "var(--text3)" }}>
+                    {isEssexPostcode(customer.postcode) ? "Essex postcode — free local delivery" : "Outside Essex — £5 standard UK delivery (free over £75)"}
+                  </p>
+                )}
               </div>
               {error && (
                 <div className="text-[13px] p-3 rounded-lg border" style={{ background: "rgba(239,68,68,0.08)", borderColor: "rgba(239,68,68,0.4)", color: "var(--rose)" }}>
@@ -213,8 +264,8 @@ export default function CheckoutPage() {
                 <button onClick={() => setStep("review")} className="px-6 py-3 rounded-md text-[12px] font-semibold tracking-wider uppercase border" style={{ borderColor: "var(--border)", color: "var(--text2)" }}>Back</button>
                 <button
                   onClick={() => {
-                    if (!customer.name || !customer.email || !customer.address) {
-                      setError("Please fill in your name, email and shipping address.");
+                    if (!customer.name || !customer.email || !customer.address || !customer.postcode) {
+                      setError("Please fill in your name, email, shipping address and postcode.");
                       return;
                     }
                     setError("");
@@ -231,14 +282,36 @@ export default function CheckoutPage() {
         )}
 
         {/* Step 3 — Payment (bank transfer) */}
-        {step === "payment" && items.length > 0 && (
+        {step === "payment" && items.length > 0 && (() => {
+          const shipping = calcShipping(total, customer.postcode);
+          const grandTotal = total + shipping.cost;
+          return (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-[640px] mx-auto">
             <h2 className="font-[Playfair_Display] text-[24px] font-semibold mb-2">Pay by UK bank transfer</h2>
             <p className="text-[14px] mb-6" style={{ color: "var(--text2)" }}>
-              Please send <strong style={{ color: "var(--gold)" }}>£{total.toLocaleString()}</strong> to the
+              Please send <strong style={{ color: "var(--gold)" }}>£{grandTotal.toLocaleString()}</strong> to the
               account below using the payment reference we&apos;ll send to your email. Your order will be
               despatched as soon as the transfer arrives.
             </p>
+
+            {/* Order summary with shipping */}
+            <div className="p-5 rounded-xl border mb-4" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
+              <div className="flex justify-between text-[14px] mb-2">
+                <span style={{ color: "var(--text2)" }}>Subtotal</span>
+                <span>£{total.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-[14px] mb-1">
+                <span style={{ color: "var(--text2)" }}>Shipping</span>
+                <span style={{ color: shipping.cost === 0 ? "var(--emerald)" : "var(--text)" }}>
+                  {shipping.cost === 0 ? "FREE" : `£${shipping.cost.toLocaleString()}`}
+                </span>
+              </div>
+              <p className="text-[11px] mb-3" style={{ color: "var(--text3)" }}>{shipping.reason}</p>
+              <div className="border-t pt-3 flex justify-between" style={{ borderColor: "var(--border)" }}>
+                <span className="font-semibold">Total to pay</span>
+                <strong className="font-[Playfair_Display] text-[20px]" style={{ color: "var(--gold)" }}>£{grandTotal.toLocaleString()}</strong>
+              </div>
+            </div>
 
             <div className="p-6 rounded-xl border space-y-3" style={{ background: "var(--bg-card)", borderColor: "var(--gold)", boxShadow: "0 0 24px rgba(212,168,67,0.08)" }}>
               <h3 className="text-[11px] uppercase tracking-[3px] font-semibold mb-3" style={{ color: "var(--gold)" }}>Bank Details</h3>
@@ -250,7 +323,7 @@ export default function CheckoutPage() {
                 <span style={{ color: "var(--text3)" }}>Account Number</span>
                 <span className="font-mono">41697455</span>
                 <span style={{ color: "var(--text3)" }}>Amount</span>
-                <span className="font-semibold" style={{ color: "var(--gold)" }}>£{total.toLocaleString()}</span>
+                <span className="font-semibold" style={{ color: "var(--gold)" }}>£{grandTotal.toLocaleString()}</span>
               </div>
             </div>
 
@@ -276,7 +349,8 @@ export default function CheckoutPage() {
               </button>
             </div>
           </motion.div>
-        )}
+          );
+        })()}
 
         {/* Step 4 — Submitted */}
         {step === "submitted" && (
@@ -298,7 +372,7 @@ export default function CheckoutPage() {
                 <span style={{ color: "var(--text3)" }}>Account Number</span>
                 <span className="font-mono">41697455</span>
                 <span style={{ color: "var(--text3)" }}>Amount</span>
-                <span className="font-semibold" style={{ color: "var(--gold)" }}>£{total.toLocaleString()}</span>
+                <span className="font-semibold" style={{ color: "var(--gold)" }}>£{(total + calcShipping(total, customer.postcode).cost).toLocaleString()}</span>
               </div>
             </div>
 
