@@ -30,6 +30,9 @@ interface StoreState {
   lightbox: Artwork | null;
 }
 
+const CART_STORAGE_KEY = "chinun-cart";
+const WISHLIST_STORAGE_KEY = "chinun-wishlist";
+
 let state: StoreState = {
   cart: [],
   wishlist: [],
@@ -40,8 +43,34 @@ let state: StoreState = {
 
 const listeners: Set<Listener> = new Set();
 
+function persistCart() {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.cart));
+    localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(state.wishlist));
+  } catch {
+    // ignore quota errors / private mode
+  }
+}
+
 function notify() {
+  persistCart();
   listeners.forEach((l) => l());
+}
+
+// Hydrate from localStorage on first import in the browser
+if (typeof window !== "undefined") {
+  try {
+    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+    const savedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
+    state = {
+      ...state,
+      cart: savedCart ? JSON.parse(savedCart) : [],
+      wishlist: savedWishlist ? JSON.parse(savedWishlist) : [],
+    };
+  } catch {
+    // ignore parse errors
+  }
 }
 
 export function subscribe(listener: Listener) {

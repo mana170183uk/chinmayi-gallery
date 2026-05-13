@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   getState,
   subscribe,
@@ -139,7 +140,7 @@ export default function CartDrawer() {
                   £{total.toLocaleString()}
                 </strong>
               </div>
-              <a
+              <Link
                 href="/checkout"
                 onClick={() => setCartOpen(false)}
                 className={`block w-full py-4 rounded-md text-center font-bold text-[13px] tracking-wider uppercase transition-all hover:shadow-lg ${items.length === 0 ? "pointer-events-none opacity-50" : ""}`}
@@ -149,7 +150,7 @@ export default function CartDrawer() {
                 }}
               >
                 Proceed to Checkout
-              </a>
+              </Link>
             </div>
           </motion.div>
         </>

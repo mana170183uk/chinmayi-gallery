@@ -22,6 +22,7 @@ export const dynamic = "force-dynamic";
 export default function CheckoutPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
   const [step, setStep] = useState<"review" | "details" | "payment" | "submitted">("review");
   const [customer, setCustomer] = useState({ name: "", email: "", address: "" });
   const [submitting, setSubmitting] = useState(false);
@@ -33,6 +34,7 @@ export default function CheckoutPage() {
       const s = getState();
       setItems(s.cart);
       setTotal(getCartTotal());
+      setHydrated(true);
     };
     sync();
     const unsub = subscribe(sync);
@@ -107,8 +109,8 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {/* Empty cart */}
-        {items.length === 0 && step !== "submitted" && (
+        {/* Empty cart (only after hydration completes — avoids the flash) */}
+        {hydrated && items.length === 0 && step !== "submitted" && (
           <div className="text-center py-20 rounded-2xl border" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
             <div className="text-5xl mb-4 opacity-60">🛍️</div>
             <p className="text-[16px] mb-2" style={{ color: "var(--text2)" }}>Your cart is empty.</p>
@@ -116,6 +118,9 @@ export default function CheckoutPage() {
               Browse the Gallery
             </Link>
           </div>
+        )}
+        {!hydrated && step === "review" && (
+          <div className="text-center py-20" style={{ color: "var(--text3)" }}>Loading your cart...</div>
         )}
 
         {/* Step 1 — Review */}
