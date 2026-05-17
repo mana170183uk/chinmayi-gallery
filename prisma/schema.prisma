@@ -26,6 +26,7 @@ model Artwork {
   collection    String?
   featured      Boolean  @default(false)
   homePick      Boolean  @default(false)
+  heroPick      Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -72,25 +73,37 @@ model ProductImage {
 
 // Books with PDF and Amazon URL
 model Book {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   title       String
-  slug        String   @unique
-  author      String   @default("Chinmayi")
+  slug        String      @unique
+  author      String      @default("Chinmayi")
   description String
   price       Int?
-  imageUrl    String?  // cover image
-  pdfUrl      String?  // uploaded PDF
-  amazonUrl   String?  // Amazon purchase link
-  gradient    String   @default("linear-gradient(135deg, #667eea, #764ba2)")
-  badge       String?  // "new" | "bestseller"
+  imageUrl    String?     // primary cover image
+  pdfUrl      String?     // uploaded PDF
+  amazonUrl   String?     // Amazon purchase link
+  gradient    String      @default("linear-gradient(135deg, #667eea, #764ba2)")
+  badge       String?     // "new" | "bestseller"
   pages       Int?
   isbn        String?
   publishYear Int?
-  inStock     Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  inStock     Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  images      BookImage[]
 
   @@index([slug])
+}
+
+model BookImage {
+  id        String @id @default(cuid())
+  bookId    String
+  url       String
+  label     String?  // e.g. "Back cover", "Sample page", "Contents"
+  sortOrder Int    @default(0)
+  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
 }
 
 model Collection {

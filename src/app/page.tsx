@@ -1,7 +1,14 @@
 import { getArtworks, getCollections, getTestimonials } from "@/lib/data";
 import HomeClient from "@/components/HomeClient";
+import type { Artwork } from "@/data/artworks";
 
 export const dynamic = "force-dynamic";
+
+interface ArtworkWithFlags extends Artwork {
+  featured?: boolean;
+  homePick?: boolean;
+  heroPick?: boolean;
+}
 
 export default async function HomePage() {
   const [allArtworks, collections, testimonials] = await Promise.all([
@@ -12,37 +19,46 @@ export default async function HomePage() {
 
   // Public homepage: only artworks with real images, exclude NFS/Unavailable.
   // Sold paintings remain visible in their normal categories.
-  const artworks = allArtworks.filter(
+  const artworks = (allArtworks as ArtworkWithFlags[]).filter(
     (a) => Boolean(a.imageUrl) && a.badge !== "unavailable" && a.badge !== "nfs"
   );
 
-  // Featured Masterpiece: admin selects via featured=true; falls back to first non-sold.
+  // ── Featured Masterpiece: admin selects via featured=true ──
   const featured =
-    artworks.find((a) => (a as { featured?: boolean }).featured === true && a.badge !== "sold") ||
+    artworks.find((a) => a.featured === true && a.badge !== "sold") ||
     artworks.find((a) => a.badge !== "sold") ||
     artworks[0];
 
-  // Curated Artworks: one per gallery category.
-  // Order: Landscape, Portrait, Palm Leaf Etching, Indian Styled Art, Contemporary & Nature, Prints.
-  const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
-  const isPrint = (a: typeof artworks[number]) => ["print", "prints"].includes(norm(a.category));
-  const categoryOrder = ["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"];
-  const featuredWorks = categoryOrder
-    .map((cat) => {
-      const inCat = artworks.filter((a) => norm(a.category) === cat && a.badge !== "sold");
-      // Prefer admin-picked
-      return inCat.find((a) => (a as { homePick?: boolean }).homePick === true) || inCat[0];
-    })
-    .filter(Boolean);
+  // ── Hero (top-right 4 panel): admin picks via heroPick=true ──
+  // Fill any remaining slots with latest non-sold artworks not already picked.
+  const heroPicked = artworks.filter((a) => a.heroPick === true && a.badge !== "sold");
+  const heroFillers = artworks.filter(
+    (a) => a.badge !== "sold" && !heroPicked.some((h) => h.id === a.id)
+  );
+  const heroArtworks = [...heroPicked, ...heroFillers].slice(0, 4);
 
-  // Add one print as well
-  const printsInCat = artworks.filter((a) => isPrint(a) && a.badge !== "sold");
-  const printPick = printsInCat.find((a) => (a as { homePick?: boolean }).homePick === true) || printsInCat[0];
-  if (printPick) featuredWorks.push(printPick);
+  // ── Curated Artworks section: admin picks via homePick=true ──
+  // If ANY artwork is homePick=true site-wide, show ONLY those (gives the artist
+  // full control: untick the checkbox to remove from the section).
+  // If NONE are picked, fall back to one per category so the page isn't empty.
+  const anyHomePicked = artworks.some((a) => a.homePick === true && a.badge !== "sold");
+  let featuredWorks: ArtworkWithFlags[];
+  if (anyHomePicked) {
+    featuredWorks = artworks.filter((a) => a.homePick === true && a.badge !== "sold");
+  } else {
+    const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
+    const isPrint = (a: ArtworkWithFlags) => ["print", "prints"].includes(norm(a.category));
+    const categoryOrder = ["landscape", "portrait", "palm-leaf-etching", "indian-styled-art", "contemporary"];
+    featuredWorks = categoryOrder
+      .map((cat) => artworks.find((a) => norm(a.category) === cat && a.badge !== "sold"))
+      .filter((a): a is ArtworkWithFlags => Boolean(a));
+    const firstPrint = artworks.find((a) => isPrint(a) && a.badge !== "sold");
+    if (firstPrint) featuredWorks.push(firstPrint);
+  }
 
   return (
     <HomeClient
-      artworks={JSON.parse(JSON.stringify(artworks))}
+      artworks={JSON.parse(JSON.stringify(heroArtworks))}
       featuredWorks={JSON.parse(JSON.stringify(featuredWorks))}
       featured={JSON.parse(JSON.stringify(featured))}
       collections={JSON.parse(JSON.stringify(collections))}

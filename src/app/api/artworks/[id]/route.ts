@@ -53,6 +53,7 @@ export async function PUT(
       ...(body.collection && { collection: body.collection }),
       ...(body.featured !== undefined && { featured: Boolean(body.featured) }),
       ...(body.homePick !== undefined && { homePick: Boolean(body.homePick) }),
+      ...(body.heroPick !== undefined && { heroPick: Boolean(body.heroPick) }),
     },
   });
 

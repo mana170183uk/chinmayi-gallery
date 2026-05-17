@@ -75,8 +75,8 @@ export default function Navbar() {
               ChinuN
             </span>
             <span
-              className="text-[14px] font-semibold tracking-[2.5px] uppercase mt-2 transition-colors"
-              style={{ color: "var(--text)" }}
+              className="font-[Cormorant_Garamond] text-[18px] font-bold italic tracking-[1px] mt-1 transition-colors"
+              style={{ color: "var(--gold)", textShadow: "0 1px 6px rgba(212,168,67,0.25)" }}
             >
               By Artist Chinmayi Nath
             </span>

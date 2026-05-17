@@ -17,6 +17,7 @@ export interface Artwork {
   collection?: string;
   featured?: boolean;
   homePick?: boolean;
+  heroPick?: boolean;
 }
 
 export const artworks: Artwork[] = [

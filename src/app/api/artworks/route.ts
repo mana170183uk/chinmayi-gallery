@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
         collection: body.collection || body.category || "contemporary",
         featured: Boolean(body.featured),
         homePick: Boolean(body.homePick),
+        heroPick: Boolean(body.heroPick),
       },
     });
 

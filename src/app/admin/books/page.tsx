@@ -3,10 +3,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface BookImage {
+  id: string;
+  url: string;
+  label?: string | null;
+  sortOrder: number;
+}
+
 interface Book {
   id: string; title: string; author: string; description: string; price?: number | null;
   imageUrl?: string | null; pdfUrl?: string | null; amazonUrl?: string | null;
   gradient: string; badge?: string | null; pages?: number | null; isbn?: string | null; publishYear?: number | null;
+  images?: BookImage[];
+}
+
+interface AdditionalImage {
+  url: string;
+  label: string;
 }
 
 const emptyForm = { title: "", author: "Chinmayi", description: "", price: "", imageUrl: "", pdfUrl: "", amazonUrl: "", badge: "", pages: "", isbn: "", publishYear: "", gradient: "linear-gradient(135deg, #667eea, #764ba2)" };
@@ -16,7 +29,22 @@ export default function AdminBooksPage() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [additionalImages, setAdditionalImages] = useState<AdditionalImage[]>([]);
   const [uploading, setUploading] = useState<string | null>(null);
+  const [uploadingAdditional, setUploadingAdditional] = useState(false);
+
+  const handleAdditionalUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setUploadingAdditional(true);
+    const fd = new FormData(); fd.append("file", file);
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const d = await res.json();
+      if (res.ok) setAdditionalImages(prev => [...prev, { url: d.url, label: "" }]);
+      else alert(d.error);
+    } catch { alert("Upload failed"); }
+    setUploadingAdditional(false);
+  };
 
   const load = useCallback(async () => {
     try { const res = await fetch("/api/books"); setItems(await res.json()); } catch {}
@@ -38,10 +66,10 @@ export default function AdminBooksPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const body = { ...form, id: editId };
+    const body = { ...form, id: editId, additionalImages };
     if (editId) await fetch("/api/books", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     else await fetch("/api/books", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    setShowForm(false); setEditId(null); setForm(emptyForm); load();
+    setShowForm(false); setEditId(null); setForm(emptyForm); setAdditionalImages([]); load();
   };
 
   const handleDelete = async (id: string) => {
@@ -54,7 +82,7 @@ export default function AdminBooksPage() {
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div><h1 className="text-[28px] font-semibold">Books</h1><p className="text-[14px]" style={{ color: "var(--text3)" }}>{items.length} total books</p></div>
-        <button onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); }} className="px-6 py-2.5 rounded-lg text-[13px] font-semibold tracking-wide transition-all hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>+ Add Book</button>
+        <button onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); setAdditionalImages([]); }} className="px-6 py-2.5 rounded-lg text-[13px] font-semibold tracking-wide transition-all hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>+ Add Book</button>
       </div>
 
       {/* Form Modal */}
@@ -116,6 +144,45 @@ export default function AdminBooksPage() {
                   </div>
                 </div>
 
+                {/* Additional images (back cover, contents, sample pages) */}
+                <div>
+                  <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>
+                    Additional Images <span className="normal-case font-normal">(back cover, contents page, sample pages, etc.)</span>
+                  </label>
+                  <div className="flex gap-3 flex-wrap mb-3">
+                    {additionalImages.map((img, i) => (
+                      <div key={i} className="relative">
+                        <div className="w-20 h-28 rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)" }}>
+                          <img src={img.url} alt={img.label || `Image ${i + 1}`} className="w-full h-full object-cover" />
+                        </div>
+                        <input
+                          value={img.label}
+                          onChange={(e) => setAdditionalImages(prev => prev.map((im, idx) => idx === i ? { ...im, label: e.target.value } : im))}
+                          placeholder="Label"
+                          className="w-20 mt-1 px-1 py-0.5 rounded text-[10px] border outline-none text-center"
+                          style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setAdditionalImages(prev => prev.filter((_, idx) => idx !== i))}
+                          className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px]"
+                          style={{ background: "var(--rose)" }}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                    <label className={`flex flex-col items-center justify-center w-20 h-28 rounded-lg border-2 border-dashed cursor-pointer transition-all hover:border-[var(--gold)] ${uploadingAdditional ? "opacity-50" : ""}`} style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
+                      <input type="file" accept="image/*" onChange={handleAdditionalUpload} className="hidden" />
+                      {uploadingAdditional ? (
+                        <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }} />
+                      ) : (
+                        <span className="text-xl">+</span>
+                      )}
+                    </label>
+                  </div>
+                </div>
+
                 {/* PDF Upload */}
                 <div>
                   <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>📄 PDF File</label>
@@ -166,7 +233,12 @@ export default function AdminBooksPage() {
                 {book.pdfUrl && <span>· PDF ✓</span>}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => { setForm({ title: book.title, author: book.author, description: book.description, price: book.price ? String(book.price) : "", imageUrl: book.imageUrl || "", pdfUrl: book.pdfUrl || "", amazonUrl: book.amazonUrl || "", badge: book.badge || "", pages: book.pages ? String(book.pages) : "", isbn: book.isbn || "", publishYear: book.publishYear ? String(book.publishYear) : "", gradient: book.gradient }); setEditId(book.id); setShowForm(true); }} className="text-[12px] hover:text-[var(--gold)]" style={{ color: "var(--text2)" }}>Edit</button>
+                <button onClick={() => {
+                  setForm({ title: book.title, author: book.author, description: book.description, price: book.price ? String(book.price) : "", imageUrl: book.imageUrl || "", pdfUrl: book.pdfUrl || "", amazonUrl: book.amazonUrl || "", badge: book.badge || "", pages: book.pages ? String(book.pages) : "", isbn: book.isbn || "", publishYear: book.publishYear ? String(book.publishYear) : "", gradient: book.gradient });
+                  setAdditionalImages((book.images || []).map(img => ({ url: img.url, label: img.label || "" })));
+                  setEditId(book.id);
+                  setShowForm(true);
+                }} className="text-[12px] hover:text-[var(--gold)]" style={{ color: "var(--text2)" }}>Edit</button>
                 <button onClick={() => handleDelete(book.id)} className="text-[12px] hover:text-[var(--rose)]" style={{ color: "var(--text3)" }}>Delete</button>
               </div>
             </div>

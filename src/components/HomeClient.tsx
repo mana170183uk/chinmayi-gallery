@@ -212,9 +212,25 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
         </motion.div>
       </section>
 
-      {/* ═══════ TESTIMONIALS ═══════ */}
+      {/* ═══════ NEWSLETTER (Join the Inner Circle) — above Testimonials ═══════ */}
+      <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
+            <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Stay Connected
+          </div>
+          <h2 className="text-[clamp(30px,4vw,50px)] font-semibold">Join the Inner Circle</h2>
+        </div>
+        <div className="max-w-[560px] mx-auto text-center">
+          <p className="text-[16px] mb-8" style={{ color: "var(--text2)" }}>
+            Be the first to see new paintings, receive exhibition invitations and get exclusive access to limited-edition prints.
+          </p>
+          <NewsletterForm />
+        </div>
+      </section>
+
+      {/* ═══════ TESTIMONIALS — bottom of page ═══════ */}
       {testimonials.length > 0 && (
-        <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
+        <section className="py-24 px-6 md:px-14 relative z-[1]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
               <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> What Collectors Say
@@ -238,22 +254,6 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
           </div>
         </section>
       )}
-
-      {/* ═══════ NEWSLETTER ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
-            <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Stay Connected
-          </div>
-          <h2 className="text-[clamp(30px,4vw,50px)] font-semibold">Join the Inner Circle</h2>
-        </div>
-        <div className="max-w-[560px] mx-auto text-center">
-          <p className="text-[16px] mb-8" style={{ color: "var(--text2)" }}>
-            Be the first to see new paintings, receive exhibition invitations and get exclusive access to limited-edition prints.
-          </p>
-          <NewsletterForm />
-        </div>
-      </section>
     </>
   );
 }

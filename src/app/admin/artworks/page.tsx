@@ -36,13 +36,14 @@ interface FormData {
   badge: string;
   featured: boolean;
   homePick: boolean;
+  heroPick: boolean;
 }
 
 const emptyForm: FormData = {
   title: "", category: "landscape", medium: "", dimensions: "",
   year: new Date().getFullYear().toString(), price: "", framedPrice: "", description: "",
   gradient: gradientPresets[0].value, imageUrl: "", aspectRatio: "3/4", badge: "",
-  featured: false, homePick: false,
+  featured: false, homePick: false, heroPick: false,
 };
 
 const categoryDisplay: Record<string, string> = {
@@ -159,6 +160,7 @@ export default function AdminArtworksPage() {
       badge: art.badge || "",
       featured: Boolean(a.featured),
       homePick: Boolean(a.homePick),
+      heroPick: Boolean(a.heroPick),
     });
     setEditId(art.id);
     setShowForm(true);
@@ -375,9 +377,25 @@ export default function AdminArtworksPage() {
                 </div>
 
                 {/* Homepage placement options */}
-                <div className="p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
-                  <div className="text-[12px] uppercase tracking-wider font-semibold mb-3" style={{ color: "var(--gold)" }}>Homepage Placement</div>
-                  <label className="flex items-start gap-3 cursor-pointer mb-3">
+                <div className="p-4 rounded-lg border space-y-3" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+                  <div className="text-[12px] uppercase tracking-wider font-semibold" style={{ color: "var(--gold)" }}>Homepage Placement</div>
+
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.heroPick}
+                      onChange={(e) => setForm({ ...form, heroPick: e.target.checked })}
+                      className="mt-1 w-4 h-4 cursor-pointer accent-[var(--gold)]"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold">Top 4 — Hero panel (next to the welcome message)</div>
+                      <div className="text-[11px]" style={{ color: "var(--text3)" }}>
+                        Tick on up to 4 paintings to choose exactly which appear in the hero grid at the top of the home page. If less than 4 are ticked, the rest auto-fill from your latest work.
+                      </div>
+                    </div>
+                  </label>
+
+                  <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={form.homePick}
@@ -385,12 +403,13 @@ export default function AdminArtworksPage() {
                       className="mt-1 w-4 h-4 cursor-pointer accent-[var(--gold)]"
                     />
                     <div>
-                      <div className="text-[13px] font-semibold">Show on home page (Curated Artworks)</div>
+                      <div className="text-[13px] font-semibold">Curated Artworks section</div>
                       <div className="text-[11px]" style={{ color: "var(--text3)" }}>
-                        If selected, this piece will appear in the homepage Curated Artworks grid for its category. Otherwise the system auto-picks one per category.
+                        Tick on the paintings you want to feature in the home page Curated Artworks grid. Once you tick ANY artwork, only ticked artworks appear there — untick to remove. If none are ticked, the system shows one per category automatically.
                       </div>
                     </div>
                   </label>
+
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
