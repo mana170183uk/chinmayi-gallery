@@ -55,7 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Loading state
   if (authenticated === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-[72px] relative z-[1]">
+      <div className="min-h-screen flex items-center justify-center relative z-[1]">
         <div className="text-center">
           <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin mx-auto mb-4" style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }} />
           <p className="text-[14px]" style={{ color: "var(--text3)" }}>Verifying access...</p>
@@ -65,11 +65,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen pt-[72px] flex relative z-[1]">
+    <div className="min-h-screen flex relative z-[1]">
       {/* Sidebar */}
-      <aside className="w-64 fixed top-[72px] left-0 bottom-0 border-r overflow-y-auto hidden lg:block" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
-        <div className="p-6">
-          <h3 className="text-[18px] font-semibold mb-1">Admin Panel</h3>
+      <aside className="w-64 fixed top-0 left-0 bottom-0 border-r overflow-y-auto hidden lg:flex lg:flex-col" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
+        {/* Brand header inside sidebar */}
+        <Link href="/admin" className="flex items-center gap-3 px-5 py-5 border-b" style={{ borderColor: "var(--border)" }}>
+          <img src="/chinun-logo.jpg" alt="ChinuN" className="h-10 w-10 rounded-lg object-cover" />
+          <div>
+            <div className="font-[Playfair_Display] text-[18px] font-bold leading-none" style={{ color: "var(--gold)" }}>ChinuN</div>
+            <div className="text-[10px] tracking-[2px] uppercase mt-1" style={{ color: "var(--text3)" }}>Admin Panel</div>
+          </div>
+        </Link>
+        <div className="p-6 pb-3">
           <p className="text-[12px]" style={{ color: "var(--text3)" }}>Manage your gallery</p>
         </div>
         <nav className="px-3 pb-6">

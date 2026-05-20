@@ -451,6 +451,7 @@ export default function AdminArtworksPage() {
                 <th className="text-left px-6 py-3 font-medium text-[12px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>Category</th>
                 <th className="text-left px-6 py-3 font-medium text-[12px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>Price</th>
                 <th className="text-left px-6 py-3 font-medium text-[12px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>Status</th>
+                <th className="text-left px-6 py-3 font-medium text-[12px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>Home</th>
                 <th className="text-right px-6 py-3 font-medium text-[12px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>Actions</th>
               </tr>
             </thead>
@@ -476,6 +477,23 @@ export default function AdminArtworksPage() {
                     }`}>
                       {art.badge === "nfs" ? "NFS" : (art.badge || "Available")}
                     </span>
+                  </td>
+                  <td className="px-6 py-3">
+                    {(() => {
+                      const a = art as unknown as { heroPick?: boolean; homePick?: boolean; featured?: boolean };
+                      const tags: { label: string; bg: string; color: string }[] = [];
+                      if (a.heroPick) tags.push({ label: "Hero", bg: "rgba(212,168,67,0.18)", color: "var(--gold)" });
+                      if (a.homePick) tags.push({ label: "Curated", bg: "rgba(34,197,94,0.15)", color: "#22c55e" });
+                      if (a.featured) tags.push({ label: "★ Featured", bg: "rgba(244,114,182,0.18)", color: "#f472b6" });
+                      if (tags.length === 0) return <span className="text-[11px]" style={{ color: "var(--text3)" }}>—</span>;
+                      return (
+                        <div className="flex flex-col gap-1">
+                          {tags.map(t => (
+                            <span key={t.label} className="text-[10px] px-2 py-0.5 rounded font-semibold tracking-wider uppercase" style={{ background: t.bg, color: t.color }}>{t.label}</span>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="px-6 py-3 text-right">
                     <button onClick={() => handleEdit(art)} className="px-3 py-1 rounded text-[12px] font-medium mr-2 transition-colors hover:text-[var(--gold)]" style={{ color: "var(--text2)" }}>

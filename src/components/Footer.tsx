@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const galleryLinks = [
   { label: "Art Gallery", href: "/gallery" },
@@ -24,6 +27,9 @@ const supportLinks = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  // Don't render the public footer on admin routes
+  if (pathname?.startsWith("/admin")) return null;
   return (
     <footer style={{ background: "var(--footer-bg)" }} className="pt-20 pb-10 px-6 md:px-14 text-[#9B98B0]">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-10 border-b border-white/[0.06]">

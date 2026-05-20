@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getState, subscribe, toggleTheme, setCartOpen } from "@/lib/store";
 
 const links = [
@@ -16,10 +17,14 @@ const links = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Hide the public navbar entirely on admin routes — admin has its own sidebar
+  if (pathname?.startsWith("/admin")) return null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -75,8 +80,8 @@ export default function Navbar() {
               ChinuN
             </span>
             <span
-              className="font-[Cormorant_Garamond] text-[18px] font-bold italic tracking-[1px] mt-1 transition-colors"
-              style={{ color: "var(--gold)", textShadow: "0 1px 6px rgba(212,168,67,0.25)" }}
+              className="font-[Playfair_Display] text-[16px] font-bold tracking-[2px] uppercase mt-1.5 transition-colors"
+              style={{ color: "var(--gold)", textShadow: "0 1px 6px rgba(212,168,67,0.3)" }}
             >
               By Artist Chinmayi Nath
             </span>
