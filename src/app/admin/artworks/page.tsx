@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { upload } from "@vercel/blob/client";
 import { artworks as initialArtworks } from "@/data/artworks";
 import type { Artwork } from "@/data/artworks";
 import { fetchArtworks, createArtwork, updateArtwork, deleteArtwork } from "@/lib/api";
@@ -90,17 +91,22 @@ export default function AdminArtworksPage() {
     if (!file) return;
 
     setUploading(true);
-    const formDataUpload = new window.FormData();
-    formDataUpload.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formDataUpload });
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.error || "Upload failed");
-        return;
-      }
-      const data = await res.json();
+      // Use client-direct upload for any size, bypasses Vercel's 4MB function payload limit
+      const safeName = file.name
+        .replace(/\.[^.]+$/, "")
+        .replace(/[^a-zA-Z0-9-_]/g, "-")
+        .toLowerCase();
+      const ext = file.name.split(".").pop() || "jpg";
+      const pathname = `artworks/${safeName}.${ext}`;
+
+      const blob = await upload(pathname, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/client",
+      });
+
+      const data = { url: blob.url };
       // Auto-detect image dimensions and aspect ratio
       const img = new window.Image();
       img.onload = () => {
@@ -136,8 +142,9 @@ export default function AdminArtworksPage() {
         setForm((prev) => ({ ...prev, imageUrl: data.url }));
       };
       img.src = data.url;
-    } catch {
-      alert("Upload failed. Please try again.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      alert(`Upload failed: ${msg}\n\nIf the file is very large, try a smaller version (under 60 MB).`);
     } finally {
       setUploading(false);
     }

@@ -65,6 +65,13 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             <div className="mb-2">
               {artwork.badge === "sold" ? (
                 <div className="font-[Playfair_Display] text-[38px] font-bold" style={{ color: "var(--rose)" }}>Sold</div>
+              ) : artwork.badge === "nfs" || artwork.badge === "unavailable" ? (
+                <div>
+                  <div className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--text2)" }}>Not For Sale</div>
+                  <div className="text-[13px] mt-1" style={{ color: "var(--text3)" }}>
+                    This piece is part of the artist&rsquo;s private collection (NFS = Not For Sale).
+                  </div>
+                </div>
               ) : artwork.price || artwork.framedPrice ? (
                 <div className="space-y-1">
                   {artwork.price > 0 && (
@@ -87,7 +94,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             </div>
             <div className="text-[12px] mb-8" style={{ color: "var(--text3)" }}>Certificate of Authenticity included</div>
 
-            {artwork.badge !== "sold" && (
+            {artwork.badge !== "sold" && artwork.badge !== "nfs" && artwork.badge !== "unavailable" && (
               <div className="flex gap-3 items-center flex-wrap mb-10">
                 <button onClick={() => addToCart(artwork)} className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Add to Cart</button>
                 <Link href={`/contact?subject=Make%20an%20Offer&item=${encodeURIComponent(artwork.title)}`} className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>Make an Offer</Link>
@@ -123,7 +130,9 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             <div className="mt-6 p-4 rounded-lg border" style={{ background: "var(--bg2)", borderColor: "var(--border)" }}>
               <div className="text-[11px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>Postage</div>
               <p className="text-[13px] leading-relaxed" style={{ color: "var(--text2)" }}>
-                Postal charges are not included. Free delivery within Essex. A minimal charge applies for other locations in the UK and other countries.
+                Postage is charged separately and shown at checkout.
+                Local delivery within Essex is free. UK deliveries outside Essex have a small flat-rate postage fee,
+                and international orders are charged at standard tracked-shipping rates based on the destination country.
               </p>
             </div>
           </motion.div>

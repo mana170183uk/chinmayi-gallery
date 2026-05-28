@@ -125,9 +125,11 @@ export default function ArtworkCard({ artwork, index }: Props) {
               <span className="font-semibold text-[13px] whitespace-nowrap" style={{ color: "#FFD66B", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
                 {artwork.badge === "sold"
                   ? "Sold"
-                  : artwork.price
-                    ? `£${artwork.price.toLocaleString()}`
-                    : "Contact"}
+                  : artwork.badge === "nfs" || artwork.badge === "unavailable"
+                    ? "Not For Sale"
+                    : artwork.price
+                      ? `£${artwork.price.toLocaleString()}`
+                      : "Enquire"}
               </span>
             </div>
           </div>

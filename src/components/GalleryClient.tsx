@@ -104,6 +104,29 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         </select>
       </motion.div>
 
+      {/* Legend explaining badges (NFS in particular) */}
+      <div className="max-w-[1440px] mx-auto mb-6 flex flex-wrap items-center justify-center gap-3 text-[12px]" style={{ color: "var(--text3)" }}>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase text-white" style={{ background: "#22c55e" }}>Available</span>
+          for purchase
+        </span>
+        <span className="opacity-50">|</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase text-white" style={{ background: "#3b82f6" }}>Print</span>
+          limited-edition print
+        </span>
+        <span className="opacity-50">|</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase" style={{ background: "rgba(120,120,128,0.5)", color: "rgba(255,255,255,0.85)" }}>NFS</span>
+          Not For Sale &mdash; artist&rsquo;s private collection
+        </span>
+        <span className="opacity-50">|</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase text-white" style={{ background: "var(--rose)" }}>Sold</span>
+          already in a collection
+        </span>
+      </div>
+
       <div className="masonry-grid max-w-[1440px] mx-auto">
         {filtered.map((art, i) => (
           <ArtworkCard key={art.id} artwork={art} index={i} />

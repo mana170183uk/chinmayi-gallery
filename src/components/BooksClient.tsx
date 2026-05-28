@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
 
@@ -35,7 +35,9 @@ function BookCard({ book, index }: { book: Book; index: number }) {
     ...(book.images || []),
   ];
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const activeImage = allImages[selectedIdx];
+  const extraCount = Math.max(allImages.length - 1, 0);
 
   return (
     <motion.div
@@ -46,8 +48,13 @@ function BookCard({ book, index }: { book: Book; index: number }) {
       className="rounded-xl overflow-hidden border group transition-all hover:-translate-y-2"
       style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
     >
-      {/* Cover Image (or selected thumbnail) */}
-      <div className="relative aspect-[3/4] overflow-hidden" style={{ background: book.gradient }}>
+      {/* Cover Image (or selected thumbnail) — click to enlarge */}
+      <button
+        type="button"
+        onClick={() => allImages.length > 0 && setLightboxOpen(true)}
+        className="block w-full text-left relative aspect-[3/4] overflow-hidden cursor-zoom-in"
+        style={{ background: book.gradient }}
+      >
         {activeImage && (
           <img
             src={activeImage.url}
@@ -67,6 +74,14 @@ function BookCard({ book, index }: { book: Book; index: number }) {
             {book.badge}
           </span>
         )}
+        {extraCount > 0 && (
+          <span
+            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md z-10"
+            style={{ background: "rgba(0,0,0,0.55)", color: "#fff" }}
+          >
+            +{extraCount} {extraCount === 1 ? "page" : "pages"}
+          </span>
+        )}
         {activeImage?.label && selectedIdx > 0 && (
           <div
             className="absolute bottom-2 left-2 px-2 py-1 rounded text-[10px] font-medium backdrop-blur-md"
@@ -75,27 +90,73 @@ function BookCard({ book, index }: { book: Book; index: number }) {
             {activeImage.label}
           </div>
         )}
-      </div>
+      </button>
 
-      {/* Thumbnail strip — only when there are extra images */}
+      {/* Thumbnail strip — larger, more discoverable when there are extra images */}
       {allImages.length > 1 && (
-        <div className="flex gap-2 px-4 py-2 overflow-x-auto border-b" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
-          {allImages.map((img, i) => (
-            <button
-              key={img.id}
-              onClick={() => setSelectedIdx(i)}
-              className="flex-shrink-0 w-12 h-16 rounded overflow-hidden border-2 transition-all"
-              style={{
-                borderColor: selectedIdx === i ? "var(--gold)" : "var(--border)",
-                opacity: selectedIdx === i ? 1 : 0.6,
-              }}
-              title={img.label || `View ${i + 1}`}
-            >
-              <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
-            </button>
-          ))}
+        <div className="px-4 py-3 border-b" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
+          <div className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>
+            Look inside &mdash; tap a page to preview
+          </div>
+          <div className="flex gap-2 overflow-x-auto">
+            {allImages.map((img, i) => (
+              <button
+                key={img.id}
+                onClick={() => { setSelectedIdx(i); setLightboxOpen(true); }}
+                className="flex-shrink-0 w-16 h-20 rounded overflow-hidden border-2 transition-all"
+                style={{
+                  borderColor: selectedIdx === i ? "var(--gold)" : "var(--border)",
+                  opacity: selectedIdx === i ? 1 : 0.75,
+                }}
+                title={img.label || `View ${i + 1}`}
+              >
+                <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
         </div>
       )}
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && activeImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[3000] flex flex-col items-center justify-center cursor-zoom-out"
+            style={{ background: "rgba(0,0,0,0.97)" }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+              className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-2xl transition-all hover:bg-white/10 z-10"
+            >
+              &times;
+            </button>
+            <img
+              src={activeImage.url}
+              alt={activeImage.label || book.title}
+              className="max-w-[95vw] max-h-[85vh] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            {allImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {allImages.map((img, i) => (
+                  <button
+                    key={img.id}
+                    onClick={(e) => { e.stopPropagation(); setSelectedIdx(i); }}
+                    className="w-14 h-14 rounded-lg overflow-hidden border-2 transition-all"
+                    style={{ borderColor: selectedIdx === i ? "var(--gold)" : "rgba(255,255,255,0.3)" }}
+                  >
+                    <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Info */}
       <div className="p-6">

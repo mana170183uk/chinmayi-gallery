@@ -30,11 +30,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
+    // Server-route uploads are limited to ~4MB by Vercel function payload limits.
+    // Larger files are handled by the client-direct upload route at /api/upload/client.
+    if (file.size > 4 * 1024 * 1024) {
       return NextResponse.json(
-        { error: "File too large. Maximum size is 10MB." },
-        { status: 400 }
+        { error: "File too large for this upload path. Please retry — the admin will switch to direct upload automatically." },
+        { status: 413 }
       );
     }
 

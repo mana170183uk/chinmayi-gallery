@@ -51,7 +51,7 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-[1001] text-center py-1.5 text-[11px] tracking-wider font-normal border-b"
         style={{ background: "var(--bg2)", color: "var(--text2)", borderColor: "var(--border)" }}
       >
-        Free Standard UK delivery for orders over £75
+        Free Standard UK delivery on Jewellery &amp; Clothing orders over £75
       </div>
 
       <nav
@@ -72,16 +72,24 @@ export default function Navbar() {
             className="h-20 w-20 rounded-xl object-cover transition-transform group-hover:scale-105"
             style={{ boxShadow: "0 4px 18px rgba(0,0,0,0.5)" }}
           />
-          <div className="flex flex-col whitespace-nowrap">
+          <div className="flex flex-col whitespace-nowrap items-start">
             <span
-              className="font-[Playfair_Display] text-[38px] font-extrabold tracking-[1.5px] leading-none transition-colors"
-              style={{ color: "var(--gold)", textShadow: "0 2px 10px rgba(212,168,67,0.3)" }}
+              className="font-[Playfair_Display] text-[28px] font-extrabold tracking-[1.5px] leading-none inline-block px-3 py-1 rounded-md"
+              style={{
+                background: "linear-gradient(135deg, var(--gold), var(--gold2))",
+                color: "#000000",
+                boxShadow: "0 2px 10px rgba(212,168,67,0.35)",
+              }}
             >
               ChinuN
             </span>
             <span
-              className="font-[Playfair_Display] text-[16px] font-bold tracking-[2px] uppercase mt-1.5 transition-colors"
-              style={{ color: "var(--gold)", textShadow: "0 1px 6px rgba(212,168,67,0.3)" }}
+              className="font-[Playfair_Display] text-[12px] font-bold tracking-[2px] uppercase mt-1.5 inline-block px-2 py-0.5 rounded"
+              style={{
+                background: "linear-gradient(135deg, var(--gold), var(--gold2))",
+                color: "#000000",
+                boxShadow: "0 1px 6px rgba(212,168,67,0.3)",
+              }}
             >
               By Artist Chinmayi Nath
             </span>

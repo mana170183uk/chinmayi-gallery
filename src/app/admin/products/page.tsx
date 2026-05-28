@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { upload } from "@vercel/blob/client";
 
 interface ProductImage {
   id: string;
@@ -39,24 +40,38 @@ export default function AdminProductsPage() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
+  const uploadDirect = async (file: File) => {
+    const safeName = file.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "-").toLowerCase();
+    const ext = file.name.split(".").pop() || "jpg";
+    return upload(`products/${safeName}.${ext}`, file, {
+      access: "public",
+      handleUploadUrl: "/api/upload/client",
+    });
+  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploading(true);
-    const fd = new FormData(); fd.append("file", file);
-    try { const res = await fetch("/api/upload", { method: "POST", body: fd }); const d = await res.json(); if (res.ok) setForm(p => ({ ...p, imageUrl: d.url })); else alert(d.error); } catch { alert("Upload failed"); }
+    try {
+      const blob = await uploadDirect(file);
+      setForm(p => ({ ...p, imageUrl: blob.url }));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      alert(`Upload failed: ${msg}`);
+    }
     setUploading(false);
   };
 
   const handleAdditionalUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploadingAdditional(true);
-    const fd = new FormData(); fd.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const d = await res.json();
-      if (res.ok) setAdditionalImages(prev => [...prev, { url: d.url, label: "" }]);
-      else alert(d.error);
-    } catch { alert("Upload failed"); }
+      const blob = await uploadDirect(file);
+      setAdditionalImages(prev => [...prev, { url: blob.url, label: "" }]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      alert(`Upload failed: ${msg}`);
+    }
     setUploadingAdditional(false);
   };
 

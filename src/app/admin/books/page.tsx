@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { upload } from "@vercel/blob/client";
 
 interface BookImage {
   id: string;
@@ -36,13 +37,18 @@ export default function AdminBooksPage() {
   const handleAdditionalUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploadingAdditional(true);
-    const fd = new FormData(); fd.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const d = await res.json();
-      if (res.ok) setAdditionalImages(prev => [...prev, { url: d.url, label: "" }]);
-      else alert(d.error);
-    } catch { alert("Upload failed"); }
+      const safeName = file.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "-").toLowerCase();
+      const ext = file.name.split(".").pop() || "jpg";
+      const blob = await upload(`books/${safeName}.${ext}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/client",
+      });
+      setAdditionalImages(prev => [...prev, { url: blob.url, label: "" }]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      alert(`Upload failed: ${msg}`);
+    }
     setUploadingAdditional(false);
   };
 
@@ -54,13 +60,19 @@ export default function AdminBooksPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "imageUrl" | "pdfUrl") => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploading(field);
-    const fd = new FormData(); fd.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const d = await res.json();
-      if (res.ok) setForm(p => ({ ...p, [field]: d.url }));
-      else alert(d.error);
-    } catch { alert("Upload failed"); }
+      const safeName = file.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "-").toLowerCase();
+      const ext = file.name.split(".").pop() || (field === "pdfUrl" ? "pdf" : "jpg");
+      const folder = field === "pdfUrl" ? "books/pdf" : "books";
+      const blob = await upload(`${folder}/${safeName}.${ext}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/client",
+      });
+      setForm(p => ({ ...p, [field]: blob.url }));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      alert(`Upload failed: ${msg}`);
+    }
     setUploading(null);
   };
 
