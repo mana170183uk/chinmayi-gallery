@@ -99,6 +99,13 @@ export default function AdminHomePage() {
         </div>
       </div>
 
+      <div className="mb-4 p-3 rounded-lg border text-[12.5px] flex items-start gap-2" style={{ background: "var(--bg2)", borderColor: "var(--border)", color: "var(--text2)" }}>
+        <span style={{ color: "var(--gold)" }}>★</span>
+        <span>
+          <strong>Sold paintings can be picked too.</strong> The hero and curated sections honour every tick — sold pieces appear without a price tag, and the card shows &ldquo;Already purchased&rdquo; so visitors know it&rsquo;s not buyable.
+        </span>
+      </div>
+
       <div className="mb-4">
         <input
           value={search}
@@ -139,12 +146,24 @@ export default function AdminHomePage() {
                     </div>
                   </td>
                   <td className="px-6 py-3 font-medium">
-                    {art.title}
-                    {art.badge && (
-                      <span className="ml-2 text-[10px] uppercase tracking-wider" style={{ color: "var(--text3)" }}>
-                        ({art.badge})
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span>{art.title}</span>
+                      {art.badge === "sold" && (
+                        <span className="text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider" style={{ background: "rgba(244,114,182,0.18)", color: "#f472b6" }}>
+                          Sold
+                        </span>
+                      )}
+                      {art.badge === "new" && (
+                        <span className="text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>
+                          New
+                        </span>
+                      )}
+                      {(art.badge === "nfs" || art.badge === "unavailable") && (
+                        <span className="text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider" style={{ background: "rgba(120,120,128,0.2)", color: "var(--text3)" }}>
+                          NFS
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-3" style={{ color: "var(--text2)" }}>{art.category}</td>
                   <td className="px-6 py-3 text-center">

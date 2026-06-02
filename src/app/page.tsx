@@ -30,8 +30,11 @@ export default async function HomePage() {
     artworks[0];
 
   // ── Hero (top-right 4 panel): admin picks via heroPick=true ──
-  // Fill any remaining slots with latest non-sold artworks not already picked.
-  const heroPicked = artworks.filter((a) => a.heroPick === true && a.badge !== "sold");
+  // Honour the admin's explicit pick whether the painting is sold or not — the
+  // hero strip is a portfolio showcase; sold pieces belong there too. Fillers
+  // (only used when fewer than 4 are picked) still skip sold so the auto-fill
+  // doesn't quietly surface unavailable works.
+  const heroPicked = artworks.filter((a) => a.heroPick === true);
   const heroFillers = artworks.filter(
     (a) => a.badge !== "sold" && !heroPicked.some((h) => h.id === a.id)
   );
@@ -39,12 +42,14 @@ export default async function HomePage() {
 
   // ── Curated Artworks section: admin picks via homePick=true ──
   // If ANY artwork is homePick=true site-wide, show ONLY those (gives the artist
-  // full control: untick the checkbox to remove from the section).
-  // If NONE are picked, fall back to one per category so the page isn't empty.
-  const anyHomePicked = artworks.some((a) => a.homePick === true && a.badge !== "sold");
+  // full control: untick the checkbox to remove from the section). Sold pieces
+  // are kept when explicitly picked — the card shows "Already purchased" so
+  // visitors know it's not buyable. If NONE are picked, fall back to one per
+  // category (skipping sold) so the page isn't empty.
+  const anyHomePicked = artworks.some((a) => a.homePick === true);
   let featuredWorks: ArtworkWithFlags[];
   if (anyHomePicked) {
-    featuredWorks = artworks.filter((a) => a.homePick === true && a.badge !== "sold");
+    featuredWorks = artworks.filter((a) => a.homePick === true);
   } else {
     const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
     const isPrint = (a: ArtworkWithFlags) => ["print", "prints"].includes(norm(a.category));
