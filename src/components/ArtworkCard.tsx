@@ -41,19 +41,9 @@ export default function ArtworkCard({ artwork, index }: Props) {
           whileHover={{ y: -6, scale: 1.01 }}
           transition={{ duration: 0.4 }}
         >
-          {/* Badges */}
-          {artwork.badge === "sold" && (
-            <span className="absolute top-3 right-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
-              style={{ background: "var(--rose)" }}>
-              Sold
-            </span>
-          )}
-          {(artwork.badge === "nfs" || artwork.badge === "unavailable") && (
-            <span className="absolute top-3 right-3 px-3 py-1 rounded text-[10px] font-semibold tracking-wider uppercase z-10"
-              style={{ background: "rgba(120,120,128,0.5)", color: "rgba(255,255,255,0.85)", backdropFilter: "blur(6px)" }}>
-              NFS
-            </span>
-          )}
+          {/* Badges — top-right "Sold"/"NFS" overlays intentionally removed per design.
+              Status is conveyed in the bottom strip instead, where it stays legible without
+              covering the painting. */}
           {artwork.badge === "new" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
               style={{ background: "#10b981", boxShadow: "0 0 12px rgba(16,185,129,0.6)" }}>
@@ -122,9 +112,16 @@ export default function ArtworkCard({ artwork, index }: Props) {
             </h4>
             <div className="flex justify-between items-center text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.85)" }}>
               <span className="truncate pr-2" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>{artwork.medium}</span>
-              <span className="font-semibold text-[13px] whitespace-nowrap" style={{ color: "#FFD66B", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+              <span
+                className="font-semibold whitespace-nowrap"
+                style={
+                  artwork.badge === "sold"
+                    ? { color: "rgba(255,255,255,0.85)", fontSize: "11px", textShadow: "0 1px 4px rgba(0,0,0,0.7)", fontWeight: 500 }
+                    : { color: "#FFD66B", fontSize: "13px", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }
+                }
+              >
                 {artwork.badge === "sold"
-                  ? "Sold"
+                  ? "Already purchased"
                   : artwork.badge === "nfs" || artwork.badge === "unavailable"
                     ? "Not For Sale"
                     : artwork.price

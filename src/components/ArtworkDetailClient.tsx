@@ -64,7 +64,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
 
             <div className="mb-2">
               {artwork.badge === "sold" ? (
-                <div className="font-[Playfair_Display] text-[38px] font-bold" style={{ color: "var(--rose)" }}>Sold</div>
+                <div className="font-[Playfair_Display] text-[28px] font-medium" style={{ color: "var(--text2)" }}>Already purchased</div>
               ) : artwork.badge === "nfs" || artwork.badge === "unavailable" ? (
                 <div>
                   <div className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--text2)" }}>Not For Sale</div>

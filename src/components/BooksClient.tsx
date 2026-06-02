@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
@@ -39,6 +39,15 @@ function BookCard({ book, index }: { book: Book; index: number }) {
   const activeImage = allImages[selectedIdx];
   const extraCount = Math.max(allImages.length - 1, 0);
 
+  // Preload every image so swapping is instant (no blank flicker between paints)
+  useEffect(() => {
+    allImages.forEach((img) => {
+      const i = new window.Image();
+      i.src = img.url;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -48,21 +57,23 @@ function BookCard({ book, index }: { book: Book; index: number }) {
       className="rounded-xl overflow-hidden border group transition-all hover:-translate-y-2"
       style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
     >
-      {/* Cover Image (or selected thumbnail) — click to enlarge */}
+      {/* Cover Image (or selected thumbnail) — click to enlarge.
+          Every image is stacked and fades in/out, so swapping is smooth (no blank gap). */}
       <button
         type="button"
         onClick={() => allImages.length > 0 && setLightboxOpen(true)}
         className="block w-full text-left relative aspect-[3/4] overflow-hidden cursor-zoom-in"
         style={{ background: book.gradient }}
       >
-        {activeImage && (
+        {allImages.map((img, i) => (
           <img
-            src={activeImage.url}
-            alt={activeImage.label || book.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
+            key={img.id}
+            src={img.url}
+            alt={img.label || book.title}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:scale-105"
+            style={{ opacity: i === selectedIdx ? 1 : 0, transitionProperty: "opacity, transform", transitionDuration: "300ms, 500ms" }}
           />
-        )}
+        ))}
         {book.badge && (
           <span
             className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
