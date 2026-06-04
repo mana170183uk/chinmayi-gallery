@@ -45,7 +45,12 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
   return (
     <>
       {/* ═══════ HERO ═══════ */}
-      <section className="min-h-[80vh] sm:min-h-screen flex items-center relative overflow-hidden" style={{ padding: "90px clamp(16px,5vw,80px) 40px" }}>
+      {/* Top padding needs to clear the fixed navbar:
+            mobile: 28px banner + 80px navbar = 108px → use 140px so the
+                    "FINE ART COLLECTION" eyebrow and the headline aren't
+                    hidden behind it.
+            desktop: navbar is 100px, banner 28px = 128px → 150px gives air. */}
+      <section className="min-h-[80vh] sm:min-h-screen flex items-center relative overflow-hidden pt-[140px] sm:pt-[150px] pb-10 sm:pb-14 px-4 sm:px-6 md:px-14">
         <div className="absolute inset-0 pointer-events-none z-[1]" style={{ background: "radial-gradient(ellipse at 30% 50%, var(--gold-glow2), transparent 60%)" }} />
         <div className="absolute bottom-0 left-0 right-0 h-[200px] pointer-events-none z-[2]" style={{ background: "linear-gradient(transparent, var(--bg))" }} />
 
@@ -74,7 +79,11 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
             </motion.div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.3 }} className="grid grid-cols-2 gap-4" style={{ perspective: "800px" }}>
+          {/* Hero grid — every card is forced to a uniform 3:4 portrait so the
+              layout stays balanced regardless of each painting's source
+              aspectRatio. Cropped with object-cover so the frame edges look
+              clean even when the original is wider/narrower. */}
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.3 }} className="grid grid-cols-2 gap-3 sm:gap-4 max-w-[520px] lg:max-w-none mx-auto w-full" style={{ perspective: "800px" }}>
             {artworks.slice(0, 4).map((art, i) => (
               <motion.div
                 key={art.id}
@@ -82,15 +91,27 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
                 style={{
                   boxShadow: "var(--art-shadow)",
                   borderColor: "var(--border2)",
-                  transform: i === 1 ? "translateY(50px)" : i === 2 ? "translateY(-30px)" : "none",
+                  // Subtle staggered offset only on large screens — on phones/tablets
+                  // it pushed cards off the grid and looked broken.
+                  transform: i === 1 ? "translateY(0)" : i === 2 ? "translateY(0)" : "none",
                 }}
                 whileHover={{ y: -8, rotateY: i % 2 === 0 ? -2 : 2 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="relative" style={{ background: art.imageUrl ? "var(--bg-card)" : art.gradient, aspectRatio: art.aspectRatio || "3/4", overflow: "hidden" }}>
-                  {art.imageUrl && <img src={art.imageUrl} alt={art.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />}
+                <div
+                  className="relative w-full"
+                  style={{ background: art.imageUrl ? "var(--bg-card)" : art.gradient, aspectRatio: "3/4", overflow: "hidden" }}
+                >
+                  {art.imageUrl && (
+                    <img
+                      src={art.imageUrl}
+                      alt={art.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
                 </div>
-                <div className="absolute bottom-3 left-3 z-10 text-[12px] font-medium text-white px-3 py-1 rounded-full backdrop-blur-md opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all" style={{ background: "rgba(0,0,0,0.4)" }}>
+                <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10 text-[11px] sm:text-[12px] font-medium text-white px-2.5 sm:px-3 py-1 rounded-full backdrop-blur-md opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all" style={{ background: "rgba(0,0,0,0.55)" }}>
                   {art.title}
                 </div>
               </motion.div>
