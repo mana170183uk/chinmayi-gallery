@@ -48,9 +48,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const typeMeta = typeLabels[product.type] || { label: product.type, href: "/" };
 
   return (
-    <section className="min-h-screen pt-40 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-36 md:pt-40 pb-20 sm:pb-24 relative z-[1]">
       {/* Breadcrumb */}
-      <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-14 mb-6 sm:mb-8 max-w-[1400px] mx-auto">
         <div className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
           <Link href="/" className="hover:text-[var(--gold)] transition-colors">Home</Link>
           <span>/</span>
@@ -60,8 +60,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
       </div>
 
-      <div className="px-6 md:px-14 max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-16 items-start">
+      <div className="px-4 sm:px-6 md:px-14 max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 sm:gap-12 lg:gap-16 items-start">
           {/* Images */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             {/* Main image */}
@@ -153,7 +153,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
             {/* Add to cart */}
             {product.inStock && product.badge !== "sold" && (
-              <div className="flex gap-3 items-center flex-wrap mb-10">
+              <div className="flex gap-2 sm:gap-3 items-center flex-wrap mb-10">
                 <button
                   onClick={() => {
                     if (sizeList.length > 0 && !selectedSize) {
@@ -173,14 +173,14 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                       "product"
                     );
                   }}
-                  className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                  className="flex-1 basis-full sm:basis-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 py-3 sm:py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
                   style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}
                 >
                   Add to Cart
                 </button>
                 <Link
                   href={`/contact?subject=Purchase%20Inquiry&item=${encodeURIComponent(product.title)}`}
-                  className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  className="flex-1 sm:flex-none text-center px-4 sm:px-8 py-3 sm:py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
                   style={{ borderColor: "var(--border)", color: "var(--text)" }}
                 >
                   Make an Enquiry
@@ -244,7 +244,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           >
             <button
               onClick={() => setLightboxOpen(false)}
-              className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-2xl transition-all hover:bg-white/10 z-10"
+              className="absolute top-3 right-3 w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-3xl sm:text-2xl transition-all hover:bg-white/10 z-10"
+              style={{ background: "rgba(0,0,0,0.4)" }}
+              aria-label="Close preview"
             >
               &times;
             </button>

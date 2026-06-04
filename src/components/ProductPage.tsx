@@ -29,7 +29,7 @@ interface Props {
 
 export default function ProductPage({ title, subtitle, label, products, emptyMessage }: Props) {
   return (
-    <section className="min-h-screen pt-44 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 md:px-14 relative z-[1]">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> {label}

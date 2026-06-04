@@ -61,7 +61,7 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
   }, [activeFilter, sortBy, artworks]);
 
   return (
-    <section className="min-h-screen pt-44 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 md:px-14 relative z-[1]">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Browse Collection
@@ -104,23 +104,24 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         </select>
       </motion.div>
 
-      {/* Legend — explains the wording shown in the bottom-right of each painting */}
-      <div className="max-w-[1440px] mx-auto mb-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px]" style={{ color: "var(--text3)" }}>
+      {/* Legend — explains the wording shown in the bottom-right of each painting.
+          Stacks on mobile; reads as inline list on >= sm. */}
+      <div className="max-w-[1440px] mx-auto mb-6 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center sm:justify-center gap-y-2 gap-x-4 text-[12px]" style={{ color: "var(--text3)" }}>
         <span className="inline-flex items-center gap-1.5">
           <span className="font-semibold" style={{ color: "#FFD66B" }}>£price</span>
           available for purchase
         </span>
-        <span className="opacity-50">|</span>
+        <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="font-semibold" style={{ color: "#FFD66B" }}>Enquire</span>
           contact the artist for price
         </span>
-        <span className="opacity-50">|</span>
+        <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="font-semibold" style={{ color: "var(--text2)" }}>Not For Sale</span>
           part of the artist&rsquo;s private collection (NFS)
         </span>
-        <span className="opacity-50">|</span>
+        <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="font-medium" style={{ color: "var(--text2)" }}>Already purchased</span>
           in a private collection

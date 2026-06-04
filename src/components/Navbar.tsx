@@ -55,8 +55,8 @@ export default function Navbar() {
       </div>
 
       <nav
-        className={`fixed left-0 right-0 z-[1000] flex items-center justify-between px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
-          scrolled ? "h-[80px] shadow-lg" : "h-[100px]"
+        className={`fixed left-0 right-0 z-[1000] flex items-center justify-between gap-2 px-3 sm:px-6 md:px-14 transition-all duration-500 backdrop-blur-2xl border-b ${
+          scrolled ? "h-[72px] sm:h-[80px] shadow-lg" : "h-[80px] sm:h-[100px]"
         }`}
         style={{
           top: "28px",
@@ -64,17 +64,17 @@ export default function Navbar() {
           borderColor: "var(--border)",
         }}
       >
-        {/* Brand — large logo, prominent ChinuN wordmark */}
-        <Link href="/" className="flex items-center gap-4 cursor-pointer group">
+        {/* Brand — smaller and tighter on mobile so the hamburger stays in view */}
+        <Link href="/" className="flex items-center gap-2 sm:gap-4 cursor-pointer group min-w-0 flex-shrink">
           <img
             src="/chinun-logo.jpg"
             alt="ChinuN logo"
-            className="h-20 w-20 rounded-xl object-cover transition-transform group-hover:scale-105"
+            className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-xl object-cover transition-transform group-hover:scale-105 flex-shrink-0"
             style={{ boxShadow: "0 4px 18px rgba(0,0,0,0.5)" }}
           />
-          <div className="flex flex-col whitespace-nowrap items-start">
+          <div className="flex flex-col whitespace-nowrap items-start min-w-0">
             <span
-              className="font-[Playfair_Display] text-[28px] font-extrabold tracking-[1.5px] leading-none inline-block px-3 py-1 rounded-md"
+              className="font-[Playfair_Display] text-[18px] sm:text-[24px] md:text-[28px] font-extrabold tracking-[1.5px] leading-none inline-block px-2 sm:px-3 py-1 rounded-md"
               style={{
                 background: "linear-gradient(135deg, var(--gold), var(--gold2))",
                 color: "#000000",
@@ -84,7 +84,7 @@ export default function Navbar() {
               ChinuN
             </span>
             <span
-              className="font-[Playfair_Display] text-[12px] font-bold tracking-[2px] uppercase mt-1.5 inline-block px-2 py-0.5 rounded"
+              className="hidden sm:inline-block font-[Playfair_Display] text-[10px] sm:text-[11px] md:text-[12px] font-bold tracking-[2px] uppercase mt-1.5 px-2 py-0.5 rounded"
               style={{
                 background: "linear-gradient(135deg, var(--gold), var(--gold2))",
                 color: "#000000",
@@ -116,12 +116,12 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-3">
-          {/* Search */}
+        {/* Right Actions — compact on mobile (cart + hamburger only); full set on >= sm */}
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+          {/* Search — hidden on mobile (search is reachable from the menu / gallery) */}
           <Link
             href="/gallery"
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+            className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center transition-all hover:scale-110"
             style={{ color: "var(--text2)" }}
             title="Search"
           >
@@ -131,7 +131,7 @@ export default function Navbar() {
             </svg>
           </Link>
 
-          {/* Cart */}
+          {/* Cart — visible everywhere */}
           <button
             onClick={() => setCartOpen(true)}
             className="w-10 h-10 rounded-full flex items-center justify-center relative transition-all hover:scale-110"
@@ -155,10 +155,10 @@ export default function Navbar() {
             )}
           </button>
 
-          {/* Theme Toggle */}
+          {/* Theme Toggle — hidden on small mobile; lives in the mobile menu instead */}
           <button
             onClick={toggleTheme}
-            className="w-16 h-[30px] rounded-full relative transition-all overflow-hidden border"
+            className="hidden sm:block w-16 h-[30px] rounded-full relative transition-all overflow-hidden border"
             style={{
               background: "var(--surface)",
               borderColor: "var(--border2)",
@@ -179,24 +179,28 @@ export default function Navbar() {
             </span>
           </button>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Hamburger — explicit accessible label so it's reachable for assistive tech too */}
           <button
-            className="flex md:hidden flex-col gap-[5px] p-2"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav-menu"
+            className="flex md:hidden flex-col gap-[5px] p-2 rounded-md flex-shrink-0"
+            style={{ background: "rgba(0,0,0,0.04)" }}
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             <motion.span
-              className="w-6 h-[2px] rounded"
-              style={{ background: "var(--text2)" }}
+              className="w-6 h-[2px] rounded block"
+              style={{ background: "var(--text)" }}
               animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
             />
             <motion.span
-              className="w-6 h-[2px] rounded"
-              style={{ background: "var(--text2)" }}
+              className="w-6 h-[2px] rounded block"
+              style={{ background: "var(--text)" }}
               animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
             />
             <motion.span
-              className="w-6 h-[2px] rounded"
-              style={{ background: "var(--text2)" }}
+              className="w-6 h-[2px] rounded block"
+              style={{ background: "var(--text)" }}
               animate={mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
             />
           </button>
@@ -207,15 +211,18 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-nav-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-4 md:hidden"
+            className="fixed left-0 right-0 z-[999] backdrop-blur-2xl border-b p-5 flex flex-col gap-3 md:hidden max-h-[calc(100vh-108px)] overflow-y-auto"
             style={{
-              top: "128px",
+              top: "108px",
               background: "var(--nav-bg)",
               borderColor: "var(--border)",
             }}
+            role="navigation"
+            aria-label="Mobile navigation"
           >
             {links.map((link) => (
               <Link
@@ -236,6 +243,19 @@ export default function Navbar() {
             >
               Admin Panel
             </Link>
+
+            {/* Theme toggle lives in the menu on small screens */}
+            <button
+              onClick={() => { toggleTheme(); }}
+              className="flex items-center justify-between gap-3 py-3 mt-1 border-t"
+              style={{ color: "var(--text2)", borderColor: "var(--border)" }}
+            >
+              <span className="text-[13px] font-medium tracking-[0.8px] uppercase">Theme</span>
+              <span className="inline-flex items-center gap-2 text-[13px]">
+                {theme === "light" ? "☀️ Light" : "🌙 Dark"}
+                <span className="text-[11px]" style={{ color: "var(--text3)" }}>(tap to switch)</span>
+              </span>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

@@ -113,7 +113,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <section className="min-h-screen pt-44 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 md:px-14 relative z-[1]">
       <div className="max-w-[1100px] mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
 
         {/* Step 1 — Review */}
         {step === "review" && items.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 sm:gap-8 lg:gap-10">
             <div>
               <h2 className="font-[Playfair_Display] text-[24px] font-semibold mb-6">Items in your order</h2>
               <div className="space-y-4">

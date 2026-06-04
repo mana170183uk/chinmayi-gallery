@@ -51,7 +51,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 w-full max-w-[400px] h-screen z-[1501] flex flex-col border-l"
+            className="fixed top-0 right-0 w-full max-w-[92vw] sm:max-w-[400px] h-[100dvh] z-[1501] flex flex-col border-l"
             style={{
               background: "var(--bg)",
               borderColor: "var(--border)",
@@ -60,7 +60,7 @@ export default function CartDrawer() {
           >
             {/* Header */}
             <div
-              className="px-6 py-5 flex justify-between items-center border-b"
+              className="px-4 sm:px-6 py-5 flex justify-between items-center border-b"
               style={{ borderColor: "var(--border)" }}
             >
               <h3 className="text-[22px]">Your Cart</h3>
@@ -74,7 +74,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Items */}
-            <div className="flex-1 overflow-y-auto px-6">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6">
               {items.length === 0 ? (
                 <div className="text-center py-16" style={{ color: "var(--text3)" }}>
                   <div className="text-5xl mb-4 opacity-50">🛍️</div>
@@ -128,7 +128,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-5 border-t" style={{ borderColor: "var(--border)" }}>
+            <div className="px-4 sm:px-6 py-5 border-t" style={{ borderColor: "var(--border)" }}>
               <div className="flex justify-between items-center mb-5">
                 <span className="text-[14px]" style={{ color: "var(--text2)" }}>
                   Total

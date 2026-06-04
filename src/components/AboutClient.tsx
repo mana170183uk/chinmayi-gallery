@@ -59,10 +59,10 @@ const process = [
 
 export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
   return (
-    <section className="min-h-screen pt-44 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 relative z-[1]">
       {/* Hero */}
-      <div className="px-6 md:px-14 max-w-[1200px] mx-auto mb-24">
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
+      <div className="px-4 sm:px-6 md:px-14 max-w-[1200px] mx-auto mb-16 sm:mb-24">
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-10 sm:gap-12 lg:gap-16 items-center">
           <motion.div variants={fadeUp}>
             <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "var(--border2)", boxShadow: "var(--art-glow), var(--art-shadow)" }}>
               <img src={aboutImageUrl} alt="Chinmayi - Artist" className="w-full h-auto block" />
@@ -83,7 +83,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
               Every painting is created with museum-grade materials — premium oils, Belgian linen canvas, and archival varnishes — ensuring each piece remains vibrant for generations. Beyond paintings, Chinmayi&apos;s artistic vision extends into handcrafted jewellery, clothing, and home décor, bringing art into everyday life.
             </p>
 
-            <div className="flex gap-12 mt-10 pt-8 border-t flex-wrap" style={{ borderColor: "var(--border)" }}>
+            <div className="flex gap-6 sm:gap-8 md:gap-12 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t flex-wrap" style={{ borderColor: "var(--border)" }}>
               {[
                 { num: "150+", label: "Artworks Created" },
                 { num: "40+", label: "Exhibitions" },
@@ -101,7 +101,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
       </div>
 
       {/* Creative Process */}
-      <div className="px-6 md:px-14 py-24" style={{ background: "var(--bg2)" }}>
+      <div className="px-4 sm:px-6 md:px-14 py-14 sm:py-20 md:py-24" style={{ background: "var(--bg2)" }}>
         <div className="max-w-[1200px] mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -131,7 +131,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
       </div>
 
       {/* Exhibitions */}
-      <div className="px-6 md:px-14 py-24 max-w-[1200px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-14 py-14 sm:py-20 md:py-24 max-w-[1200px] mx-auto">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
             <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Exhibition History
@@ -166,7 +166,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
                 </div>
 
                 {(allImages.length > 0 || embed || ex.videoUrl) && (
-                  <div className="mt-4 ml-0 sm:ml-22 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="mt-4 ml-0 sm:ml-6 md:ml-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {allImages.map((img) => (
                       <div key={img.id} className="rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)" }}>
                         <img src={img.url} alt={img.caption || ex.title} className="w-full h-auto block" />
@@ -195,7 +195,7 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
 
       {/* Art Workshops */}
       {workshops.length > 0 && (
-        <div className="px-6 md:px-14 py-24" style={{ background: "var(--bg2)" }}>
+        <div className="px-4 sm:px-6 md:px-14 py-14 sm:py-20 md:py-24" style={{ background: "var(--bg2)" }}>
           <div className="max-w-[1200px] mx-auto">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
               <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>

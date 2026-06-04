@@ -141,7 +141,9 @@ function BookCard({ book, index }: { book: Book; index: number }) {
           >
             <button
               onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
-              className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-2xl transition-all hover:bg-white/10 z-10"
+              className="absolute top-3 right-3 w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-3xl sm:text-2xl transition-all hover:bg-white/10 z-10"
+              style={{ background: "rgba(0,0,0,0.4)" }}
+              aria-label="Close preview"
             >
               &times;
             </button>
@@ -249,7 +251,7 @@ function BookCard({ book, index }: { book: Book; index: number }) {
 
 export default function BooksClient({ books }: { books: Book[] }) {
   return (
-    <section className="min-h-screen pt-44 pb-24 px-6 md:px-14 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 md:px-14 relative z-[1]">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
         <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
           <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Library

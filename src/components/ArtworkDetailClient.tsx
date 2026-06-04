@@ -16,9 +16,9 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
-    <section className="min-h-screen pt-40 pb-24 relative z-[1]">
+    <section className="min-h-screen pt-32 sm:pt-36 md:pt-40 pb-20 sm:pb-24 relative z-[1]">
       {/* Breadcrumb */}
-      <div className="px-6 md:px-14 mb-8 max-w-[1400px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-14 mb-6 sm:mb-8 max-w-[1400px] mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[13px]" style={{ color: "var(--text3)" }}>
           <Link href="/" className="hover:text-[var(--gold)] transition-colors">Home</Link>
           <span>/</span>
@@ -28,8 +28,8 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
         </motion.div>
       </div>
 
-      <div className="px-6 md:px-14 max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-16 items-start">
+      <div className="px-4 sm:px-6 md:px-14 max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 sm:gap-12 lg:gap-16 items-start">
           {/* Image - clickable for full view */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <div
@@ -95,10 +95,10 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             <div className="text-[12px] mb-8" style={{ color: "var(--text3)" }}>Certificate of Authenticity included</div>
 
             {artwork.badge !== "sold" && artwork.badge !== "nfs" && artwork.badge !== "unavailable" && (
-              <div className="flex gap-3 items-center flex-wrap mb-10">
-                <button onClick={() => addToCart(artwork)} className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Add to Cart</button>
-                <Link href={`/contact?subject=Make%20an%20Offer&item=${encodeURIComponent(artwork.title)}`} className="px-8 py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>Make an Offer</Link>
-                <button onClick={() => toggleWishlist(artwork.id)} className="w-[52px] h-[52px] rounded-lg inline-flex items-center justify-center border text-[20px] transition-all hover:border-[var(--rose)] hover:text-[var(--rose)]" style={{ borderColor: "var(--border)", color: "var(--text2)" }}>♡</button>
+              <div className="flex gap-2 sm:gap-3 items-center flex-wrap mb-10">
+                <button onClick={() => addToCart(artwork)} className="flex-1 basis-full sm:basis-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 py-3 sm:py-4 rounded-md font-bold text-[13px] tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, var(--gold), var(--gold2))", color: "#1A1830" }}>Add to Cart</button>
+                <Link href={`/contact?subject=Make%20an%20Offer&item=${encodeURIComponent(artwork.title)}`} className="flex-1 sm:flex-none text-center px-4 sm:px-8 py-3 sm:py-4 rounded-md text-[13px] font-semibold tracking-wider uppercase border transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]" style={{ borderColor: "var(--border)", color: "var(--text)" }}>Make an Offer</Link>
+                <button onClick={() => toggleWishlist(artwork.id)} className="w-[48px] h-[48px] sm:w-[52px] sm:h-[52px] rounded-lg inline-flex items-center justify-center border text-[20px] transition-all hover:border-[var(--rose)] hover:text-[var(--rose)]" style={{ borderColor: "var(--border)", color: "var(--text2)" }}>♡</button>
               </div>
             )}
 
@@ -160,11 +160,12 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
             style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: "#000" }}
             onClick={() => setLightboxOpen(false)}
           >
-            {/* Close button */}
+            {/* Close button — larger on touch devices for easier tapping */}
             <button
               onClick={() => setLightboxOpen(false)}
               className="rounded-full flex items-center justify-center text-white text-3xl transition-all hover:bg-white/10"
-              style={{ position: "absolute", top: 10, right: 10, width: 40, height: 40, zIndex: 10 }}
+              style={{ position: "absolute", top: 12, right: 12, width: 48, height: 48, zIndex: 10, background: "rgba(0,0,0,0.4)" }}
+              aria-label="Close lightbox"
             >
               &times;
             </button>

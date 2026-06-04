@@ -45,11 +45,11 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
   return (
     <>
       {/* ═══════ HERO ═══════ */}
-      <section className="min-h-screen flex items-center relative overflow-hidden" style={{ padding: "100px clamp(20px,5vw,80px) 60px" }}>
+      <section className="min-h-[80vh] sm:min-h-screen flex items-center relative overflow-hidden" style={{ padding: "90px clamp(16px,5vw,80px) 40px" }}>
         <div className="absolute inset-0 pointer-events-none z-[1]" style={{ background: "radial-gradient(ellipse at 30% 50%, var(--gold-glow2), transparent 60%)" }} />
         <div className="absolute bottom-0 left-0 right-0 h-[200px] pointer-events-none z-[2]" style={{ background: "linear-gradient(transparent, var(--bg))" }} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-[1400px] mx-auto w-full relative z-[3]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center max-w-[1400px] mx-auto w-full relative z-[3]">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="text-center lg:text-left">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-6" style={{ color: "var(--gold)" }}>
               <span className="w-10 h-px" style={{ background: "var(--gold)" }} />
@@ -100,7 +100,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
       </section>
 
       {/* ═══════ FEATURED ARTWORKS ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]">
+      <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-14 relative z-[1]">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
             <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> The Collection
@@ -124,7 +124,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
 
       {/* ═══════ FEATURED MASTERPIECE ═══════ */}
       {featured && (
-        <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
+        <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
           <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 30% 50%, var(--gold-glow2), transparent 60%)" }} />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -132,7 +132,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
             </motion.div>
             <motion.h2 variants={fadeUp} className="text-[clamp(30px,4vw,50px)] font-semibold">Featured Masterpiece</motion.h2>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-[1200px] mx-auto relative z-[1]">
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center max-w-[1200px] mx-auto relative z-[1]">
             <div className="rounded-2xl overflow-hidden relative border" style={{ boxShadow: "var(--art-glow), var(--art-shadow)", borderColor: "var(--border2)" }}>
               <div className="relative" style={{ background: featured.imageUrl ? "var(--bg-card)" : featured.gradient }}>
                 {featured.imageUrl ? (
@@ -164,7 +164,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
       )}
 
       {/* ═══════ CUSTOM DESIGNS MADE TO ORDER ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]">
+      <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-14 relative z-[1]">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
@@ -213,7 +213,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
       </section>
 
       {/* ═══════ NEWSLETTER (Join the Inner Circle) — above Testimonials ═══════ */}
-      <section className="py-24 px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
+      <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-14 relative z-[1]" style={{ background: "var(--bg2)" }}>
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
             <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Stay Connected
@@ -230,7 +230,7 @@ export default function HomeClient({ artworks, featuredWorks, featured, testimon
 
       {/* ═══════ TESTIMONIALS — bottom of page ═══════ */}
       {testimonials.length > 0 && (
-        <section className="py-24 px-6 md:px-14 relative z-[1]">
+        <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-14 relative z-[1]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-4" style={{ color: "var(--gold)" }}>
               <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> What Collectors Say
