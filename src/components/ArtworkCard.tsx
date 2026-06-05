@@ -123,28 +123,21 @@ export default function ArtworkCard({ artwork, index }: Props) {
             </h4>
             <div className="flex justify-between items-center text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.85)" }}>
               <span className="truncate pr-2" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>{artwork.medium}</span>
-              <span
-                className="font-semibold whitespace-nowrap"
-                style={{
-                  // Sold = red, Not For Sale = gold, available (£price / Enquire) = green
-                  color:
-                    artwork.badge === "sold"
-                      ? "#E94560"
-                      : artwork.badge === "nfs" || artwork.badge === "unavailable"
-                        ? "#FFD66B"
-                        : "#34D399",
-                  fontSize: "13px",
-                  textShadow: "0 1px 4px rgba(0,0,0,0.7)",
-                }}
-              >
-                {artwork.badge === "sold"
-                  ? "Sold"
-                  : artwork.badge === "nfs" || artwork.badge === "unavailable"
-                    ? "Not For Sale"
-                    : artwork.price
-                      ? `£${artwork.price.toLocaleString()}`
-                      : "Enquire"}
-              </span>
+              {/* Sold / Not For Sale are shown as the top-left chip only.
+                  The bottom-right strip carries just the price (green) for
+                  available pieces. */}
+              {artwork.badge !== "sold" && artwork.badge !== "nfs" && artwork.badge !== "unavailable" && (
+                <span
+                  className="font-semibold whitespace-nowrap"
+                  style={{
+                    color: "#34D399",
+                    fontSize: "13px",
+                    textShadow: "0 1px 4px rgba(0,0,0,0.7)",
+                  }}
+                >
+                  {artwork.price ? `£${artwork.price.toLocaleString()}` : "Enquire"}
+                </span>
+              )}
             </div>
           </div>
         </motion.div>
