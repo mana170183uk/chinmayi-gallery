@@ -54,9 +54,16 @@ function BookCard({ book, index }: { book: Book; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.12, duration: 0.6 }}
-      className="rounded-xl overflow-hidden border group transition-all hover:-translate-y-2"
-      style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
     >
+      {/* Hover lift lives on this inner plain <div>, NOT on the motion.div —
+          same pattern as the Jewellery grid (ProductGrid.tsx). Keeping the
+          Framer entry-animation transform and the CSS hover transform on
+          SEPARATE elements stops them fighting over `transform`, which was the
+          source of the hover flicker. */}
+      <div
+        className="rounded-xl overflow-hidden border group transition-all hover:-translate-y-2"
+        style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
+      >
       {/* Cover image area — clicking it opens the full-screen lightbox.
           The active page is rendered as ONE <img>, with all other pages
           painted as transparent background-image layers behind it. That
@@ -172,49 +179,6 @@ function BookCard({ book, index }: { book: Book; index: number }) {
         </div>
       )}
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxOpen && activeImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[3000] flex flex-col items-center justify-center cursor-zoom-out"
-            style={{ background: "rgba(0,0,0,0.97)" }}
-            onClick={() => setLightboxOpen(false)}
-          >
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
-              className="absolute top-3 right-3 w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-3xl sm:text-2xl transition-all hover:bg-white/10 z-10"
-              style={{ background: "rgba(0,0,0,0.4)" }}
-              aria-label="Close preview"
-            >
-              &times;
-            </button>
-            <img
-              src={activeImage.url}
-              alt={activeImage.label || book.title}
-              className="max-w-[95vw] max-h-[85vh] object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-            {allImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {allImages.map((img, i) => (
-                  <button
-                    key={img.id}
-                    onClick={(e) => { e.stopPropagation(); setSelectedIdx(i); }}
-                    className="w-14 h-14 rounded-lg overflow-hidden border-2 transition-all"
-                    style={{ borderColor: selectedIdx === i ? "var(--gold)" : "rgba(255,255,255,0.3)" }}
-                  >
-                    <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Info */}
       <div className="p-6">
         <h3 className="font-[Cormorant_Garamond] text-[22px] font-semibold mb-1">{book.title}</h3>
@@ -289,6 +253,52 @@ function BookCard({ book, index }: { book: Book; index: number }) {
           </div>
         )}
       </div>
+      </div>
+
+      {/* Lightbox — rendered as a sibling of the lifted card, OUTSIDE the
+          hover-transform wrapper, so this fixed full-screen overlay is never
+          positioned relative to a transformed ancestor. */}
+      <AnimatePresence>
+        {lightboxOpen && activeImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[3000] flex flex-col items-center justify-center cursor-zoom-out"
+            style={{ background: "rgba(0,0,0,0.97)" }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+              className="absolute top-3 right-3 w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-3xl sm:text-2xl transition-all hover:bg-white/10 z-10"
+              style={{ background: "rgba(0,0,0,0.4)" }}
+              aria-label="Close preview"
+            >
+              &times;
+            </button>
+            <img
+              src={activeImage.url}
+              alt={activeImage.label || book.title}
+              className="max-w-[95vw] max-h-[85vh] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            {allImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {allImages.map((img, i) => (
+                  <button
+                    key={img.id}
+                    onClick={(e) => { e.stopPropagation(); setSelectedIdx(i); }}
+                    className="w-14 h-14 rounded-lg overflow-hidden border-2 transition-all"
+                    style={{ borderColor: selectedIdx === i ? "var(--gold)" : "rgba(255,255,255,0.3)" }}
+                  >
+                    <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
