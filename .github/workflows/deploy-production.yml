@@ -92,4 +92,4 @@ jobs:
 
       - name: Deploy prebuilt artifacts to production
         run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
-        timeout-minutes: 3
+        timeout-minutes: 12
