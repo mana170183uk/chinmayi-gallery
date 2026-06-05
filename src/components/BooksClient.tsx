@@ -57,29 +57,60 @@ function BookCard({ book, index }: { book: Book; index: number }) {
       className="rounded-xl overflow-hidden border group transition-all hover:-translate-y-2"
       style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "var(--art-shadow)" }}
     >
-      {/* Cover Image (or selected thumbnail) — click to enlarge.
-          Every image is stacked and fades in/out, so swapping is smooth (no blank gap). */}
-      <button
-        type="button"
-        onClick={() => allImages.length > 0 && setLightboxOpen(true)}
-        className="block w-full text-left relative aspect-[3/4] overflow-hidden cursor-zoom-in"
-        style={{ background: book.gradient }}
-      >
+      {/* Cover image area — clicking it opens the full-screen lightbox.
+          The active page is rendered as ONE <img>, with all other pages
+          painted as transparent background-image layers behind it. That
+          way the visible card is always a single composited image (no
+          flicker from React swapping the <img> src, no hover-scale on
+          inactive layers fighting with opacity, no z-index race). */}
+      <div className="relative aspect-[3/4] overflow-hidden" style={{ background: book.gradient }}>
+        {/* Behind-the-scenes preloaded layers. Pointer-events disabled so
+            they never intercept the user's click and never get hovered. */}
         {allImages.map((img, i) => (
-          <img
-            key={img.id}
-            src={img.url}
-            alt={img.label || book.title}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:scale-105"
-            style={{ opacity: i === selectedIdx ? 1 : 0, transitionProperty: "opacity, transform", transitionDuration: "300ms, 500ms" }}
-          />
+          i !== selectedIdx && (
+            <div
+              key={img.id}
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: `url(${img.url})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: 0,
+              }}
+            />
+          )
         ))}
+
+        {/* Active page. Re-rendering this <img> on selectedIdx change is
+            instant because all sources are preloaded in useEffect above. */}
+        {activeImage && (
+          <img
+            key={activeImage.id}
+            src={activeImage.url}
+            alt={activeImage.label || book.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            style={{ zIndex: 1 }}
+          />
+        )}
+
+        {/* The whole cover area is one big click target that opens lightbox.
+            Sitting above the image with z-2, but transparent. */}
+        <button
+          type="button"
+          aria-label={`View ${book.title} full size`}
+          onClick={() => allImages.length > 0 && setLightboxOpen(true)}
+          className="absolute inset-0 w-full h-full cursor-zoom-in"
+          style={{ zIndex: 2, background: "transparent" }}
+        />
+
         {book.badge && (
           <span
-            className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
+            className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase pointer-events-none"
             style={{
               background: book.badge === "bestseller" ? "var(--gold)" : "var(--emerald)",
               color: book.badge === "bestseller" ? "#1A1830" : "#fff",
+              zIndex: 3,
             }}
           >
             {book.badge}
@@ -87,23 +118,26 @@ function BookCard({ book, index }: { book: Book; index: number }) {
         )}
         {extraCount > 0 && (
           <span
-            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md z-10"
-            style={{ background: "rgba(0,0,0,0.55)", color: "#fff" }}
+            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md pointer-events-none"
+            style={{ background: "rgba(0,0,0,0.55)", color: "#fff", zIndex: 3 }}
           >
             +{extraCount} {extraCount === 1 ? "page" : "pages"}
           </span>
         )}
         {activeImage?.label && selectedIdx > 0 && (
           <div
-            className="absolute bottom-2 left-2 px-2 py-1 rounded text-[10px] font-medium backdrop-blur-md"
-            style={{ background: "rgba(0,0,0,0.6)", color: "white" }}
+            className="absolute bottom-2 left-2 px-2 py-1 rounded text-[10px] font-medium backdrop-blur-md pointer-events-none"
+            style={{ background: "rgba(0,0,0,0.6)", color: "white", zIndex: 3 }}
           >
             {activeImage.label}
           </div>
         )}
-      </button>
+      </div>
 
-      {/* Thumbnail strip — larger, more discoverable when there are extra images */}
+      {/* Thumbnail strip — clicking a thumbnail just SWITCHES the page
+          shown above (no lightbox). The user can browse pages in place
+          and only open the lightbox by clicking the cover or a second
+          time on the active thumbnail. */}
       {allImages.length > 1 && (
         <div className="px-4 py-3 border-b" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
           <div className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--gold)" }}>
@@ -112,16 +146,26 @@ function BookCard({ book, index }: { book: Book; index: number }) {
           <div className="flex gap-2 overflow-x-auto">
             {allImages.map((img, i) => (
               <button
+                type="button"
                 key={img.id}
-                onClick={() => { setSelectedIdx(i); setLightboxOpen(true); }}
-                className="flex-shrink-0 w-16 h-20 rounded overflow-hidden border-2 transition-all"
+                onClick={() => {
+                  if (selectedIdx === i) {
+                    // Second tap on the active thumb opens the lightbox.
+                    setLightboxOpen(true);
+                  } else {
+                    setSelectedIdx(i);
+                  }
+                }}
+                className="flex-shrink-0 w-16 h-20 rounded overflow-hidden border-2 transition-all cursor-pointer"
                 style={{
                   borderColor: selectedIdx === i ? "var(--gold)" : "var(--border)",
                   opacity: selectedIdx === i ? 1 : 0.75,
                 }}
-                title={img.label || `View ${i + 1}`}
+                title={selectedIdx === i ? "Tap again to zoom" : (img.label || `View page ${i + 1}`)}
+                aria-label={selectedIdx === i ? `Zoom into page ${i + 1}` : `Show page ${i + 1}`}
+                aria-pressed={selectedIdx === i}
               >
-                <img src={img.url} alt={img.label || ""} className="w-full h-full object-cover" />
+                <img src={img.url} alt="" className="w-full h-full object-cover pointer-events-none" />
               </button>
             ))}
           </div>
