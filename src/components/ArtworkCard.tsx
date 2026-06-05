@@ -41,9 +41,20 @@ export default function ArtworkCard({ artwork, index }: Props) {
           whileHover={{ y: -6, scale: 1.01 }}
           transition={{ duration: 0.4 }}
         >
-          {/* Badges — top-right "Sold"/"NFS" overlays intentionally removed per design.
-              Status is conveyed in the bottom strip instead, where it stays legible without
-              covering the painting. */}
+          {/* Status chips — top-left, uppercase, colour-coded squares matching
+              the "Available" badge: Sold = red, Not For Sale = gold. */}
+          {artwork.badge === "sold" && (
+            <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
+              style={{ background: "#E94560", boxShadow: "0 0 12px rgba(233,69,96,0.55)" }}>
+              Sold
+            </span>
+          )}
+          {(artwork.badge === "nfs" || artwork.badge === "unavailable") && (
+            <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase z-10"
+              style={{ background: "#FFD66B", color: "#1A1830", boxShadow: "0 0 12px rgba(255,214,107,0.5)" }}>
+              Not For Sale
+            </span>
+          )}
           {artwork.badge === "new" && (
             <span className="absolute top-3 left-3 px-3 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-white z-10"
               style={{ background: "#10b981", boxShadow: "0 0 12px rgba(16,185,129,0.6)" }}>

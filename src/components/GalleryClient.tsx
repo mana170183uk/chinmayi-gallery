@@ -124,7 +124,7 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
         <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="font-semibold" style={{ color: "#E94560" }}>Sold</span>
-          in a private collection
+          Purchased
         </span>
       </div>
 
