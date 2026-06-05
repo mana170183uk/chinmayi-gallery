@@ -59,20 +59,28 @@ jobs:
         timeout-minutes: 1
 
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         timeout-minutes: 2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
+          cache: "npm"
         timeout-minutes: 2
 
       - name: Install Vercel CLI (pinned)
         # Pin to a known-good version — `vercel@latest` has hung before
         # when a freshly-released CLI ships a broken postinstall.
-        run: npm install --global vercel@39
+        run: npm install --global vercel@50.40.0
         timeout-minutes: 3
+
+      - name: Show deploy tool versions
+        run: |
+          node --version
+          npm --version
+          vercel --version
+        timeout-minutes: 1
 
       - name: Pull Vercel project settings (production)
         run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
