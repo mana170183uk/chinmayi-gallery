@@ -108,22 +108,22 @@ function GalleryContent({ artworks }: { artworks: Artwork[] }) {
           Stacks on mobile; reads as inline list on >= sm. */}
       <div className="max-w-[1440px] mx-auto mb-6 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center sm:justify-center gap-y-2 gap-x-4 text-[12px]" style={{ color: "var(--text3)" }}>
         <span className="inline-flex items-center gap-1.5">
-          <span className="font-semibold" style={{ color: "#FFD66B" }}>£price</span>
+          <span className="font-semibold" style={{ color: "#34D399" }}>£price</span>
           available for purchase
         </span>
         <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="font-semibold" style={{ color: "#FFD66B" }}>Enquire</span>
+          <span className="font-semibold" style={{ color: "#34D399" }}>Enquire</span>
           contact the artist for price
         </span>
         <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="font-semibold" style={{ color: "var(--text2)" }}>Not For Sale</span>
-          part of the artist&rsquo;s private collection (NFS)
+          <span className="font-semibold" style={{ color: "#FFD66B" }}>Not For Sale</span>
+          part of the artist&rsquo;s private collection
         </span>
         <span className="hidden sm:inline opacity-50">|</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="font-medium" style={{ color: "var(--text2)" }}>Already purchased</span>
+          <span className="font-semibold" style={{ color: "#E94560" }}>Sold</span>
           in a private collection
         </span>
       </div>

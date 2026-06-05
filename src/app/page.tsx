@@ -43,7 +43,7 @@ export default async function HomePage() {
   // ── Curated Artworks section: admin picks via homePick=true ──
   // If ANY artwork is homePick=true site-wide, show ONLY those (gives the artist
   // full control: untick the checkbox to remove from the section). Sold pieces
-  // are kept when explicitly picked — the card shows "Already purchased" so
+  // are kept when explicitly picked — the card shows "Sold" so
   // visitors know it's not buyable. If NONE are picked, fall back to one per
   // category (skipping sold) so the page isn't empty.
   const anyHomePicked = artworks.some((a) => a.homePick === true);

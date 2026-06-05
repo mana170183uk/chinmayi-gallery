@@ -64,12 +64,12 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
 
             <div className="mb-2">
               {artwork.badge === "sold" ? (
-                <div className="font-[Playfair_Display] text-[28px] font-medium" style={{ color: "var(--text2)" }}>Already purchased</div>
+                <div className="font-[Playfair_Display] text-[28px] font-medium" style={{ color: "#E94560" }}>Sold</div>
               ) : artwork.badge === "nfs" || artwork.badge === "unavailable" ? (
                 <div>
-                  <div className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--text2)" }}>Not For Sale</div>
+                  <div className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "#FFD66B" }}>Not For Sale</div>
                   <div className="text-[13px] mt-1" style={{ color: "var(--text3)" }}>
-                    This piece is part of the artist&rsquo;s private collection (NFS = Not For Sale).
+                    This piece is part of the artist&rsquo;s private collection.
                   </div>
                 </div>
               ) : artwork.price || artwork.framedPrice ? (

@@ -114,14 +114,20 @@ export default function ArtworkCard({ artwork, index }: Props) {
               <span className="truncate pr-2" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>{artwork.medium}</span>
               <span
                 className="font-semibold whitespace-nowrap"
-                style={
-                  artwork.badge === "sold"
-                    ? { color: "rgba(255,255,255,0.85)", fontSize: "11px", textShadow: "0 1px 4px rgba(0,0,0,0.7)", fontWeight: 500 }
-                    : { color: "#FFD66B", fontSize: "13px", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }
-                }
+                style={{
+                  // Sold = red, Not For Sale = gold, available (£price / Enquire) = green
+                  color:
+                    artwork.badge === "sold"
+                      ? "#E94560"
+                      : artwork.badge === "nfs" || artwork.badge === "unavailable"
+                        ? "#FFD66B"
+                        : "#34D399",
+                  fontSize: "13px",
+                  textShadow: "0 1px 4px rgba(0,0,0,0.7)",
+                }}
               >
                 {artwork.badge === "sold"
-                  ? "Already purchased"
+                  ? "Sold"
                   : artwork.badge === "nfs" || artwork.badge === "unavailable"
                     ? "Not For Sale"
                     : artwork.price
