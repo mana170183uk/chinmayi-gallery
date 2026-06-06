@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
+import { discountPercent } from "@/lib/pricing";
 
 interface ProductImage {
   id: string;
@@ -122,6 +123,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <div className="flex items-baseline gap-3">
                   <span className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--gold)" }}>£{product.price.toLocaleString()}</span>
                   {product.originalPrice && <span className="text-[16px] line-through" style={{ color: "var(--text3)" }}>£{product.originalPrice.toLocaleString()}</span>}
+                  {discountPercent(product.price, product.originalPrice) && <span className="self-center px-2 py-0.5 rounded text-[11px] font-bold tracking-wide" style={{ background: "#E94560", color: "#fff" }}>{discountPercent(product.price, product.originalPrice)}% OFF</span>}
                 </div>
               ) : (
                 <div className="font-[Playfair_Display] text-[22px]" style={{ color: "var(--text3)" }}>Contact for price</div>

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart, toggleWishlist } from "@/lib/store";
 import ArtworkCard from "@/components/ArtworkCard";
+import { discountPercent } from "@/lib/pricing";
 import type { Artwork } from "@/data/artworks";
 
 interface Props {
@@ -79,6 +80,7 @@ export default function ArtworkDetailClient({ artwork, related }: Props) {
                       <span className="text-[13px] uppercase tracking-wider font-medium" style={{ color: "var(--text3)" }}>Unframed</span>
                       <span className="font-[Playfair_Display] text-[32px] font-bold" style={{ color: "var(--gold)" }}>£{artwork.price.toLocaleString()}</span>
                       {artwork.originalPrice && <span className="text-[16px] line-through font-normal" style={{ color: "var(--text3)" }}>£{artwork.originalPrice.toLocaleString()}</span>}
+                      {discountPercent(artwork.price, artwork.originalPrice) && <span className="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide" style={{ background: "#E94560", color: "#fff" }}>{discountPercent(artwork.price, artwork.originalPrice)}% OFF</span>}
                     </div>
                   )}
                   {artwork.framedPrice && artwork.framedPrice > 0 && (

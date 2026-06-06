@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Artwork } from "@/data/artworks";
 import { addToCart, toggleWishlist, getState } from "@/lib/store";
+import { discountPercent } from "@/lib/pricing";
 
 interface Props {
   artwork: Artwork;
@@ -127,15 +128,16 @@ export default function ArtworkCard({ artwork, index }: Props) {
                   The bottom-right strip carries just the price (green) for
                   available pieces. */}
               {artwork.badge !== "sold" && artwork.badge !== "nfs" && artwork.badge !== "unavailable" && (
-                <span
-                  className="font-semibold whitespace-nowrap"
-                  style={{
-                    color: "#34D399",
-                    fontSize: "13px",
-                    textShadow: "0 1px 4px rgba(0,0,0,0.7)",
-                  }}
-                >
-                  {artwork.price ? `£${artwork.price.toLocaleString()}` : "Enquire"}
+                <span className="inline-flex items-baseline gap-1.5 whitespace-nowrap">
+                  <span className="font-semibold" style={{ color: "#34D399", fontSize: "13px", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+                    {artwork.price ? `£${artwork.price.toLocaleString()}` : "Enquire"}
+                  </span>
+                  {discountPercent(artwork.price, artwork.originalPrice) && (
+                    <>
+                      <span className="line-through" style={{ color: "rgba(255,255,255,0.7)", fontSize: "11px", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>£{artwork.originalPrice!.toLocaleString()}</span>
+                      <span className="rounded font-bold" style={{ background: "#E94560", color: "#fff", fontSize: "9px", padding: "1px 5px" }}>{discountPercent(artwork.price, artwork.originalPrice)}% OFF</span>
+                    </>
+                  )}
                 </span>
               )}
             </div>

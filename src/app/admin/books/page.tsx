@@ -12,7 +12,7 @@ interface BookImage {
 }
 
 interface Book {
-  id: string; title: string; author: string; description: string; price?: number | null;
+  id: string; title: string; author: string; description: string; price?: number | null; originalPrice?: number | null;
   imageUrl?: string | null; pdfUrl?: string | null; amazonUrl?: string | null;
   gradient: string; badge?: string | null; pages?: number | null; isbn?: string | null; publishYear?: number | null;
   images?: BookImage[];
@@ -23,7 +23,7 @@ interface AdditionalImage {
   label: string;
 }
 
-const emptyForm = { title: "", author: "Chinmayi", description: "", price: "", imageUrl: "", pdfUrl: "", amazonUrl: "", badge: "", pages: "", isbn: "", publishYear: "", gradient: "linear-gradient(135deg, #667eea, #764ba2)" };
+const emptyForm = { title: "", author: "Chinmayi", description: "", price: "", originalPrice: "", imageUrl: "", pdfUrl: "", amazonUrl: "", badge: "", pages: "", isbn: "", publishYear: "", gradient: "linear-gradient(135deg, #667eea, #764ba2)" };
 
 export default function AdminBooksPage() {
   const [items, setItems] = useState<Book[]>([]);
@@ -115,10 +115,14 @@ export default function AdminBooksPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Price (£)</label>
                     <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Original £ <span className="normal-case font-normal opacity-60">(was)</span></label>
+                    <input type="number" value={form.originalPrice} onChange={e => setForm({ ...form, originalPrice: e.target.value })} placeholder="for sale price" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Pages</label>
@@ -246,7 +250,7 @@ export default function AdminBooksPage() {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => {
-                  setForm({ title: book.title, author: book.author, description: book.description, price: book.price ? String(book.price) : "", imageUrl: book.imageUrl || "", pdfUrl: book.pdfUrl || "", amazonUrl: book.amazonUrl || "", badge: book.badge || "", pages: book.pages ? String(book.pages) : "", isbn: book.isbn || "", publishYear: book.publishYear ? String(book.publishYear) : "", gradient: book.gradient });
+                  setForm({ title: book.title, author: book.author, description: book.description, price: book.price ? String(book.price) : "", originalPrice: book.originalPrice ? String(book.originalPrice) : "", imageUrl: book.imageUrl || "", pdfUrl: book.pdfUrl || "", amazonUrl: book.amazonUrl || "", badge: book.badge || "", pages: book.pages ? String(book.pages) : "", isbn: book.isbn || "", publishYear: book.publishYear ? String(book.publishYear) : "", gradient: book.gradient });
                   setAdditionalImages((book.images || []).map(img => ({ url: img.url, label: img.label || "" })));
                   setEditId(book.id);
                   setShowForm(true);

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { discountPercent } from "@/lib/pricing";
 
 interface ProductImage {
   id: string;
@@ -78,6 +79,7 @@ export default function ProductGrid({ products, emptyMessage }: { products: Prod
                       <>
                         <span className="font-semibold text-[16px]" style={{ color: "var(--gold)" }}>£{p.price.toLocaleString()}</span>
                         {p.originalPrice && <span className="text-[13px] line-through ml-2" style={{ color: "var(--text3)" }}>£{p.originalPrice.toLocaleString()}</span>}
+                        {discountPercent(p.price, p.originalPrice) && <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide align-middle" style={{ background: "#E94560", color: "#fff" }}>{discountPercent(p.price, p.originalPrice)}% OFF</span>}
                       </>
                     ) : (
                       <span className="text-[13px]" style={{ color: "var(--text3)" }}>Contact for price</span>

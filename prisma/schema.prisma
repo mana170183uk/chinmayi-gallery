@@ -79,6 +79,7 @@ model Book {
   author      String      @default("Chinmayi")
   description String
   price       Int?
+  originalPrice Int?      // pre-discount price; shown struck-through when set
   imageUrl    String?     // primary cover image
   pdfUrl      String?     // uploaded PDF
   amazonUrl   String?     // Amazon purchase link

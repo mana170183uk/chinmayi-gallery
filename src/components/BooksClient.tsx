@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
+import { discountPercent } from "@/lib/pricing";
 
 interface BookImage {
   id: string;
@@ -18,6 +19,7 @@ interface Book {
   author: string;
   description: string;
   price?: number | null;
+  originalPrice?: number | null;
   imageUrl?: string | null;
   pdfUrl?: string | null;
   amazonUrl?: string | null;
@@ -192,8 +194,16 @@ function BookCard({ book, index }: { book: Book; index: number }) {
         </div>
 
         {book.price && (
-          <div className="font-semibold text-[18px] mb-4" style={{ color: "var(--gold)" }}>
-            £{book.price.toLocaleString()}
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1 mb-4">
+            <span className="font-semibold text-[18px]" style={{ color: "var(--gold)" }}>£{book.price.toLocaleString()}</span>
+            {discountPercent(book.price, book.originalPrice) && (
+              <>
+                <span className="text-[14px] line-through" style={{ color: "var(--text3)" }}>£{book.originalPrice!.toLocaleString()}</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide" style={{ background: "#E94560", color: "#fff" }}>
+                  {discountPercent(book.price, book.originalPrice)}% OFF
+                </span>
+              </>
+            )}
           </div>
         )}
 
