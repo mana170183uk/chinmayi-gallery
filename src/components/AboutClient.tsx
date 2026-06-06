@@ -34,6 +34,8 @@ interface Props {
   exhibitions: Exhibition[];
   workshops: Workshop[];
   aboutImageUrl?: string;
+  artistName?: string;
+  artistBio?: string;
 }
 
 function youtubeEmbed(url: string): string | null {
@@ -57,7 +59,11 @@ const process = [
   { step: "04", title: "Refinement", desc: "The final stage involves stepping back, living with the painting, and making subtle adjustments until every element sings in harmony." },
 ];
 
-export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg" }: Props) {
+export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/chinmayi-artist.jpg", artistName, artistBio }: Props) {
+  const displayName = artistName?.trim() || "Chinmayi";
+  // Split the admin bio into paragraphs on blank/newlines; fall back to the
+  // default copy below only when no bio has been saved.
+  const bioParagraphs = (artistBio || "").split(/\n+/).map((p) => p.trim()).filter(Boolean);
   return (
     <section className="min-h-screen pt-32 sm:pt-40 pb-16 sm:pb-24 relative z-[1]">
       {/* Hero */}
@@ -72,16 +78,30 @@ export default function AboutClient({ exhibitions, workshops, aboutImageUrl = "/
             <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[4px] uppercase mb-6" style={{ color: "var(--gold)" }}>
               <span className="w-10 h-px" style={{ background: "var(--gold)" }} /> Meet the Artist
             </div>
-            <h1 className="font-[Playfair_Display] text-[clamp(36px,5vw,56px)] font-bold leading-tight mb-6">Meet Chinmayi</h1>
-            <p className="text-[16px] leading-relaxed mb-5" style={{ color: "var(--text2)" }}>
-              Chinmayi is a contemporary fine artist whose work explores the intersection of emotion, colour and texture. Drawing inspiration from natural landscapes, Indian heritage, palm leaf etching traditions, and the quiet moments in between, each painting tells a story that resonates with the heart.
-            </p>
-            <p className="text-[16px] leading-relaxed mb-5" style={{ color: "var(--text2)" }}>
-              Working across diverse styles — from realistic landscapes and portraits to contemporary abstract expressions and traditional Indian art forms — Chinmayi creates pieces that bridge cultures and emotions. Her work has been exhibited in galleries across the UK and India, and is held in private collections worldwide.
-            </p>
-            <p className="text-[16px] leading-relaxed" style={{ color: "var(--text2)" }}>
-              Every painting is created with museum-grade materials — premium oils, Belgian linen canvas, and archival varnishes — ensuring each piece remains vibrant for generations. Beyond paintings, Chinmayi&apos;s artistic vision extends into handcrafted jewellery, clothing, and home décor, bringing art into everyday life.
-            </p>
+            <h1 className="font-[Playfair_Display] text-[clamp(36px,5vw,56px)] font-bold leading-tight mb-6">Meet {displayName}</h1>
+            {bioParagraphs.length > 0 ? (
+              bioParagraphs.map((para, i) => (
+                <p
+                  key={i}
+                  className={`text-[16px] leading-relaxed whitespace-pre-line ${i < bioParagraphs.length - 1 ? "mb-5" : ""}`}
+                  style={{ color: "var(--text2)" }}
+                >
+                  {para}
+                </p>
+              ))
+            ) : (
+              <>
+                <p className="text-[16px] leading-relaxed mb-5" style={{ color: "var(--text2)" }}>
+                  Chinmayi is a contemporary fine artist whose work explores the intersection of emotion, colour and texture. Drawing inspiration from natural landscapes, Indian heritage, palm leaf etching traditions, and the quiet moments in between, each painting tells a story that resonates with the heart.
+                </p>
+                <p className="text-[16px] leading-relaxed mb-5" style={{ color: "var(--text2)" }}>
+                  Working across diverse styles — from realistic landscapes and portraits to contemporary abstract expressions and traditional Indian art forms — Chinmayi creates pieces that bridge cultures and emotions. Her work has been exhibited in galleries across the UK and India, and is held in private collections worldwide.
+                </p>
+                <p className="text-[16px] leading-relaxed" style={{ color: "var(--text2)" }}>
+                  Every painting is created with museum-grade materials — premium oils, Belgian linen canvas, and archival varnishes — ensuring each piece remains vibrant for generations. Beyond paintings, Chinmayi&apos;s artistic vision extends into handcrafted jewellery, clothing, and home décor, bringing art into everyday life.
+                </p>
+              </>
+            )}
 
             <div className="flex gap-6 sm:gap-8 md:gap-12 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t flex-wrap" style={{ borderColor: "var(--border)" }}>
               {[

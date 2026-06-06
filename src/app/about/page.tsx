@@ -22,6 +22,8 @@ export default async function AboutPage() {
   let exhibitions = fallbackExhibitions;
   let workshops = fallbackWorkshops;
   let aboutImageUrl = "/chinmayi-artist.jpg";
+  let artistName: string | undefined;
+  let artistBio: string | undefined;
 
   try {
     const dbExhibitions = await prisma.exhibition.findMany({
@@ -39,7 +41,9 @@ export default async function AboutPage() {
   try {
     const settings = await prisma.siteSettings.findUnique({ where: { id: "main" } });
     if (settings?.aboutImageUrl) aboutImageUrl = settings.aboutImageUrl;
+    if (settings?.artistName) artistName = settings.artistName;
+    if (settings?.artistBio) artistBio = settings.artistBio;
   } catch {}
 
-  return <AboutClient exhibitions={exhibitions} workshops={workshops} aboutImageUrl={aboutImageUrl} />;
+  return <AboutClient exhibitions={exhibitions} workshops={workshops} aboutImageUrl={aboutImageUrl} artistName={artistName} artistBio={artistBio} />;
 }
