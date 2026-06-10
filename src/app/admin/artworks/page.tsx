@@ -29,6 +29,7 @@ interface FormData {
   dimensions: string;
   year: string;
   price: string;
+  originalPrice: string;
   framedPrice: string;
   description: string;
   gradient: string;
@@ -42,7 +43,7 @@ interface FormData {
 
 const emptyForm: FormData = {
   title: "", category: "landscape", medium: "", dimensions: "",
-  year: new Date().getFullYear().toString(), price: "", framedPrice: "", description: "",
+  year: new Date().getFullYear().toString(), price: "", originalPrice: "", framedPrice: "", description: "",
   gradient: gradientPresets[0].value, imageUrl: "", aspectRatio: "3/4", badge: "",
   featured: false, homePick: false, heroPick: false,
 };
@@ -159,6 +160,7 @@ export default function AdminArtworksPage() {
       dimensions: art.dimensions,
       year: art.year.toString(),
       price: art.price.toString(),
+      originalPrice: (a.originalPrice as number | undefined)?.toString() || "",
       framedPrice: (a.framedPrice as number | undefined)?.toString() || "",
       description: art.description,
       gradient: art.gradient,
@@ -203,17 +205,17 @@ export default function AdminArtworksPage() {
         // Fallback to local state
         const slug = form.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
         if (editId) {
-          setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
+          setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, originalPrice: form.originalPrice ? parseInt(form.originalPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
         } else {
-          setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
+          setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, originalPrice: form.originalPrice ? parseInt(form.originalPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
         }
       }
     } else {
       const slug = form.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
       if (editId) {
-        setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
+        setItems(items.map((a) => a.id === editId ? { ...a, ...form, slug, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, originalPrice: form.originalPrice ? parseInt(form.originalPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"] } : a));
       } else {
-        setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
+        setItems([{ id: Date.now().toString(), slug, ...form, year: parseInt(form.year), price: parseInt(form.price), framedPrice: form.framedPrice ? parseInt(form.framedPrice) : undefined, originalPrice: form.originalPrice ? parseInt(form.originalPrice) : undefined, badge: (form.badge || undefined) as Artwork["badge"], collection: form.category } as Artwork, ...items]);
       }
     }
 
@@ -298,7 +300,7 @@ export default function AdminArtworksPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Year</label>
                     <input type="number" value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
@@ -306,6 +308,10 @@ export default function AdminArtworksPage() {
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Unframed Price (£)</label>
                     <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Optional" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Original £ <span className="normal-case font-normal opacity-60">(was)</span></label>
+                    <input type="number" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} placeholder="for discounts" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Framed Price (£)</label>

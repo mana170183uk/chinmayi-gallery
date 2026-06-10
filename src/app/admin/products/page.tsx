@@ -23,7 +23,7 @@ interface AdditionalImage {
   label: string;
 }
 
-const emptyForm = { title: "", type: "jewellery", description: "", price: "", material: "", sizes: "", imageUrl: "", badge: "", gradient: "linear-gradient(135deg, #667eea, #764ba2)" };
+const emptyForm = { title: "", type: "jewellery", description: "", price: "", originalPrice: "", material: "", sizes: "", imageUrl: "", badge: "", gradient: "linear-gradient(135deg, #667eea, #764ba2)" };
 
 export default function AdminProductsPage() {
   const [items, setItems] = useState<Product[]>([]);
@@ -127,10 +127,14 @@ export default function AdminProductsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Price (£)</label>
                     <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Original £ <span className="normal-case font-normal opacity-60">(was)</span></label>
+                    <input type="number" value={form.originalPrice} onChange={e => setForm({ ...form, originalPrice: e.target.value })} placeholder="for discounts" className="w-full px-4 py-2.5 rounded-lg text-[14px] border outline-none focus:border-[var(--gold)]" style={{ background: "var(--input-bg)", borderColor: "var(--border)", color: "var(--text)" }} />
                   </div>
                   <div>
                     <label className="block text-[12px] uppercase tracking-wider font-semibold mb-2" style={{ color: "var(--text3)" }}>Material</label>
@@ -232,7 +236,7 @@ export default function AdminProductsPage() {
                 <td className="px-6 py-3" style={{ color: "var(--text3)" }}>{1 + (p.images?.length || 0)}</td>
                 <td className="px-6 py-3 text-right">
                   <button onClick={() => {
-                    setForm({ title: p.title, type: p.type, description: p.description, price: String(p.price), material: p.material || "", sizes: p.sizes || "", imageUrl: p.imageUrl || "", badge: p.badge || "", gradient: p.gradient });
+                    setForm({ title: p.title, type: p.type, description: p.description, price: String(p.price), originalPrice: p.originalPrice ? String(p.originalPrice) : "", material: p.material || "", sizes: p.sizes || "", imageUrl: p.imageUrl || "", badge: p.badge || "", gradient: p.gradient });
                     setAdditionalImages((p.images || []).map(img => ({ url: img.url, label: img.label || "" })));
                     setEditId(p.id); setShowForm(true);
                   }} className="px-3 py-1 text-[12px] mr-2 hover:text-[var(--gold)]" style={{ color: "var(--text2)" }}>Edit</button>
