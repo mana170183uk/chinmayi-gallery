@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
@@ -265,10 +266,12 @@ function BookCard({ book, index }: { book: Book; index: number }) {
       </div>
       </div>
 
-      {/* Lightbox — rendered as a sibling of the lifted card, OUTSIDE the
-          hover-transform wrapper, so this fixed full-screen overlay is never
-          positioned relative to a transformed ancestor. */}
-      <AnimatePresence>
+      {/* Lightbox — portaled to <body> so it escapes the card's Framer-Motion
+          transform. A transformed ancestor makes `position: fixed` resolve
+          against the card instead of the viewport, which trapped the overlay
+          in the card box and let the navbar clip the top of the image. */}
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
         {lightboxOpen && activeImage && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -308,7 +311,9 @@ function BookCard({ book, index }: { book: Book; index: number }) {
             )}
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </motion.div>
   );
 }
