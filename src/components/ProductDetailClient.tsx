@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { addToCart } from "@/lib/store";
@@ -233,8 +234,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Lightbox */}
-      <AnimatePresence>
+      {/* Lightbox — portaled to <body> so its `fixed` overlay always resolves
+          against the viewport (never a transformed ancestor) and sits above
+          the navbar, matching the books lightbox. */}
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
         {lightboxOpen && allImages.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -296,7 +300,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }
